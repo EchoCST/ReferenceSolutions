@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
+<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
+<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>filePicker Demo</title>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<meta name="viewport" content="width=900">
+<link rel="stylesheet" href="app.css" />
+<script type="text/javascript" src="//cdn.echoenabled.com/sdk/v3/loader.js"></script>
+<script type="text/javascript" src="//cdn.echoenabled.com/sdk/v3/third-party/jquery.pack.js"></script>
+</head>
+<body>
+	<div id="wrapper">
+        <div id="app"></div>
+    </div>
+    <script type="text/javascript">
+    // Echo loads jQuery 1.10.x, which we are happy with. We do this before we
+    // start the loader because when the dependency-management kicks in it may
+    // load jQuery plugins. We must have a window.jQuery object for them to
+    // install into.
+    window.jQuery = window.$ = Echo.jQuery;
+      
+    // Echo.Loader.init();
+    Echo.Loader.initApplication({
+        "script": "http://echosandbox.com/filepicker/file-picker-reference.js",
+        "component": "Echo.Apps.filePickerReference",
+        "backplane": {
+            "serverBaseURL": "http://api.echoenabled.com/v1",
+            "busName": "jskit"
+        },
+        "config": {
+            "target": document.getElementById("app"),
+            "appkey": "echo.jssdk.demo.aboutecho.com",
+            "apiBaseURL": "http://api.echoenabled.com/v1/",
+            "components": {
+                "Stream": {
+                    "query": "childrenof:http://echosandbox.com/filepicker children:0 itemsPerPage:10",
+                    "liveUpdates": { "transport": "websockets" }
+                },
+                "Submit": {
+                    "targetURL": "http://echosandbox.com/filepicker"
+                }
+            },
+            "identityManager": {
+                "login": {
+                    "width": 400,
+                    "height": 250,
+                    "url": "https://echo.rpxnow.com/openid/embed?flags=stay_in_window,no_immediate&token_url=http%3A%2F%2Fechoenabled.com%2Fapps%2Fjanrain%2Fwaiting.html&bp_channel="
+                },
+                "signup": {
+                    "width": 400,
+                    "height": 250,
+                    "url": "https://echo.rpxnow.com/openid/embed?flags=stay_in_window,no_immediate&token_url=http%3A%2F%2Fechoenabled.com%2Fapps%2Fjanrain%2Fwaiting.html&bp_channel="
+                }
+            }
+        }
+	});
+	</script>
+</body>
+</html>
