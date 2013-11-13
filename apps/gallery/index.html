@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Media Gallery Reference App Demo</title>
+
+<!-- The Echo Loader is all we need for a modern app. It loads everything else. -->
+<script type="text/javascript" src="//cdn.echoenabled.com/sdk/v3/loader.js"></script>
+
+<!-- Support files to kick off our demos. -->
+<script type="text/javascript" src="demo.js"></script>
+<link rel="stylesheet" href="demo.css" />
+</head>
+<body>
+	<!-- Top black tab bar to select the visualization to display. -->
+	<nav><ul>
+		<li><a href="#" data-visualization="pinboard" class="active">Photo Wall</a></li>
+		<li><a href="#" data-visualization="streamlined">Streamlined Photo Wall</a></li>
+		<li><a href="#" data-visualization="tabbed">Tabbed Pinboard</a></li>
+		<li><a href="#" data-visualization="full">Full Screen Gallery</a></li>
+	</ul></nav>
+
+	<!-- Tabs to display the actual visualizations. Populated by demo.js. -->
+	<div id="apps">
+        <div id="gallery-pinboard"></div>
+        <div id="gallery-streamlined" style="display: none"></div>
+        <div id="gallery-tabbed" style="display: none"></div>
+        <div id="gallery-full" style="display: none"></div>
+    </div>
+</body>
+</html>

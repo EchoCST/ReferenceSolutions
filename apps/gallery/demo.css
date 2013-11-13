@@ -1,0 +1,28 @@
+/* Basic styles for the whole page */
+html { padding: 0; margin: 0; }
+body { padding: 0; margin: 0; font-family: sans-serif; background: url("bg.png"); }
+img { display: block; border-style: none; }
+
+/* Top black tab bar */
+nav { width: 100%; height: 29px; background: #000; margin: 0 0 14px 0; }
+nav ul { list-style: none; margin: 0; padding: 0; }
+nav ul li { list-style: none; margin: 0; }
+nav ul li a { color: #fff; text-decoration: none; display: block; float: left; padding: 5px 18px; }
+nav ul li a:hover { background: #333; color: #fafcb1; }
+nav ul li a.active { color: #48aeec; }
+
+/* Apps container sizing to support the full-page visualization */
+#apps {
+    width: 100%; height: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* Give the auth box a bit of style for all of the visualizations */
+.echo-identityserver-controls-auth {
+    border: 1px solid #ddd; background: #fff; box-shadow: 1px 1px 3px #666;
+    padding: 0.5%; margin: 0.5%; width: 98%;
+}
