@@ -4,75 +4,49 @@
 var $ = jQuery;
 
 /**
- * @class Echo.StreamServer.Controls.Stream.Item.Plugins.PinboardVisualization
- * The PinboardVisualization plugin transforms Stream.Item control into a
+ * @class Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization
+ * The StreamlinedPinboardVisualization plugin transforms Stream.Item control into a
  * pinboard-style block.
  *
- * 	new Echo.StreamServer.Controls.Stream({
- * 		"target": document.getElementById("echo-stream"),
- * 		"query": "childrenof:http://example.com/js-sdk",
- * 		"appkey": "echo.jssdk.demo.aboutecho.com",
- * 		"plugins": [{
- * 			"name": "PinboardVisualization",
- * 			"columnWidth": 100,
- * 			"gallery": {"resizeDuration": 550}
- * 		}]
- * 	});
- *
- * __Note__: PinboardVisualization plugin modifies not only the Stream layout,
- * but also the UI of the Stream.Item control. It is notable that "reTag" section
- * is removed from the Item template. That's why setting the "reTag" configuration
- * parameter for the Stream.Item control will result in no actions while the
- * PinboardVisualization plugin is active. This was done to simplfy UI and avoid
- * visual noise as much as possible. More information about "reTag" configuration
- * parameter can be found [here](#!/api/Echo.StreamServer.Controls.Stream.Item-cfg-reTag).
- *
- * More information regarding the plugins installation can be found
- * in the [“How to initialize Echo components”](#!/guide/how_to_initialize_components-section-initializing-plugins) guide.
+ * __Note__: This plugin modifies both Stream.Item and Stream itself to achieve
+ * its effects. It also disables some options like "reTag" that are not
+ * compatible with its display.
  *
  * @extends Echo.Plugin
- *
- * @package streamserver/plugins/pinboard-visualization.js
  */
 
-var plugin = Echo.Plugin.manifest("PinboardVisualization", "Echo.StreamServer.Controls.Stream.Item");
+var plugin = Echo.Plugin.manifest("StreamlinedPinboardVisualization", "Echo.StreamServer.Controls.Stream.Item");
 
 if (Echo.Plugin.isDefined(plugin)) return;
 
 plugin.init = function() {
 	var self = this, item = this.component;
+
 	this.extendTemplate("replace", "container", plugin.templates.container);
 };
 
 plugin.dependencies = [{
 	"loaded": function() { return !!Echo.jQuery().isotope; },
 	"url": "{config:cdnBaseURL.sdk}/third-party/jquery/jquery.isotope.min.js"
+}, {
+	"loaded": function() { return !!Echo.jQuery().smartresize; },
+	"url": "//echosandbox.com/reference/apps/gallery/app/smartresize.js"
 }];
 
 plugin.config = {
 	/**
-	 * @cfg {Number} columnWidth
-	 * Allows to define the width for one column in pixels, default width is 250px.
-	 * The amount of columns is calculated based on the width of the Echo Stream
-	 * Client container.
-	 */
-	"columnWidth": 250,
-	/**
 	 * @cfg {Number} maxChildrenBodyCharacters
-	 * Allows to truncate the reply text displayed under the root item. Default
-	 * value is 50 characters. The value of this parameter should be integer and
-	 * represent the number of visible characters that need to be displayed.
+	 * Truncate the reply text displayed under t6he root item to N characters.
 	 */
 	"maxChildrenBodyCharacters": 50,
+
 	/**
 	 * @cfg {Function} mediaSelector
-	 * Allows to define the function with custom rules for the media content
-	 * extraction from the item content. The value of this parameter is a function
-	 * which accepts the item content (string) as the first argument and should
-	 * return the jQuery element with the list of the DOM elements which are
-	 * considered to be the media content of this item.
+	 * Override this to define the function that extracts media from arriving
+	 * stream items.
 	 *
-	 * Example (also used as a default value):
+	 * The default function looks for IMG, VIDEO, EMBED, and IFRAME tags using
+	 * the following code:
 	 *
 	 * 	"mediaSelector": function(content) {
 	 * 		var dom = $("<div>" + content + "</div>");
@@ -83,22 +57,11 @@ plugin.config = {
 		var dom = $("<div>" + content + "</div>");
 		return $("img, video, embed, iframe", dom);
 	},
-	/**
-	 * @cfg {Object} itemCSSClassByContentLength
-	 * Allows to define extra CSS class to the item based on the item length.
-	 * The value of this parameter is the JS object with the CSS classes as
-	 * the keys and the item text length ranges as values. Multiple CSS classes
-	 * might be applied to the item if the item text length meets several
-	 * criteria simultaneously.
-	 */
-	"itemCSSClassByContentLength": {
-		"echo-streamserver-controls-stream-item-smallSizeContent": [0, 69],
-		"echo-streamserver-controls-stream-item-mediumSizeContent": [70, 120]
-	},
+
 	/**
 	 * @cfg {Object} gallery
-	 * Allows to proxy the parameters for the mini Media Gallery class,
-	 * initialized for the item in case any media content was found in its body.
+	 * Pinboard requires the MediaGallery plugin. Any settings defined here will
+	 * be passed through to it.
 	 */
 	"gallery": {
 		"resizeDuration": 250
@@ -116,20 +79,10 @@ plugin.labels = {
 	"childrenMoreItems": "View more items..."
 };
 
-/**
- * @echo_renderer
- */
-plugin.component.renderers.content = function(element) {
-	var plugin = this, item = this.component;
-	return item.parentRenderer('content', arguments).css({
-		"width": parseInt(plugin.config.get("columnWidth"))
-	});
-};
-
 (function() {
 
 /**
- * @echo_event Echo.StreamServer.Controls.Stream.Item.Plugins.PinboardVisualization.onChangeView
+ * @echo_event Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization.onChangeView
  * Triggered if the view was changed.
  */
 var publish = function(force) {
@@ -141,30 +94,31 @@ var publish = function(force) {
 	});
 };
 
-var getRenderer = function(name) {
-	return function(element) {
-		var plugin = this, item = this.component;
-		element = item.parentRenderer(name, arguments);
-		if (plugin.get("rendered")) {
-			element.queue("fx", function(next) {
-				next();
-				publish.call(plugin, true);
-			});
-			publish.call(plugin, name === "expandChildren");
-		}
-		return element;
-	};
-};
-
 /**
  * @echo_renderer
  */
-plugin.component.renderers.container = getRenderer("container");
+plugin.component.renderers.container = function(element) {
+	var plugin = this, item = this.component;
 
-/**
- * @echo_renderer
- */
-plugin.component.renderers.expandChildren = getRenderer("expandChildren");
+	element = item.parentRenderer(name, arguments);
+	if (plugin.get("rendered")) {
+		element.queue("fx", function(next) {
+			next();
+			publish.call(plugin, true);
+		});
+		publish.call(plugin, name === "expandChildren");
+	}
+
+	element.on('mouseover', function() {
+		var hoverview = plugin.view.get('hoverview');
+		hoverview.addClass('over');
+	}).on('mouseout', function() {
+		var hoverview = plugin.view.get('hoverview');
+		hoverview.removeClass('over');
+	});
+
+	return element;
+}
 
 /**
  * @echo_renderer
@@ -231,7 +185,7 @@ plugin.component.renderers.body = function(element) {
 	var filteredElements = plugin.config.get("mediaSelector")(item.get("data.object.content"));
 	$(filteredElements.selector, item.view.get("text")).remove();
 	var text = Echo.Utils.stripTags(item.get("data.object.content"));
-	item.view.get("container").addClass(plugin._getCSSByLength(text.length));
+
 	return element;
 };
 
@@ -271,14 +225,15 @@ plugin.renderers.media = function(element) {
 	return element;
 };
 
-plugin.methods._getCSSByLength = function(length) {
+/**
+ * @echo_renderer
+ */
+plugin.renderers.mediafull = function(element) {
 	var plugin = this, item = this.component;
-	var handler = function(range, acc, className) {
-		if (length >= range[0] && length < range[1]) {
-			return (acc = className);
-		}
-	};
-	return Echo.Utils.foldl("", plugin.config.get("itemCSSClassByContentLength"), handler);
+
+	var mediaItems = plugin.config.get("mediaSelector")(item.get("data.object.content"));
+	element.append(mediaItems);
+	return element;
 };
 
 /**
@@ -286,36 +241,39 @@ plugin.methods._getCSSByLength = function(length) {
  */
 plugin.templates.container =
 	'<div class="{class:container}">' +
-		'<div class="{class:header}">' +
-			'<div class="{class:avatar-wrapper}">' +
-				'<div class="{class:avatar}"></div>' +
-			'</div>' +
-			'<div class="{plugin.class:topContentWrapper}">' +
-				'<div class="{class:authorName} echo-linkColor"></div>' +
-				'<div class="{plugin.class:childBody}"></div>' +
+		'<div class="{plugin.class:mediafull}"></div>' +
+		'<div class="{plugin.class:hoverview}">' +
+			'<div class="{class:header}">' +
+				'<div class="{class:avatar-wrapper}">' +
+					'<div class="{class:avatar}"></div>' +
+				'</div>' +
+				'<div class="{plugin.class:topContentWrapper}">' +
+					'<div class="{class:authorName} echo-linkColor"></div>' +
+					'<div class="{plugin.class:childBody}"></div>' +
+					'<div class="echo-clear"></div>' +
+				'</div>' +
 				'<div class="echo-clear"></div>' +
 			'</div>' +
+			'<input type="hidden" class="{class:modeSwitch}">' +
 			'<div class="echo-clear"></div>' +
-		'</div>' +
-		'<input type="hidden" class="{class:modeSwitch}">' +
-		'<div class="echo-clear"></div>' +
-		'<div class="{class:wrapper}">' +
-			'<div class="{class:subcontainer}">' +
-				'<div class="{class:data}">' +
-					'<div class="{plugin.class:media}"></div>' +
-					'<div class="{class:body} echo-primaryColor"> ' +
-						'<span class="{class:text}"></span>' +
-						'<span class="{class:textEllipses}">...</span>' +
-						'<span class="{class:textToggleTruncated} echo-linkColor echo-clickable"></span>' +
+			'<div class="{class:wrapper}">' +
+				'<div class="{class:subcontainer}">' +
+					'<div class="{class:data}">' +
+						'<div class="{plugin.class:media}"></div>' +
+						'<div class="{class:body} echo-primaryColor"> ' +
+							'<span class="{class:text}"></span>' +
+							'<span class="{class:textEllipses}">...</span>' +
+							'<span class="{class:textToggleTruncated} echo-linkColor echo-clickable"></span>' +
+						'</div>' +
 					'</div>' +
-				'</div>' +
-				'<div class="{class:footer} echo-secondaryColor echo-secondaryFont">' +
-					'<img class="{class:sourceIcon} echo-clickable">' +
-					'<div class="{class:date}"></div>' +
-					'<div class="{class:from}"></div>' +
-					'<div class="{class:via}"></div>' +
-					'<div class="{class:buttons}"></div>' +
-					'<div class="echo-clear"></div>' +
+					'<div class="{class:footer} echo-secondaryColor echo-secondaryFont">' +
+						'<img class="{class:sourceIcon} echo-clickable">' +
+						'<div class="{class:date}"></div>' +
+						'<div class="{class:from}"></div>' +
+						'<div class="{class:via}"></div>' +
+						'<div class="{class:buttons}"></div>' +
+						'<div class="echo-clear"></div>' +
+					'</div>' +
 				'</div>' +
 			'</div>' +
 		'</div>' +
@@ -323,17 +281,21 @@ plugin.templates.container =
 
 plugin.css =
 	'.{plugin.class:media} { margin-top: 7px; text-align: center; }' +
+	'.{plugin.class:mediafull} img { width: 100%; }' +
 	'.{plugin.class:topContentWrapper} { margin-left: 5px; padding-left: 35px; }' +
 	'.{plugin.class:childBody} { float: none; display: inline; margin-left: 5px; }' +
 	'.{plugin.class:childBody} a { text-decoration: none; font-weight: bold; color: #524D4D; }' +
-	'.{plugin.class} .{class:container} { padding: 0px; }' +
-	'.{plugin.class} .{class:content} { padding-bottom: 0px; background: white; box-shadow: 1px 1px 2px rgba(34, 25, 25, 0.4); margin: 0px 5px 15px 5px; border: 1px solid #D9D4D4; border-bottom: none; border-right: none; }' +
+	'.{plugin.class:hoverview} { display: none; }' +
+	'.{plugin.class:hoverview}.over { display: block; position: absolute; top: 0; right: 0px; bottom: 0px; left: 0px; z-index: 2; border: 1px solid #999; background: #fff; padding: 20px; box-shadow: 1px 1px 4px #999; overflow: hidden; }' +
+	'.{plugin.class}.over .{plugin.class:hoverview} { display: block; }' +
+	'.{plugin.class} .{class:container} { position: relative; padding: 0px; }' +
+	'.{plugin.class} .{class:content} { padding-bottom: 0px; background: white; box-shadow: 1px 1px 2px rgba(34, 25, 25, 0.4); margin: 4px; border: 1px solid #D9D4D4; border-bottom: none; border-right: none; }' +
 	'.{plugin.class} .{class:authorName} { float: none; display: inline; margin-left: 0px; }' +
 	'.{plugin.class} .{class:body} { margin: 0px; }' +
 	'.{plugin.class} .{class:avatar} { float: left; width: 30px; height: 30px; padding-right: 10px; }' +
 	'.{plugin.class} .{class:depth-1} { margin-left: 0px; border-bottom: none; }' +
 	'.{plugin.class} .{class:depth-1} .{class:authorName} { display: inline; font-size: 12px; }' +
-	'.{plugin.class} .{class:depth-0} { padding: 15px 15px 10px 15px; }' +
+	'.{plugin.class} .{class:depth-0} { padding: 0; }' +
 	'.{plugin.class} .{class:depth-0} .{class:authorName} { font-size: 15px; margin-top: 4px; }' +
 	'.{plugin.class} .{class:wrapper} { float: none; }' +
 	'.{plugin.class} .{class:subcontainer} { float: none; }' +
@@ -342,8 +304,6 @@ plugin.css =
 	'.{plugin.class} .{class:footer} a:hover { text-decoration: underline; }' +
 	'.{plugin.class} .{class:container} .{class:footer} { margin-top: 5px; }' +
 	'.{plugin.class} .{class:children} .{class:header} { margin-left: 0px; }' +
-	'.{plugin.class} .{class:smallSizeContent} .{class:body} { font-size: 18px; line-height: 25px; }' +
-	'.{plugin.class} .{class:mediumSizeContent} .{class:body} { font-size: 16px; line-height: 22px; }' +
 	'.{plugin.class} .{class:children} .{class:container} { background-color: #F2F0F0; }' +
 	'.{plugin.class} .{class:childrenByCurrentActorLive} .{class:container} { background-color: #F2F0F0; }' +
 	'.{plugin.class} .{class:children} .{class:wrapper}  { display: none; }' +
@@ -391,37 +351,13 @@ Echo.Plugin.create(plugin);
 var $ = jQuery;
 
 /**
- * @class Echo.StreamServer.Controls.Stream.Plugins.PinboardVisualization
- * The PinboardVisualization plugin transforms Echo Stream Client visualization
- * into a pinboard-style representation. The plugin extracts all media (such as
- * images, videos, etc) from the item content and assembles the mini media
- * gallery inside the item UI. You can find UI example of the plugin
- * <a href="http://echosandbox.com/use-cases/pinboard-visualization/">here</a>.
- *
- * __Note__: the "PinboardVisualization" plugin is not included into the
- * StreamServer JS package (streamserver.pack.js). Please include the
- * scripts below (production and development versions respectively) to
- * load the "PinboardVisualization" plugin:
- *
- * http://cdn.echoenabled.com/sdk/v3/streamserver/plugins/pinboard-visualization.js
- * http://cdn.echoenabled.com/sdk/v3/dev/streamserver/plugins/pinboard-visualization.js
- *
- * 	new Echo.StreamServer.Controls.Stream({
- * 		"target": document.getElementById("echo-stream"),
- * 		"appkey": "echo.jssdk.demo.aboutecho.com",
- * 		"plugins": [{
- * 			"name": "PinboardVisualization"
- * 		}]
- * 	});
- *
- * More information regarding the plugins installation can be found
- * in the [“How to initialize Echo components”](#!/guide/how_to_initialize_components-section-initializing-plugins) guide.
+ * @class Echo.StreamServer.Controls.Stream.Plugins.StreamlinedPinboardVisualization
+ * See Echo.StreamServer.Controls.Stream.Items.Plugins.StreamlinedPinboardVisualization
+ * above for details.
  *
  * @extends Echo.Plugin
- *
- * @package streamserver/plugins/pinboard-visualization.js
  */
-var plugin = Echo.Plugin.manifest("PinboardVisualization", "Echo.StreamServer.Controls.Stream");
+var plugin = Echo.Plugin.manifest("StreamlinedPinboardVisualization", "Echo.StreamServer.Controls.Stream");
 
 if (Echo.Plugin.isDefined(plugin)) return;
 
@@ -438,6 +374,22 @@ var isMozillaBrowser = !!(
 
 plugin.config = {
 	/**
+	 * @cfg {Array} columns
+	 * A single integer column count, or an array of breakpoint widths. If
+	 * supplied as an array, each value should be a pixel width for each
+	 * desired column count. The index of the array is columnCount-1. Examples:
+	 *
+	 *   Always use four columns, specify integer 4:
+	 *   "columns": 4
+	 *
+	 *   Use one column minimum, two columns at >=330px wide, three columns at
+	 *   >=560px wide, four columns at >=900px wide, and five columns for any
+	 *   width >=1100px:
+	 *   "columns": [ 0, 330, 560, 900, 1100 ]
+	 */
+	"columns": 4,
+
+	/**
 	 * @cfg {Object} isotope
 	 * Allows to configure the Isotope jQuery plugin, used by the plugin as the
 	 * rendering engine. The possible config values can be found at the Isotope
@@ -450,6 +402,7 @@ plugin.config = {
 	 * <a href="http://en.wikipedia.org/wiki/DOCTYPE#HTML5_DTD-less_DOCTYPE">HTML5 DOCTYPE</a> declaration.
 	 */
 	"isotope": {
+		"resizable": false,
 		"animationOptions": {
 			// change duration for mozilla browsers
 			"duration": isMozillaBrowser ? 0 : 2750,
@@ -463,10 +416,17 @@ plugin.config = {
 };
 
 plugin.init = function() {
+	var plugin = this, stream = this.component;
+
 	// display an item immediately (cancel the slide down animation)
 	// to let the Isotope library work with the final state of the DOM element
 	// representing the item, to avoid its incorrect positioning in the grid
 	this.component.config.set("slideTimeout", 0);
+
+	// update columnWidth on window resize
+	$(window).smartresize(function() {
+		plugin._refreshView();
+	});
 };
 
 plugin.enabled = function() {
@@ -485,7 +445,7 @@ plugin.events = {
 	"Echo.StreamServer.Controls.Stream.onRefresh": function(topic, args) {
 		this._refreshView();
 	},
-	"Echo.StreamServer.Controls.Stream.Item.Plugins.PinboardVisualization.onChangeView": function(topic, args) {
+	"Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization.onChangeView": function(topic, args) {
 		var plugin = this;
 		if (args.force) {
 			plugin._refreshView();
@@ -505,18 +465,44 @@ plugin.events = {
 
 plugin.methods._refreshView = function() {
 	var plugin = this, stream = this.component;
-	var body = stream.view.get("body");
 	var hasEntries = stream.threads.length;
-	body.data("isotope")
+
+	var $body = stream.view.get("body");
+	if ($body.length < 1) {
+		return;
+	}
+
+	var bodyWidth = $body.width();
+
+	var columns = plugin.config.get("columns", 4);
+	if ($.isArray(columns)) {
+		var length = columns.length;
+		for (var i = 0; i < length; i++) {
+			if (bodyWidth < columns[i]) {
+				break;
+			}
+		}
+
+		columns = i;
+	}
+
+	var config = $.extend({
+		sortBy: "original-order",
+		masonry: {
+			columnWidth: Math.floor(bodyWidth / columns)
+		}
+	}, plugin.config.get("isotope"));
+
+	$body.children().css({ "width": config.masonry.columnWidth + "px" });
+	$body.data("isotope")
 		? (hasEntries
-			? body.isotope("reloadItems").isotope({"sortBy": "original-order"})
-			: body.isotope("destroy"))
-		: hasEntries && body.isotope(
-			plugin.config.get("isotope")
-		);
+			? $body.isotope("reloadItems").isotope(config)
+			: $body.isotope("destroy"))
+		: hasEntries && $body.isotope(config);
 };
 
 plugin.css =
+	'.{plugin.class} { background: #fff; }' +
 	'.{plugin.class} .isotope { -webkit-transition-property: height, width; -moz-transition-property: height, width; -o-transition-property: height, width; transition-property: height, width;  -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }' +
 	'.{plugin.class} .isotope .isotope-item { -webkit-transition-property: -webkit-transform, opacity; -moz-transition-property: -moz-transform, opacity; -o-transition-property: top, left, opacity; transition-property:transform, opacity; -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }';
 

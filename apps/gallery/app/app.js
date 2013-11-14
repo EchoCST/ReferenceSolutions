@@ -99,9 +99,11 @@ gallery.renderers.stream = function(element) {
 
 	switch (self.config.get("visualization")) {
 		case "streamlined":
+			this.config.set("replies", false);
 			plugins.push({
 				"name": "StreamlinedPinboardVisualization",
-				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/visualizations/pinboard-streamlined.js"
+				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/visualizations/pinboard-streamlined.js",
+				"columns": [ 0, 330, 560, 900, 1100 ]
 			});
 			break;
 		case "tabbed":
@@ -120,7 +122,8 @@ gallery.renderers.stream = function(element) {
 		default:
 			plugins.push({
 				"name": "PinboardVisualization",
-				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/visualizations/pinboard.js"
+				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/visualizations/pinboard.js",
+				"columns": [ 0, 330, 560, 900, 1100 ]
 			});
 			break;
 	}

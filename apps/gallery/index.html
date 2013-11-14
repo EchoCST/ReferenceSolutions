@@ -7,25 +7,73 @@
 <!-- The Echo Loader is all we need for a modern app. It loads everything else. -->
 <script type="text/javascript" src="//cdn.echoenabled.com/sdk/v3/loader.js"></script>
 
-<!-- Support files to kick off our demos. -->
-<script type="text/javascript" src="demo.js"></script>
+<!-- Just a quick set of styles -->
 <link rel="stylesheet" href="demo.css" />
 </head>
 <body>
-	<!-- Top black tab bar to select the visualization to display. -->
-	<nav><ul>
-		<li><a href="#" data-visualization="pinboard" class="active">Photo Wall</a></li>
-		<li><a href="#" data-visualization="streamlined">Streamlined Photo Wall</a></li>
-		<li><a href="#" data-visualization="tabbed">Tabbed Pinboard</a></li>
-		<li><a href="#" data-visualization="full">Full Screen Gallery</a></li>
+	<!-- Top black nav bar to select the visualization to display. -->
+	<nav><ul class="clearfix">
+		<li><a href="/reference/apps/gallery" class="active">Pinboard</a></li>
+		<li><a href="/reference/apps/gallery/streamlined.html">Streamlined Photo Wall</a></li>
+		<li><a href="/reference/apps/gallery/tabbed.html">Tabbed Pinboard</a></li>
+		<li><a href="/reference/apps/gallery/full.html">Full Screen Gallery</a></li>
 	</ul></nav>
 
-	<!-- Tabs to display the actual visualizations. Populated by demo.js. -->
-	<div id="apps">
-        <div id="gallery-pinboard"></div>
-        <div id="gallery-streamlined" style="display: none"></div>
-        <div id="gallery-tabbed" style="display: none"></div>
-        <div id="gallery-full" style="display: none"></div>
-    </div>
+	<!-- Populated by demo.js. -->
+	<div id="gallery-app"></div>
+
+	<script type="text/javascript">
+		// initEnvironment works a bit like $(document).ready() - its callback will be
+		// fired once the base Echo dependencies have been loaded. It is a good wrapper
+		// to use before calling other Echo Loader methods directly.
+		Echo.Loader.initEnvironment(function() {
+			// Echo loads jQuery 1.10.x, which we are happy with. We do this before we
+			// start the loader because when the dependency-management kicks in it may
+			// load jQuery plugins. We must have a window.jQuery object for them to
+			// install into.
+			window.jQuery = window.$ = Echo.jQuery;
+
+			// Authentication transport between apps. For production use, change
+			// "busName" to the correct value for your environment.
+			var backplane = {
+				"serverBaseURL": "http://api.echoenabled.com/v1",
+				"busName": "jskit"
+			};
+
+			// DataServer has been pre-configured to supply media items to this target
+			// URL. Note that target URLs do not have to be real - they just establish
+			// the parent/child hierarchy in the database. In practice, this would
+			// typically be the URL of the page the user is viewing, the URL of a
+			// related-items category landing page, or similar.
+			// var targetURL = "http://example.com/media-gallery-app/";
+			var targetURL = "http://univision-general.example.com/social-source-input/zpr4pgy4qq";
+
+			// This is a rate-limited key for demonstration purposes. For production
+			// use, change this to the real API key for your account.
+			// var appkey = "echo.jssdk.demo.aboutecho.com";
+			var appkey = "echo.echo.stream.univision.prod";
+
+			// Sample Janrain authentication config for demonstration purposes. For
+			// production use, change this to the correct auth setup for your site.
+			var authconfig = {
+				"janrainApp": "echo"
+			};
+
+			// Pinboard
+			Echo.Loader.initApplication({
+				"script": "//echosandbox.com/reference/apps/gallery/app/app.js",
+				"component": "Echo.Apps.MediaGallery",
+				"backplane": backplane,
+				"config": {
+					"appkey": appkey,
+					"targetURL": targetURL,
+					"auth": authconfig,
+					"target": document.getElementById("gallery-app"),
+					"visualization": "pinboard"
+				}
+			});
+		});
+
+	</script>
 </body>
 </html>

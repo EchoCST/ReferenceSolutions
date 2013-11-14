@@ -20,11 +20,13 @@ Echo.Loader.initEnvironment(function() {
     // the parent/child hierarchy in the database. In practice, this would
     // typically be the URL of the page the user is viewing, the URL of a
     // related-items category landing page, or similar.
-    var targetURL = "http://example.com/media-gallery-app/";
+    // var targetURL = "http://example.com/media-gallery-app/";
+    var targetURL = "http://univision-general.example.com/social-source-input/zpr4pgy4qq";
 
     // This is a rate-limited key for demonstration purposes. For production
     // use, change this to the real API key for your account.
-    var appkey = "echo.jssdk.demo.aboutecho.com";
+    // var appkey = "echo.jssdk.demo.aboutecho.com";
+    var appkey = "echo.echo.stream.univision.prod";
 
     // Sample Janrain authentication config for demonstration purposes. For
     // production use, change this to the correct auth setup for your site.
@@ -45,10 +47,10 @@ Echo.Loader.initEnvironment(function() {
             "visualization": "pinboard"
         }
     });
-/*
+
     // Streamlined Pinboard
     Echo.Loader.initApplication({
-        "script": "//echosandbox.com/reference/apps/gallery/app.js",
+        "script": "//echosandbox.com/reference/apps/gallery/app/app.js",
         "component": "Echo.Apps.MediaGallery",
         "backplane": backplane,
         "config": {
@@ -60,6 +62,7 @@ Echo.Loader.initEnvironment(function() {
         }
     });
 
+/*
     // Tabbed Pinboard
     Echo.Loader.initApplication({
         "script": "//echosandbox.com/reference/apps/gallery/app.js",
@@ -88,19 +91,4 @@ Echo.Loader.initEnvironment(function() {
         }
     });
 */
-    (function($) {
-        $(document).ready(function() {
-            // Very simple tab interface for the top nav - no plugins required!
-            $('nav a').click(function(e) {
-                e.preventDefault();
-
-                var visualization = $(this).data('visualization');
-                $('#apps > div').hide();
-                $('#gallery-' + visualization).show();
-
-                $('nav a').removeClass('active');
-                $(this).addClass('active');
-            });
-        });
-    })(Echo.jQuery);
 });

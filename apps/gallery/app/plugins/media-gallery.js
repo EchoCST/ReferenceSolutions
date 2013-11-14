@@ -85,7 +85,7 @@ mediaGallery.labels = {
  */
 mediaGallery.config = {
 	"resizeDuration": 250,
-	"removeInvalidItems": false,
+	"removeInvalidItems": true,
 	"elements": [],
 	"item": undefined
 };
@@ -166,14 +166,15 @@ mediaGallery.renderers.controls = function(element) {
 			});
 			return false;
 		});
+
 		if (isCurrentControl) {
 			controlContainer.addClass(activeControlClass);
 		}
+
 		element.one("error", function() {
 			itemContainer.empty().append(self.substitute({"template": self.templates.mediaError}));
 			var $parentItem = itemContainer.closest('.echo-streamserver-controls-stream-item').addClass('load-error');
-			console.log(self.config);
-			if (self.config.get("removeInvalidItems") === true) {
+			if (self.config.get("removeInvalidItems", false) === true) {
 				$parentItem.remove();
 			}
 
