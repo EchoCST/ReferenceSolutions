@@ -43,21 +43,34 @@ gallery.dependencies = [{
 }];
 
 gallery.templates.main =
-	'<div class="{class:container}">' +
+	'<div class="{class:container} visualization-{config:visualization}">' +
 		'<div class="{class:auth}"></div>' +
 		'<div class="{class:tabs}"></div>' +
 		'<div class="{class:stream}"></div>' +
 	'</div>';
 
 gallery.renderers.tabs = function(element) {
-/*	$(element).html('<ul class="{class:container}">' +
-	'<li><a href="#" data-source="all">All</a></li>' +
-	'<li><a href="#" data-source="twitter"><i class="twitter"></i>Twitter</a></li>' +
-	'<li><a href="#" data-source="facebook"><i class="facebook"></i>Facebook</a></li>' +
-	'<li><a href="#" data-source="instagram"><i class="instagram"></i>Instagram</a></li>' +
-	'<li><a href="#" data-source="youtube"><i class="youtube"></i>YouTube</a></li>' +
-	'</ul>');
-*/
+	var plugin = this;
+
+	if (plugin.config.get("visualization", "") === "tabbed") {
+		var html = '';
+
+		var title = plugin.config.get("title", "");
+		if (title != "") {
+			html += '<h2>' + title + '</h2>';
+		}
+
+		html += '<ul class="clearfix">' +
+		        '<li><a href="#" data-source="all" class="active">All</a></li>' +
+				'<li><a href="#" data-source="twitter"><i class="twitter"></i>Twitter</a></li>' +
+				'<li><a href="#" data-source="facebook"><i class="facebook"></i>Facebook</a></li>' +
+				'<li><a href="#" data-source="instagram"><i class="instagram"></i>Instagram</a></li>' +
+				'<li><a href="#" data-source="youtube"><i class="youtube"></i>YouTube</a></li>' +
+				'</ul>';
+
+		$(element).html(html);
+	}
+
 	return element;
 };
 
@@ -195,7 +208,6 @@ gallery.methods._getAuthPluginDefinition = function(config) {
 };
 
 gallery.css =
-	".{class:auth} { float: left; margin: 14px .5%; }" +
 	".{class:stream} { clear: both; margin: 14px .25%; }" +
 
 	// Auth app CSS overrides...
@@ -207,7 +219,24 @@ gallery.css =
 	// Stream app CSS overrides...
 	".{class:container} .echo-streamserver-controls-stream-item-mediagallery-item img { width: 100% }" +
 	".{class:container} .echo-streamserver-controls-stream-item-mediagallery-item iframe { width: 100% }" +
-	".{class:container} .echo-streamserver-controls-stream-header { display: none; }";
+	".{class:container} .echo-streamserver-controls-stream-header { display: none; }" +
+
+	// Visualization-specific
+	".visualization-pinboard .{class:auth} { float: left; margin: 14px .5%; border: 1px solid #ddd; background: #fff; box-shadow: 1px 1px 3px #666; padding: 0.5%; margin: 0.5%; width: 98%; }" +
+
+	".visualization-streamlined .{class:auth} { float: left; margin: 14px .5%; border: 1px solid #ddd; background: #fff; box-shadow: 1px 1px 3px #666; padding: 0.5%; margin: 0.5%; width: 98%; }" +
+
+	".visualization-tabbed { max-width: 960px; background: #fff; margin: 0 auto; padding: 0 20px; } " +
+	".{class:container}.visualization-tabbed h2 { text-align: center; color: #666; font-size: 1.5em; padding: 1em 0; margin: 0; } " +
+	".visualization-tabbed .{class:auth} { float: right; background: #cfa; display: none; }" +
+	".visualization-tabbed .{class:tabs} { width: 100%; border-bottom: 2px solid #ddd; }" +
+	".visualization-tabbed .{class:tabs} ul { list-style: none; margin-bottom: 0; }" +
+	".visualization-tabbed .{class:tabs} a { display: block; float: left; margin: 8px 8px -2px 8px; -moz-border-radius: 10px 10px 0 0; -webkit-border-radius: 10px 10px 0 0; border-radius: 10px 10px 0 0; border: 1px solid #ccc; padding: 9px 50px; background: #999; color: #fff; }" +
+	".visualization-tabbed .{class:tabs} a.active { background: #b90000; }" +
+
+	".visualization-full .{class:auth} { float: left; margin: 14px .5%; border: 1px solid #ddd; background: #fff; box-shadow: 1px 1px 3px #666; padding: 0.5%; margin: 0.5%; width: 98%; }" +
+
+	"";
 
 Echo.App.create(gallery);
 

@@ -21,12 +21,6 @@ nav ul li a.active { color: #48aeec; }
     box-sizing: border-box;
 }
 
-/* Give the auth box a bit of style for all of the visualizations */
-.echo-identityserver-controls-auth {
-    border: 1px solid #ddd; background: #fff; box-shadow: 1px 1px 3px #666;
-    padding: 0.5%; margin: 0.5%; width: 98%;
-}
-
 .clearfix:before, .clearfix:after {
 	content: "\0020";
 	display: block;
