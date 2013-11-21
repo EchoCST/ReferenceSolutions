@@ -19,8 +19,28 @@
 		<li><a href="/reference/apps/gallery/full.html" class="active">Full Screen Gallery</a></li>
 	</ul></nav>
 
-	<!-- Populated by demo.js. -->
-	<div id="gallery-app"></div>
+	<!-- Populated by demo.js. Here we frame out ads. -->
+    <div id="page" class="clearfix">
+        <!-- Header with Sign-in -->
+        <div id="header" class="clearfix">
+            <div id="auth">Sign In</div>
+        </div>
+
+        <!-- Banner Ad -->
+        <div id="ad-banner" class="ad-region">Banner Ad</div>
+
+        <!-- Content -->
+        <div id="content">
+            <h2>Page Content</h2>
+            <div id="gallery-app"></div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <h2>Sidebar</h2>
+            <div id="ad-companion" class="ad-region">Companion Ad</div>
+        </div>
+    </div>
 
 	<script type="text/javascript">
 		// See index.html for comments on what is going on here.
@@ -48,8 +68,8 @@
 					"targetURL": targetURL,
 					"auth": authconfig,
 					"target": document.getElementById("gallery-app"),
-            		// Change the default visualization
-					"visualization": "streamlined"
+					// Change the default visualization
+					"visualization": "full"
 				}
 			});
 		});

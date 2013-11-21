@@ -24,8 +24,8 @@ gallery.config = {
 	},
 	"itemsPerPage": 15,
 	// We use SystemFlagged state to avoid false-positive responses from spam filter.
-	"itemState": "Untouched,SystemFlagged,ModeratorApproved",
-	"replies": true,
+	"itemState": "Untouched,ModeratorApproved",
+	"replies": false,
 	"likes": true,
 	"flags": true,
 	"sharing": false,
@@ -104,35 +104,51 @@ gallery.renderers.stream = function(element) {
 		"name": "ItemsRollingWindow",
 		"moreButton": true,
 		"url": "http://cdn.echoenabled.com/apps/echo/dataserver/v3/plugins/items-rolling-window.js"
-	}, {
-		"name": "MediaGallery",
-		"url": "//echosandbox.com/reference/apps/gallery/app/plugins/media-gallery.js",
-		"removeInvalidItems": true,
 	}];
 
 	switch (self.config.get("visualization")) {
 		case "streamlined":
 			this.config.set("replies", false);
 			plugins.push({
+				"name": "MediaGallery",
+				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/media-gallery.js",
+				"removeInvalidItems": true,
+			});
+			plugins.push({
 				"name": "StreamlinedPinboardVisualization",
 				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/visualizations/pinboard-streamlined.js",
 				"columns": [ 0, 330, 560, 900, 1100 ]
 			});
+			plugins.push({"name": "TweetDisplay"});
+
 			break;
+
 		case "tabbed":
+			plugins.push({
+				"name": "MediaGallery",
+				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/media-gallery.js",
+				"removeInvalidItems": true,
+			});
 			plugins.push({
 				"name": "TabbedPinboardVisualization",
 				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/visualizations/pinboard-tabbed.js"
 			});
 			break;
+
 		case "full":
 			plugins.push({
 				"name": "FullScreenGalleryVisualization",
 				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/visualizations/gallery-fullscreen.js"
 			});
 			break;
+
 		case "pinboard":
 		default:
+			plugins.push({
+				"name": "MediaGallery",
+				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/media-gallery.js",
+				"removeInvalidItems": true,
+			});
 			plugins.push({
 				"name": "PinboardVisualization",
 				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/visualizations/pinboard.js",
@@ -147,6 +163,8 @@ gallery.renderers.stream = function(element) {
 		: "children:0";
 	var query = "childrenof:" + this.config.get("targetURL", "") +
 			" itemsPerPage:" + this.config.get("itemsPerPage") +
+			" safeHTML:off" +
+			//" markers:photo" +
 			" state:" + itemState + " " + childrenQuery;
 
 	if (isEnabled("replies")) {

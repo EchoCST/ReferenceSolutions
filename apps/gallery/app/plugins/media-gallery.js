@@ -277,7 +277,7 @@ mediaGallery.methods._loadMediaHandler = function(element, elementContainer) {
 
 mediaGallery.css =
 	'.{class:thumbnails} { overflow: hidden; }' +
-	'.{class:item} { width: 100%; display: none; }' +
+	'.{class:item} { width: 100%; display: none; box-sizing: border-box; border: 1px solid #666; }' +
 	'.{class:controls} { text-align: center; margin-top: 10px; }' +
 	'.{class:control} { display: inline-block; width: 8px; height: 8px; font-size: 0px; line-height: 8px; outline: none; border-radius: 4px; vertical-align: middle; margin-left: 8px; cursor: pointer; background-color: #c6c6c6; text-decoration: none; transition: all .2s ease-in 0; -moz-transition-property: all; -moz-transition-duration: .2s; -moz-transition-timing-function: ease-in; -moz-transition-delay: 0; -webkit-transition-property: all; -webkit-transition-duration: .2s; -webkit-transition-timing-function: ease-in; -webkit-transition-delay: 0; }' +
 	'.{class:control}:hover { background-color: #ee7b11; }' +

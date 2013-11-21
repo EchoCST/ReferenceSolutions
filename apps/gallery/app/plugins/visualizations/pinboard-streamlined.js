@@ -240,39 +240,42 @@ plugin.renderers.mediafull = function(element) {
  * @echo_template
  */
 plugin.templates.container =
-	'<div class="{class:container}">' +
-		'<div class="{plugin.class:mediafull}"></div>' +
-		'<div class="{plugin.class:hoverview}">' +
-			'<div class="{class:header}">' +
-				'<div class="{class:avatar-wrapper}">' +
-					'<div class="{class:avatar}"></div>' +
-				'</div>' +
-				'<div class="{plugin.class:topContentWrapper}">' +
-					'<div class="{class:authorName} echo-linkColor"></div>' +
-					'<div class="{plugin.class:childBody}"></div>' +
+	// TODO: Move ontouchstart out
+	'<div class="{class:container}" ontouchstart="this.classList.toggle(\'hover\');">' +
+		'<div class="flipper">' +
+			'<div class="{plugin.class:mediafull} front"></div>' +
+			'<div class="{plugin.class:hoverview} back">' +
+				'<div class="{class:header}">' +
+					'<div class="{class:avatar-wrapper}">' +
+						'<div class="{class:avatar}"></div>' +
+					'</div>' +
+					'<div class="{plugin.class:topContentWrapper}">' +
+						'<div class="{class:authorName} echo-linkColor"></div>' +
+						'<div class="{plugin.class:childBody}"></div>' +
+						'<div class="echo-clear"></div>' +
+					'</div>' +
 					'<div class="echo-clear"></div>' +
 				'</div>' +
+				'<input type="hidden" class="{class:modeSwitch}">' +
 				'<div class="echo-clear"></div>' +
-			'</div>' +
-			'<input type="hidden" class="{class:modeSwitch}">' +
-			'<div class="echo-clear"></div>' +
-			'<div class="{class:wrapper}">' +
-				'<div class="{class:subcontainer}">' +
-					'<div class="{class:data}">' +
-						'<div class="{plugin.class:media}"></div>' +
-						'<div class="{class:body} echo-primaryColor"> ' +
-							'<span class="{class:text}"></span>' +
-							'<span class="{class:textEllipses}">...</span>' +
-							'<span class="{class:textToggleTruncated} echo-linkColor echo-clickable"></span>' +
+				'<div class="{class:wrapper}">' +
+					'<div class="{class:subcontainer}">' +
+						'<div class="{class:data}">' +
+							'<div class="{plugin.class:media}"></div>' +
+							'<div class="{class:body} echo-primaryColor"> ' +
+								'<span class="{class:text}"></span>' +
+								'<span class="{class:textEllipses}">...</span>' +
+								'<span class="{class:textToggleTruncated} echo-linkColor echo-clickable"></span>' +
+							'</div>' +
 						'</div>' +
-					'</div>' +
-					'<div class="{class:footer} echo-secondaryColor echo-secondaryFont">' +
-						'<img class="{class:sourceIcon} echo-clickable">' +
-						'<div class="{class:date}"></div>' +
-						'<div class="{class:from}"></div>' +
-						'<div class="{class:via}"></div>' +
-						'<div class="{class:buttons}"></div>' +
-						'<div class="echo-clear"></div>' +
+						'<div class="{class:footer} echo-secondaryColor echo-secondaryFont">' +
+							'<img class="{class:sourceIcon} echo-clickable">' +
+							'<div class="{class:date}"></div>' +
+							'<div class="{class:from}"></div>' +
+							'<div class="{class:via}"></div>' +
+							'<div class="{class:buttons}"></div>' +
+							'<div class="echo-clear"></div>' +
+						'</div>' +
 					'</div>' +
 				'</div>' +
 			'</div>' +
@@ -280,12 +283,16 @@ plugin.templates.container =
 	'</div>';
 
 plugin.css =
+	'.{plugin.class} { perspective: 1000; -webkit-perspective: 1000; }' +
+	'.{plugin.class} .flipper { transition: 0.6s; transform-style: preserve-3d; }' +
+	'.{plugin.class}:hover .flipper { transform: rotateY(180deg); }' +
+	'.{plugin.class}.hover .flipper { transform: rotateY(180deg); }' +
 	'.{plugin.class:media} { margin-top: 7px; text-align: center; }' +
-	'.{plugin.class:mediafull} img { width: 100%; }' +
+	'.{plugin.class:mediafull} img { width: 100%; backface-visibility: hidden; }' +
 	'.{plugin.class:topContentWrapper} { margin-left: 5px; padding-left: 35px; }' +
 	'.{plugin.class:childBody} { float: none; display: inline; margin-left: 5px; }' +
 	'.{plugin.class:childBody} a { text-decoration: none; font-weight: bold; color: #524D4D; }' +
-	'.{plugin.class:hoverview} { display: none; }' +
+	'.{plugin.class:hoverview} { display: none; backface-visibility: hidden; }' +
 	'.{plugin.class:hoverview}.over { display: block; position: absolute; top: 0; right: 0px; bottom: 0px; left: 0px; z-index: 2; border: 1px solid #999; background: #fff; padding: 20px; box-shadow: 1px 1px 4px #999; overflow: hidden; }' +
 	'.{plugin.class}.over .{plugin.class:hoverview} { display: block; }' +
 	'.{plugin.class} .{class:container} { position: relative; padding: 0px; }' +
@@ -504,6 +511,7 @@ plugin.methods._refreshView = function() {
 plugin.css =
 	'.{plugin.class} { background: #fff; }' +
 	'.{plugin.class} .isotope { -webkit-transition-property: height, width; -moz-transition-property: height, width; -o-transition-property: height, width; transition-property: height, width;  -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }' +
+	// TODO: These classes below should probably move up to the Stream.Item plugin
 	'.{plugin.class} .isotope .isotope-item { -webkit-transition-property: -webkit-transform, opacity; -moz-transition-property: -moz-transform, opacity; -o-transition-property: top, left, opacity; transition-property:transform, opacity; -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }';
 
 Echo.Plugin.create(plugin);

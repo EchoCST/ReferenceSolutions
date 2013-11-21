@@ -4,8 +4,8 @@
 var $ = jQuery;
 
 /**
- * @class Echo.StreamServer.Controls.Stream.Item.Plugins.PinboardVisualization
- * The PinboardVisualization plugin transforms Stream.Item control into a
+ * @class Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization
+ * The StreamlinedPinboardVisualization plugin transforms Stream.Item control into a
  * pinboard-style block.
  *
  * __Note__: This plugin modifies both Stream.Item and Stream itself to achieve
@@ -15,7 +15,7 @@ var $ = jQuery;
  * @extends Echo.Plugin
  */
 
-var plugin = Echo.Plugin.manifest("PinboardVisualization", "Echo.StreamServer.Controls.Stream.Item");
+var plugin = Echo.Plugin.manifest("StreamlinedPinboardVisualization", "Echo.StreamServer.Controls.Stream.Item");
 
 if (Echo.Plugin.isDefined(plugin)) return;
 
@@ -23,7 +23,6 @@ plugin.init = function() {
 	var self = this, item = this.component;
 
 	this.extendTemplate("replace", "container", plugin.templates.container);
-	item.extendRenderer("headerButton", plugin.renderers.headerButton);
 };
 
 plugin.dependencies = [{
@@ -83,7 +82,7 @@ plugin.labels = {
 (function() {
 
 /**
- * @echo_event Echo.StreamServer.Controls.Stream.Item.Plugins.PinboardVisualization.onChangeView
+ * @echo_event Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization.onChangeView
  * Triggered if the view was changed.
  */
 var publish = function(force) {
@@ -95,30 +94,31 @@ var publish = function(force) {
 	});
 };
 
-var getRenderer = function(name) {
-	return function(element) {
-		var plugin = this, item = this.component;
-		element = item.parentRenderer(name, arguments);
-		if (plugin.get("rendered")) {
-			element.queue("fx", function(next) {
-				next();
-				publish.call(plugin, true);
-			});
-			publish.call(plugin, name === "expandChildren");
-		}
-		return element;
-	};
-};
-
 /**
  * @echo_renderer
  */
-plugin.component.renderers.container = getRenderer("container");
+plugin.component.renderers.container = function(element) {
+	var plugin = this, item = this.component;
 
-/**
- * @echo_renderer
- */
-plugin.component.renderers.expandChildren = getRenderer("expandChildren");
+	element = item.parentRenderer(name, arguments);
+	if (plugin.get("rendered")) {
+		element.queue("fx", function(next) {
+			next();
+			publish.call(plugin, true);
+		});
+		publish.call(plugin, name === "expandChildren");
+	}
+
+	element.on('mouseover', function() {
+		var hoverview = plugin.view.get('hoverview');
+		hoverview.addClass('over');
+	}).on('mouseout', function() {
+		var hoverview = plugin.view.get('hoverview');
+		hoverview.removeClass('over');
+	});
+
+	return element;
+}
 
 /**
  * @echo_renderer
@@ -181,10 +181,6 @@ plugin.events["Echo.StreamServer.Controls.Stream.Item.onRender"] = function(topi
  */
 plugin.component.renderers.body = function(element) {
 	var plugin = this, item = this.component;
-
-	var $wrapper = item.view.get("container");
-	$wrapper.addClass("item-source-" + item.get("data.source.name").toLowerCase());
-
 	element = item.parentRenderer("body", arguments);
 	var filteredElements = plugin.config.get("mediaSelector")(item.get("data.object.content"));
 	$(filteredElements.selector, item.view.get("text")).remove();
@@ -230,47 +226,13 @@ plugin.renderers.media = function(element) {
 };
 
 /**
- * @todo Call the TweetDisplay plugin for this, or refactor
- *
- * NOTE: Something is weird with renderers. "this" is not the same in an
- * overridden renderer as it is in a local plugin entry. item.components does
- * not exist, and instead there is item.data.
- */
-var _extractTwitterID = function(item) {
-	var actorid = item.actor.id;
-	var match = actorid.match(/twitter.com\/(.*)/);
-	return match ? match[1] : actorid;
-};
-
-/**
  * @echo_renderer
  */
-plugin.renderers.headerButton = function(element) {
-	var plugin = this, item = this.data;
+plugin.renderers.mediafull = function(element) {
+	var plugin = this, item = this.component;
 
-	// If the source is Twitter, we want to wrap it as a Follow button.
-	switch (item.source.name) {
-		case "Twitter":
-			var twitterid = _extractTwitterID(item);
-			element.html(//'<span class="btn w-button-common w-button-follow">' +
-						 '<a href="https://twitter.com/intent/user?screen_name=' + twitterid + '" class="btn" target="_blank">' +
-						 '<img src="https://ma.twimg.com/twitter-mobile/e6b067f3fe8f324f8fc0ba410ded2c2f74d6dfbf/images/sprites/followplus.gif" />' +
-//						 '<input alt="Follow" src="https://ma.twimg.com/twitter-mobile/e6b067f3fe8f324f8fc0ba410ded2c2f74d6dfbf/images/sprites/followplus.gif" type="image">' +
-						 '</a>'
-						 //'</span>'
-						 );
-
-			/*element.html('<a href="https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fabout.twitter.com%2Fpress%2Fbrand-assets&amp;text=Brand%20assets%20and%20guidelines&amp;tw_p=tweetbutton&amp;url=https%3A%2F%2Fabout.twitter.com%2Fpress%2Fbrand-assets&amp;via=twitter" class="btn" id="b">' +
-						 '<i></i>' +
-						 '<span class="label" id="l">Tweet</span></a>');
-						 */
-//						 'https://ma.twimg.com/twitter-mobile/e6b067f3fe8f324f8fc0ba410ded2c2f74d6dfbf/images/sprites/followplus.gif';
-			break;
-		default:
-			element = plugin.parentRenderer("sourceIcon", arguments);
-			break;
-	}
-
+	var mediaItems = plugin.config.get("mediaSelector")(item.get("data.object.content"));
+	element.append(mediaItems);
 	return element;
 };
 
@@ -278,66 +240,70 @@ plugin.renderers.headerButton = function(element) {
  * @echo_template
  */
 plugin.templates.container =
-	'<div class="{class:container}">' +
-		'<div class="{class:header}">' +
-			'<div class="{class:avatar-wrapper}">' +
-				'<div class="{class:avatar}"></div>' +
-			'</div>' +
-			'<div class="{class:headerButton}"></div>' +
-			'<div class="{plugin.class:topContentWrapper}">' +
-				'<div class="{class:authorName} echo-linkColor"></div>' +
-				//'<div class="{plugin.class:childBody}"></div>' +
-				'<div class="echo-clear"></div>' +
-			'</div>' +
-			'<div class="echo-clear"></div>' +
-		'</div>' +
-		'<input type="hidden" class="{class:modeSwitch}">' +
-		'<div class="echo-clear"></div>' +
-		'<div class="{class:wrapper}">' +
-			'<div class="{class:subcontainer}">' +
-				'<div class="{class:data}">' +
-					'<div class="{plugin.class:media}"></div>' +
-					'<div class="{class:body} echo-primaryColor"> ' +
-						'<span class="{class:text}"></span>' +
-						'<span class="{class:textEllipses}">...</span>' +
-						'<span class="{class:textToggleTruncated} echo-linkColor echo-clickable"></span>' +
+	// TODO: Move ontouchstart out
+	'<div class="{class:container}" ontouchstart="this.classList.toggle(\'hover\');">' +
+		'<div class="flipper">' +
+			'<div class="{plugin.class:mediafull} front"></div>' +
+			'<div class="{plugin.class:hoverview} back">' +
+				'<div class="{class:header}">' +
+					'<div class="{class:avatar-wrapper}">' +
+						'<div class="{class:avatar}"></div>' +
 					'</div>' +
-				'</div>' +
-				'<div class="{class:footer} echo-secondaryColor echo-secondaryFont">' +
-					'<div class="{class:date}"></div>' +
-					'<div class="{class:from}"></div>' +
-					'<div class="{class:via}"></div>' +
-					'<div class="{class:buttons}"></div>' +
+					'<div class="{plugin.class:topContentWrapper}">' +
+						'<div class="{class:authorName} echo-linkColor"></div>' +
+						'<div class="{plugin.class:childBody}"></div>' +
+						'<div class="echo-clear"></div>' +
+					'</div>' +
 					'<div class="echo-clear"></div>' +
+				'</div>' +
+				'<input type="hidden" class="{class:modeSwitch}">' +
+				'<div class="echo-clear"></div>' +
+				'<div class="{class:wrapper}">' +
+					'<div class="{class:subcontainer}">' +
+						'<div class="{class:data}">' +
+							'<div class="{plugin.class:media}"></div>' +
+							'<div class="{class:body} echo-primaryColor"> ' +
+								'<span class="{class:text}"></span>' +
+								'<span class="{class:textEllipses}">...</span>' +
+								'<span class="{class:textToggleTruncated} echo-linkColor echo-clickable"></span>' +
+							'</div>' +
+						'</div>' +
+						'<div class="{class:footer} echo-secondaryColor echo-secondaryFont">' +
+							'<img class="{class:sourceIcon} echo-clickable">' +
+							'<div class="{class:date}"></div>' +
+							'<div class="{class:from}"></div>' +
+							'<div class="{class:via}"></div>' +
+							'<div class="{class:buttons"></div>' +
+							'<div class="echo-clear"></div>' +
+						'</div>' +
+					'</div>' +
 				'</div>' +
 			'</div>' +
 		'</div>' +
 	'</div>';
 
 plugin.css =
-	'.{plugin.class:media} { margin-top: 4px; text-align: center; }' +
-	'.{plugin.class:topContentWrapper} { margin-left: 5px; padding-left: 30px; }' +
+	'.{plugin.class} { perspective: 1000; -webkit-perspective: 1000; }' +
+	'.{plugin.class} .flipper { transition: 0.6s; transform-style: preserve-3d; }' +
+	'.{plugin.class}:hover .flipper { transform: rotateY(180deg); }' +
+	'.{plugin.class}.hover .flipper { transform: rotateY(180deg); }' +
+	'.{plugin.class:media} { margin-top: 7px; text-align: center; }' +
+	'.{plugin.class:mediafull} img { width: 100%; backface-visibility: hidden; }' +
+	'.{plugin.class:topContentWrapper} { margin-left: 5px; padding-left: 35px; }' +
 	'.{plugin.class:childBody} { float: none; display: inline; margin-left: 5px; }' +
 	'.{plugin.class:childBody} a { text-decoration: none; font-weight: bold; color: #524D4D; }' +
-	'.{plugin.class} .{class:container} { padding: 0px; }' +
-	'.{plugin.class} .{class:content} { padding-bottom: 0px; background: white; box-shadow: 1px 1px 2px rgba(34, 25, 25, 0.4); margin: 0px 2% 12px 2%; border: 1px solid #D9D4D4; border-bottom: none; border-right: none; }' +
-
-	'.{plugin.class} .{class:header} { margin: 0 0 0 2px; }' +
-	'.{plugin.class} .{class:header} .{class:headerButton} { float: right; width: 52px; position: relative; }' +
-	'.{plugin.class} .{class:authorName} { float: none; display: inline; margin-left: 0px; font-size: 13px; }' +
-	'.{plugin.class} .item-source-facebook .{class:authorName} { line-height: 30px; }' +
-	'.{plugin.class} .item-source-instagram .{class:authorName} { line-height: 30px; }' +
-	'.{plugin.class} .{class:avatar} { float: left; width: 30px; height: 30px; }' +
-
-	'.{plugin.class} .item-source-twitter .echo-streamserver-controls-stream-item-button-Reply { display: none; }' +
-	'.{plugin.class} .item-source-twitter .{class:header} .{class:headerButton} .btn { padding: 4px 6px; margin: 3px 5px 0 0; }' +
-
-	'.{plugin.class} .echo-streamserver-controls-stream-item-plugin-TweetDisplay-tweetDate { display: none; }' +
-
-	'.{plugin.class} .{class:depth-0} { padding: 4px 2px 10px 2px; }' +
-	'.{plugin.class} .{class:depth-1} { margin-left: 0px; border-bottom: none; }' +
-	'.{plugin.class} .{class:depth-1} .{class:authorName} { display: inline; }' +
+	'.{plugin.class:hoverview} { display: none; backface-visibility: hidden; }' +
+	'.{plugin.class:hoverview}.over { display: block; position: absolute; top: 0; right: 0px; bottom: 0px; left: 0px; z-index: 2; border: 1px solid #999; background: #fff; padding: 20px; box-shadow: 1px 1px 4px #999; overflow: hidden; }' +
+	'.{plugin.class}.over .{plugin.class:hoverview} { display: block; }' +
+	'.{plugin.class} .{class:container} { position: relative; padding: 0px; }' +
+	'.{plugin.class} .{class:content} { padding-bottom: 0px; background: white; box-shadow: 1px 1px 2px rgba(34, 25, 25, 0.4); margin: 4px; border: 1px solid #D9D4D4; border-bottom: none; border-right: none; }' +
+	'.{plugin.class} .{class:authorName} { float: none; display: inline; margin-left: 0px; }' +
 	'.{plugin.class} .{class:body} { margin: 0px; }' +
+	'.{plugin.class} .{class:avatar} { float: left; width: 30px; height: 30px; padding-right: 10px; }' +
+	'.{plugin.class} .{class:depth-1} { margin-left: 0px; border-bottom: none; }' +
+	'.{plugin.class} .{class:depth-1} .{class:authorName} { display: inline; font-size: 12px; }' +
+	'.{plugin.class} .{class:depth-0} { padding: 0; }' +
+	'.{plugin.class} .{class:depth-0} .{class:authorName} { font-size: 15px; margin-top: 4px; }' +
 	'.{plugin.class} .{class:wrapper} { float: none; }' +
 	'.{plugin.class} .{class:subcontainer} { float: none; }' +
 	'.{plugin.class} .{class:date} { color: #C6C6C6; text-decoration: none; font-weight: normal; }' +
@@ -392,13 +358,13 @@ Echo.Plugin.create(plugin);
 var $ = jQuery;
 
 /**
- * @class Echo.StreamServer.Controls.Stream.Plugins.PinboardVisualization
- * See Echo.StreamServer.Controls.Stream.Items.Plugins.PinboardVisualization
+ * @class Echo.StreamServer.Controls.Stream.Plugins.StreamlinedPinboardVisualization
+ * See Echo.StreamServer.Controls.Stream.Items.Plugins.StreamlinedPinboardVisualization
  * above for details.
  *
  * @extends Echo.Plugin
  */
-var plugin = Echo.Plugin.manifest("PinboardVisualization", "Echo.StreamServer.Controls.Stream");
+var plugin = Echo.Plugin.manifest("StreamlinedPinboardVisualization", "Echo.StreamServer.Controls.Stream");
 
 if (Echo.Plugin.isDefined(plugin)) return;
 
@@ -486,7 +452,7 @@ plugin.events = {
 	"Echo.StreamServer.Controls.Stream.onRefresh": function(topic, args) {
 		this._refreshView();
 	},
-	"Echo.StreamServer.Controls.Stream.Item.Plugins.PinboardVisualization.onChangeView": function(topic, args) {
+	"Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization.onChangeView": function(topic, args) {
 		var plugin = this;
 		if (args.force) {
 			plugin._refreshView();
@@ -543,7 +509,9 @@ plugin.methods._refreshView = function() {
 };
 
 plugin.css =
+	'.{plugin.class} { background: #fff; }' +
 	'.{plugin.class} .isotope { -webkit-transition-property: height, width; -moz-transition-property: height, width; -o-transition-property: height, width; transition-property: height, width;  -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }' +
+	// TODO: These classes below should probably move up to the Stream.Item plugin
 	'.{plugin.class} .isotope .isotope-item { -webkit-transition-property: -webkit-transform, opacity; -moz-transition-property: -moz-transform, opacity; -o-transition-property: top, left, opacity; transition-property:transform, opacity; -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }';
 
 Echo.Plugin.create(plugin);
