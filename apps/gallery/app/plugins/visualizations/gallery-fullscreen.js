@@ -5,7 +5,8 @@ var $ = jQuery;
 
 /**
  * @class Echo.StreamServer.Controls.Stream.Item.Plugins.FullScreenGalleryVisualization
- * Create a full-screen gallery effect from a stream of photos.
+ * Create a full-screen gallery effect from a stream of photos. Uses the
+ * Galleria jQuery plugin for a sophisticated UI.
  *
  * @extends Echo.Plugin
  */
@@ -14,11 +15,16 @@ var plugin = Echo.Plugin.manifest("FullScreenGalleryVisualization", "Echo.Stream
 
 if (Echo.Plugin.isDefined(plugin)) return;
 
+/**
+ * Initialize the visualization.
+ */
 plugin.init = function() {
 	var self = this, item = this.component;
 
+    // We completely replace the content template so we can customize it heavily
 	this.extendTemplate("replace", "content", plugin.templates.content);
 
+    // We need to add a renderer to extract the media from the stream items
 	item.extendRenderer("media", plugin.renderers.media);
 };
 
@@ -48,8 +54,6 @@ plugin.config = {
 	},
 };
 
-plugin.enabled = function() { return true; }
-
 plugin.labels = {
 	/**
 	 * @echo_label
@@ -57,39 +61,32 @@ plugin.labels = {
 	"childrenMoreItems": "View more items..."
 };
 
+plugin.enabled = function() { return true; }
+
+(function() {
+
 /**
  * @echo_event Echo.StreamServer.Controls.Stream.Item.Plugins.FullScreenGalleryVisualization.onChangeView
  *
- * An Item plugin has no way to get a reference to its Stream container, so it
- * cannot directly notify the gallery of an update. We do this by posting an
- * event with the data it needs.
+ * Post an event whenever the view changes with the information required to
+ * update the gallery itself.
  */
-plugin.events["Echo.StreamServer.Controls.Stream.Item.onRender"] = function() {
-	if (this.component.isRoot()) {
+var publish = function(action) {
+    if (this.component.isRoot()) {
 		this.events.publish({
 			"topic": "onChangeView",
-			"data": { "action": "insert", "item": this.component }
+			"data": { "action": action, "item": this.component }
 		});
 	}
 };
 
-plugin.events["Echo.StreamServer.Controls.Stream.Item.onRerender"] = function() {
-	if (this.component.isRoot()) {
-		this.events.publish({
-			"topic": "onChangeView",
-			"data": { "action": "update", "item": this.component }
-		});
-	}
+plugin.events = {
+    "Echo.StreamServer.Controls.Stream.Item.onRender": function() { publish.call(this, "insert"); },
+    "Echo.StreamServer.Controls.Stream.Item.onRerender": function() { publish.call(this, "update"); },
+    "Echo.StreamServer.Controls.Stream.Item.onDelete": function() { publish.call(this, "delete"); }
 };
 
-plugin.events["Echo.StreamServer.Controls.Stream.Item.onDelete"] = function() {
-	if (this.component.isRoot()) {
-		this.events.publish({
-			"topic": "onChangeView",
-			"data": { "action": "delete", "item": this.component }
-		});
-	}
-};
+})();
 
 /**
  * Extract the desired media element from the content block, and display:none it
@@ -228,8 +225,6 @@ plugin.css =
     '.{plugin.class} .{plugin.class:media} img { margin: 0 auto; }' +
     '.{plugin.class} .{plugin.class:media} iframe { margin: 0 auto; }' +
 
-    '' +
-
 	'';
 
 Echo.Plugin.create(plugin);
@@ -312,10 +307,8 @@ plugin.events = {
 		};
 		gallery.splice(8, 0, ad);
 		gallery.splice(4, 0, ad);
-		console.log(gallery);
 
 		// Configure Galleria for our later use. For now we give it no data.
-		console.log("Starting galleria");
 		Galleria.loadTheme('galleria/themes/classic/galleria.classic.min.js');
 		Galleria.configure({
 			carousel: true,
@@ -376,8 +369,6 @@ plugin.events = {
 					};
 					gallery.push(data);
 					stream.set("gallery", gallery);
-					console.log(gallery);
-//					Galleria.get(0).load(gallery);
 				}
 				break;
 
@@ -386,22 +377,6 @@ plugin.events = {
 
 			case "delete":
 				break;
-		}
-//		console.log(args);
-		return;
-		var plugin = this;
-		if (args.force) {
-			plugin._refreshView();
-		} else {
-			plugin.component.queueActivity({
-				"action": "rerender",
-				"item": plugin.component.items[args.item.data.unique],
-				"priority": "high",
-				"handler": function() {
-					plugin._refreshView();
-					plugin.component._executeNextActivity();
-				}
-			});
 		}
 	}
 };
@@ -415,70 +390,6 @@ plugin.methods._refreshView = function(refresh) {
 		return;
 	}
 
-	if (refresh) {
-//		Galleria.destroy();
-	}
-
-	var slider = plugin.get("gallery", null);
-	if (slider) {
-/*		setInterval(function() {
-			slider.setup();
-		}, 1000);
-		console.log("s");
-		console.log(slider); */
-	} else {
-
-/*		setTimeout(function() {
-			var slider = $body.fotorama({
-				width: '100%',
-				ratio: 16/9,
-				allowfullscreen: true,
-				nav: 'thumbs',
-				autoplay: 4000,
-				keyboard: true,
-				arrows: true,
-				swipe: true,
-				fit: 'contain',
-				hash: true,
-				loop: true,
-			});
-
-			console.log("m");
-			plugin.set("slider", slider);
-			console.log(slider);
-		}, 2000);
-*/
-	}
-
-	return;
-
-	var bodyWidth = $body.width();
-
-	var columns = plugin.config.get("columns", 4);
-	if ($.isArray(columns)) {
-		var length = columns.length;
-		for (var i = 0; i < length; i++) {
-			if (bodyWidth < columns[i]) {
-				break;
-			}
-		}
-
-		columns = i;
-	}
-
-	var config = $.extend({
-		sortBy: "original-order",
-		masonry: {
-			columnWidth: Math.floor(bodyWidth / columns)
-		}
-	}, plugin.config.get("isotope"));
-
-	$body.children().css({ "width": config.masonry.columnWidth + "px" });
-	$body.data("isotope")
-		? (hasEntries
-			? $body.isotope("reloadItems").isotope(config)
-			: $body.isotope("destroy"))
-		: hasEntries && $body.isotope(config);
 };
 
 plugin.css =
