@@ -1,39 +1,63 @@
 /**
- * Galleria Classic Theme 2012-08-08
- * http://galleria.io
- *
- * Licensed under the MIT license
- * https://raw.github.com/aino/galleria/master/LICENSE
- *
+ * Galleria Echo-Show Theme
  */
 
 (function($) {
 
-/*global window, jQuery, Galleria */
-
 Galleria.addTheme({
-    name: 'classic',
-    author: 'Galleria',
-    css: 'galleria.classic.css',
+    name: 'echoshow',
+    author: 'Echo',
+    css: 'galleria.echoshow.css',
+
     defaults: {
-        transition: 'slide',
-        thumbCrop:  'height',
+        carousel: true,
+        fullscreenDoubleTap: true,
+        showImagenav: true,
+        showInfo: false,
+        swipe: true,
+        thumbnails: true,
+        trueFullscreen: true,
+        responsive: true,
+        pauseOnInteraction: true,
 
-        // set this to false if you want to show the caption all the time:
-        _toggleInfo: true
+        transition: "fade",
+        transitionSpeed: 500,
+
+        height: 0.5625,
+
+        imageCrop: false,
+        thumbCrop: "height",
+        fullscreenCrop: false,
+
+        idleMode: "hover",
+        idleSpeed: 500,
+        fullscreenTransition: !1,
+        _locale: {
+            show_captions: "Show captions",
+            hide_captions: "Hide captions",
+            play: "Play slideshow",
+            pause: "Pause slideshow",
+            enter_fullscreen: "Enter fullscreen",
+            exit_fullscreen: "Exit fullscreen",
+            next: "Next image",
+            prev: "Previous image",
+            showing_image: "Showing image %s of %s"
+        },
     },
+
     init: function(options) {
+        Galleria.requires(1.28, 'Echo-Show requires Galleria 1.2.8 or later');
 
-        Galleria.requires(1.28, 'This version of Classic theme requires Galleria 1.2.8 or later');
+        var gallery = this;
 
-        // add some elements
-        this.addElement('info-link','info-close');
-        this.append({
-            'info' : ['info-link','info-close']
-        });
+        this.addElement("streamitem", "bar", "fullscreen", "play")
+            .append({
+                container: [ "streamitem", "bar" ],
+                bar: [ "fullscreen", "play", "thumbnails-container" ]
+            });
 
         // cache some stuff
-        var info = this.$('info-link,info-close,info-text'),
+        var info = this.$('info-text'),
             touch = Galleria.TOUCH,
             click = touch ? 'touchstart' : 'click';
 
@@ -47,15 +71,7 @@ Galleria.addTheme({
             this.addIdleState( this.get('counter'), { opacity:0 });
         }
 
-        // toggle info
-        if ( options._toggleInfo === true ) {
-            info.bind( click, function() {
-                info.toggle();
-            });
-        } else {
-            info.show();
-            this.$('info-link, info-close').hide();
-        }
+        info.show();
 
         // bind some stuff
         this.bind('thumbnail', function(e) {
@@ -89,11 +105,29 @@ Galleria.addTheme({
             window.setTimeout(function() {
                 activate(e);
             }, touch ? 300 : 0);
-            this.$('info').toggle( this.hasInfo() );
+            gallery.$('info').toggle( this.hasInfo() );
         });
 
         this.bind('loadfinish', function(e) {
-            this.$('loader').fadeOut(200);
+            gallery.$('loader').fadeOut(200);
+        });
+
+        this.bind("play", function () {
+            gallery.$("play").addClass("pause");
+        });
+
+        this.bind("pause", function () {
+            gallery.$("play").removeClass("pause");
+        });
+
+        this.$("play").on("click", function (e) {
+            e.preventDefault();
+            gallery.playToggle()
+        });
+
+        this.$("fullscreen").on("click", function (e) {
+            e.preventDefault();
+            gallery.toggleFullscreen()
         });
     }
 });

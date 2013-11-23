@@ -61,7 +61,7 @@ plugin.labels = {
 	"childrenMoreItems": "View more items..."
 };
 
-plugin.enabled = function() { return true; }
+plugin.enabled = function() { return true; };
 
 (function() {
 
@@ -309,18 +309,10 @@ plugin.events = {
 		gallery.splice(4, 0, ad);
 
 		// Configure Galleria for our later use. For now we give it no data.
-		Galleria.loadTheme('galleria/themes/classic/galleria.classic.min.js');
+		Galleria.loadTheme('galleria/themes/echoshow/galleria.echoshow.js');
 		Galleria.configure({
-			carousel: true,
 			dataSource: gallery,
 			debug: true,
-			fullscreenDoubleTap: true,
-			showImagenav: true,
-			swipe: true,
-			thumbnails: true,
-			trueFullscreen: true,
-			responsive: true,
-			pauseOnInteraction: true
 		});
 		Galleria.ready(function() {
 			this.attachKeyboard({
@@ -394,7 +386,7 @@ plugin.methods._refreshView = function(refresh) {
 
 plugin.css =
 	'.echo-streamserver-controls-stream-body { display: none; }' +
-	'.{class:gallery} { width: 100%; height: 500px; }' +
+	'.{class:gallery} { width: 100%; }' +
 
 	'.{class:gallery} .ad-region { height: 100%; }' +
 
