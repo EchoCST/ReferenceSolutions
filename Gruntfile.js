@@ -3,7 +3,17 @@
  *
  * Environment setup:
  * 1. npm install
- * 2. Create local grunt-aws.json with AWS credentials.
+ * 2. Create local grunt-aws.json with AWS credentials. See sample below.
+ * 3. Run "grunt deploy" to update production.
+ *
+ * Sample grunt-aws.json:
+ *
+ *   {
+ *     "key": "AWSACCESSKEY",
+ *     "secret": "AWSSECRETKEY",
+ *     "bucket": "AWSBUCKET"
+ *   }
+ *
  */
 
 module.exports = function(grunt) {
@@ -30,19 +40,8 @@ module.exports = function(grunt) {
             options: {
                 accessKeyId: '<%= aws.key %>',
                 secretAccessKey: '<%= aws.secret %>',
-                //bucket: '<%= aws.bucket %>',
                 uploadConcurrency: 5,
                 downloadConcurrency: 5,
-                //access: 'public-read',
-                //headers: {
-                //    // TODO: Increase this after first deployment.
-                //    // 5-minute expiration policy
-                //    "Cache-Control": "max-age=300, public",
-                //    "Expires": new Date(Date.now() + 300000).toUTCString(),
-                //    'X-Build': grunt.config("pkg.version")
-                //},
-                //encodePaths: false,
-                //maxOperations: 20
             },
             production: {
                 options: {
