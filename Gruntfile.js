@@ -66,7 +66,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: './apps/',
-                    src: ['**/*'],
+                    src: ['**/*.js', '**/*.json'],
                     filter: 'isFile',
                     dest: 'apps/'
                 }]
