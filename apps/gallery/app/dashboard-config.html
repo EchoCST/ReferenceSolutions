@@ -1,0 +1,48 @@
+<!-- APP Key -->
+<select name="appkey" data-title="Application key" data-help="Specifies the application key for this instance">
+
+<!-- Display -->
+<fieldset name="display">
+	<legend class="icon-picture">Display</legend>
+
+	<select name="visualization" data-title="Visualization" data-help="Select the display mode for the gallery">
+		<option value="gallery" selected>Pinboard-style Gallery</option>
+		<option value="streamlined-gallery">Streamlined Gallery</option>
+		<option value="tabbed-gallery">Tabbed Interface</option>
+		<option value="slideshow">Slideshow w/ Full-Screen Support</option>
+	</select>
+
+	<input name="replies" type="checkbox" checked="checked" data-title="Allow users to post replies" data-help="Check to display replies for each item and provide an ability for the users to post their replies" />
+	<input name="likes" type="checkbox" checked="checked" data-title="Allow users to Like items" data-help="Check to enable Likes for the items" />
+	<input name="sharing" type="checkbox" data-title="Allow users to share items" data-help="Check to provide an ability for the users to share the items with their friends via social networks" />
+	<input name="flags" type="checkbox" checked="checked" data-title="Allow community flagging" data-help="Check to add a button for the users to mark inappropriate content" />
+
+	<input name="itemsPerPage" type="text" value="15" data-title="Items per page" data-help="Defines the amount of root items per page" />
+</fieldset>
+
+<!-- Ad/analytics -->
+<fieldset name="integration">
+	<legend class="icon-certificate">Ad / Analytics Integration</legend>
+
+	<input name="nativeinterval" type="text" data-title="Native Ad Interval" data-help="Interval between native ad placeholders, or leave blank to disable" />
+</fieldset>
+
+<!-- Upload -->
+<fieldset name="upload">
+	<legend class="icon-upload">Upload Options</legend>
+
+	<input name="enabled" type="checkbox" data-title="Enable Upload" data-help="If checked, an upload Submit form will be displayed" />
+
+	<input name="fpkey" type="text" data-title="FilePicker API Key" data-help="If supplied, this will enable FilePicker in the upload form" />
+</fieldset>
+
+<!-- Authorization -->
+<fieldset name="auth">
+	<legend class="icon-user">Authorization</legend>
+
+	<input name="enabled" type="checkbox" checked="checked" data-title="Enable user authorization" data-help="Check to enable authorization" />
+	<select name="janrainApp" data-title="Janrain app" data-help="Specifies the Janrain application">
+</fieldset>
+
+<!-- Target URL -->
+<input name="targetURL" type="text" required="required" data-title="Target URL" />

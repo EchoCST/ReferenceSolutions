@@ -15,7 +15,7 @@ dashboard.dependencies = [{
 	"url": "{config:cdnBaseURL.apps.dataserver}/full.pack.js",
 	"control": "Echo.DataServer.Controls.Pack"
 }, {
-	"url": "http://cdn.echoenabled.com/apps/echo/media-gallery/dashboard/data-source.js",
+	"url": "//echocsthost.s3.amazonaws.com/apps/gallery/app/data-source.js",
 	"control": "Echo.Apps.MediaGallery.InstanceDataSource"
 }];
 
@@ -25,11 +25,13 @@ dashboard.labels = {
 	"failedToFetchDomains": "Failed to fetch customer domains: {reason}"
 };
 
+// TODO: Discuss refactoring
 dashboard.config = {
 	"appkeys": [],
 	"janrainapps": []
 };
 
+// TODO: Discuss templating
 dashboard.config.ecl = [{
 	"component": "Select",
 	"name": "appkey",
@@ -39,51 +41,133 @@ dashboard.config.ecl = [{
 		"desc": "Specifies the application key for this instance",
 		"options": []
 	}
-}, {
-	"name": "replies",
-	"component": "Checkbox",
-	"type": "boolean",
-	"default": true,
+},
+{
+	"name": "display",
+	"component": "Group",
+	"type": "object",
 	"config": {
-		"title": "Allow users to post replies",
-		"desc": "Check to display replies for each item and provide an ability for the users to post their replies"
-	}
-}, {
-	"name": "likes",
-	"component": "Checkbox",
-	"type": "boolean",
-	"default": true,
+		"title": "Display",
+		"icons": {"default": {"type": "bootstrap", "source": "icon-picture"}}
+	},
+	"items": [{
+		"component": "Select",
+		"name": "visualization",
+		"type": "string",
+		"config": {
+			"title": "Visualization",
+			"default": "pinboard",
+			"desc": "Select the display mode for the gallery",
+			"options": [{
+				'name': 'pinboard',
+				'value': 'Standard Pinboard'
+			}, {
+				'name': 'streamlined',
+				'value': 'Streamlined Pinboard'
+			}, {
+				'name': 'tabbed',
+				'value': 'Tabbed Pinboard'
+			}, {
+				'name': 'fullscreen',
+				'value': 'Full-Screen Slideshow'
+			}]
+		}
+	},
+	{
+		"name": "replies",
+		"component": "Checkbox",
+		"type": "boolean",
+		"default": true,
+		"config": {
+			"title": "Allow users to post replies",
+			"desc": "Check to display replies for each item and provide an ability for the users to post their replies"
+		}
+	}, {
+		"name": "likes",
+		"component": "Checkbox",
+		"type": "boolean",
+		"default": true,
+		"config": {
+			"title": "Allow users to Like items",
+			"desc": "Check to enable Likes for the items"
+		}
+	}, {
+		"name": "sharing",
+		"component": "Checkbox",
+		"type": "boolean",
+		"default": false,
+		"config": {
+			"title": "Allow users to share items",
+			"desc": "Check to provide an ability for the users to share the items with their friends via social networks"
+		}
+	}, {
+		"name": "flags",
+		"component": "Checkbox",
+		"type": "boolean",
+		"default": true,
+		"config": {
+			"title": "Allow community flagging",
+			"desc": "Check to add a button for the users to mark inappropriate content"
+		}
+	}, {
+		"name": "itemsPerPage",
+		"component": "Input",
+		"type": "number",
+		"default": 15,
+		"config": {
+			"title": "Items per page",
+			"desc": "Defines the amount of root items per page"
+		}
+	}]
+},
+{
+	"name": "integration",
+	"component": "Group",
+	"type": "object",
 	"config": {
-		"title": "Allow users to Like items",
-		"desc": "Check to enable Likes for the items"
-	}
-}, {
-	"name": "sharing",
-	"component": "Checkbox",
-	"type": "boolean",
-	"default": false,
+		"title": "Ads / Analytics Integration",
+		"icons": {"default": {"type": "bootstrap", "source": "icon-certificate"}}
+	},
+	"items": [{
+		"name": "nativeinterval",
+		"type": "number",
+		"component": "Input",
+		"default": 0,
+		"config": {
+			"title": "Native Ads Interval",
+			"desc": "Specifies the timeout between live updates requests (in seconds).",
+			"info": "in seconds",
+			"data": {"sample": "10, 20, 30"}
+		}
+	}]
+},
+{
+	"name": "upload",
+	"component": "Group",
+	"type": "object",
 	"config": {
-		"title": "Allow users to share items",
-		"desc": "Check to provide an ability for the users to share the items with their friends via social networks"
-	}
-}, {
-	"name": "flags",
-	"component": "Checkbox",
-	"type": "boolean",
-	"default": true,
-	"config": {
-		"title": "Allow community flagging",
-		"desc": "Check to add a button for the users to mark inappropriate content"
-	}
-}, {
-	"name": "itemsPerPage",
-	"component": "Input",
-	"type": "number",
-	"default": 15,
-	"config": {
-		"title": "Items per page",
-		"desc": "Defines the amount of root items per page"
-	}
+		"title": "Upload",
+		"icons": {"default": {"type": "bootstrap", "source": "icon-upload"}}
+	},
+	"items": [{
+		"name": "enabled",
+		"component": "Checkbox",
+		"type": "boolean",
+		"default": false,
+		"config": {
+			"title": "Provide an upload mechanism",
+			"desc": "Check to provide an ability for the users to share the items with their friends via social networks"
+		}
+	}, {
+		"name": "fpkey",
+		"type": "string",
+		"component": "Input",
+		"default": 0,
+		"config": {
+			"title": "FilePicker Key",
+			"desc": "API key for FilePicker"
+		}
+	}]
 }, {
 	"name": "auth",
 	"component": "Group",
