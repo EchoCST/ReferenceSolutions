@@ -7,6 +7,10 @@
  */
 
 module.exports = function(grunt) {
+    "use strict";
+
+    var apps = [ "gallery" ];
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         uglify: {
@@ -21,6 +25,18 @@ module.exports = function(grunt) {
                 dest: 'build/<%= pkg.name %>.min.js'
             }
         },
+        bump: {
+            options: {
+                files: ['package.json'],
+                updateConfigs: [],
+                commit: true,
+                commitMessage: 'Release v%VERSION%',
+                commitFiles: [ 'package.json' ],
+                createTag: false,
+                push: true,
+                pushTo: 'upstream',
+            }
+        },
         aws: grunt.file.readJSON('grunt-aws.json'),
         s3: {
             options: {
@@ -32,45 +48,16 @@ module.exports = function(grunt) {
                     // TODO: Increase this after first deployment.
                     // 5-minute expiration policy
                     "Cache-Control": "max-age=300, public",
-                    "Expires": new Date(Date.now() + 300000).toUTCString()
-                }
-            },
-            dev: {
-
+                    "Expires": new Date(Date.now() + 300000).toUTCString(),
+                    'X-Build': grunt.config("pkg.version")
+                },
+                encodePaths: true,
+                maxOperations: 20
             },
             prod: {
-                // These options override the defaults
-                options: {
-                    encodePaths: true,
-                    maxOperations: 20
-                },
-                // Files to be uploaded.
                 upload: [{
-                    src: 'important_document.txt',
-                    dest: 'documents/important.txt',
-                    options: { gzip: true }
-                }, {
-                    src: 'passwords.txt',
-                    dest: 'documents/ignore.txt',
-
-                    // These values will override the above settings.
-                    bucket: 'some-specific-bucket',
-                    access: 'authenticated-read'
-                },
-                {
-                    // Wildcards are valid *for uploads only* until I figure out a good implementation
-                    // for downloads.
-                    src: 'documents/*.txt',
-
-                    // But if you use wildcards, make sure your destination is a directory.
-                    dest: 'documents/'
-                }],
-                sync: [{
-                    src: path.join(variable.to.release, "build/cdn/js/**/*.js"),
-                    dest: "jsgz",
-                    // make sure the wildcard paths are fully expanded in the dest
-                    rel: path.join(variable.to.release, "build/cdn/js"),
-                    options: { gzip: true }
+                    src: 'apps/**/**.min.js',
+                    dest: 'apps/'
                 }]
             }
         }
@@ -79,9 +66,15 @@ module.exports = function(grunt) {
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-s3');
+    grunt.loadNpmTasks('grunt-bump');
 
-    // Default task(s).
-    grunt.registerTask('default', [
-        'uglify'
-    ]);
+    // Default task builds to code base.
+    grunt.registerTask('default', [ 'uglify' ]);
+
+    // Watch dev files for recompilation requirements
+    grunt.registerTask('watch', [ 'watch' ]);
+
+    // Dev/Prod deployments
+    grunt.registerTask('deploy-dev', [ 'uglify', 's3.dev' ]);
+    grunt.registerTask('deploy-prod', [ 'uglify', 's3.prod' ]);
 };
