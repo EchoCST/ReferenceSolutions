@@ -13,18 +13,6 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        uglify: {
-            options: {
-                mangle: false,
-                compress: true,
-                report: 'gzip',
-                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-            },
-            build: {
-                src: 'src/<%= pkg.name %>.js',
-                dest: 'build/<%= pkg.name %>.min.js'
-            }
-        },
         bump: {
             options: {
                 files: ['package.json'],
@@ -54,9 +42,9 @@ module.exports = function(grunt) {
                 encodePaths: true,
                 maxOperations: 20
             },
-            prod: {
+            dev: {
                 upload: [{
-                    src: 'apps/**/**.min.js',
+                    src: 'apps/**',
                     dest: 'apps/'
                 }]
             }
@@ -68,13 +56,12 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-s3');
     grunt.loadNpmTasks('grunt-bump');
 
-    // Default task builds to code base.
-    grunt.registerTask('default', [ 'uglify' ]);
+    // Default task
+    grunt.registerTask('default', [ ]);
 
     // Watch dev files for recompilation requirements
     grunt.registerTask('watch', [ 'watch' ]);
 
     // Dev/Prod deployments
-    grunt.registerTask('deploy-dev', [ 'uglify', 's3.dev' ]);
-    grunt.registerTask('deploy-prod', [ 'uglify', 's3.prod' ]);
+    grunt.registerTask('deploy', [ 's3' ]);
 };
