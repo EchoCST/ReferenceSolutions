@@ -31,7 +31,7 @@
     }],
     "client_widget": {
         "component": "Echo.Apps.MediaGallery",
-        "script": "//d3owx0qmt32wcw.cloudfront.net/reference/apps/gallery/app/app.js",
+        "script": "//d3owx0qmt32wcw.cloudfront.net/reference/apps/gallery/app/app.js"
     },
     "cloudapp_protocol_version": "1.0.0"
 }
