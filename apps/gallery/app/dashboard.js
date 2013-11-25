@@ -59,17 +59,17 @@ dashboard.config.ecl = [{
 			"default": "pinboard",
 			"desc": "Select the display mode for the gallery",
 			"options": [{
-				'name': 'pinboard',
-				'value': 'Standard Pinboard'
+				"title": "pinboard",
+				"value": "Standard Pinboard"
 			}, {
-				'name': 'streamlined',
-				'value': 'Streamlined Pinboard'
+				"title": "streamlined",
+				"value": "Streamlined Pinboard"
 			}, {
-				'name': 'tabbed',
-				'value': 'Tabbed Pinboard'
+				"title": "tabbed",
+				"value": "Tabbed Pinboard"
 			}, {
-				'name': 'fullscreen',
-				'value': 'Full-Screen Slideshow'
+				"title": "fullscreen",
+				"value": "Full-Screen Slideshow"
 			}]
 		}
 	},

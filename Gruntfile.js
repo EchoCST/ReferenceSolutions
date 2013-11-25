@@ -11,7 +11,8 @@
  *   {
  *     "key": "AWSACCESSKEY",
  *     "secret": "AWSSECRETKEY",
- *     "bucket": "AWSBUCKET"
+ *     "bucket": "AWSBUCKET",
+ *     "distribution": "CLOUDFRONTDISTRIB"
  *   }
  *
  */
@@ -54,6 +55,22 @@ module.exports = function(grunt) {
                     //{dest: 'src/app', action: 'delete'},
                 ]
             },
+        },
+        invalidate_cloudfront: {
+            options: {
+                key: '<%= aws.key %>',
+                secret: '<%= aws.secret %>',
+                distribution: '<%= aws.distribution %>'
+            },
+            production: {
+                files: [{
+                    expand: true,
+                    cwd: './apps/',
+                    src: ['**/*'],
+                    filter: 'isFile',
+                    dest: 'apps/'
+                }]
+            }
         }
     });
 
@@ -62,6 +79,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-aws-s3');
     grunt.loadNpmTasks('grunt-bump');
+    grunt.loadNpmTasks('grunt-invalidate-cloudfront');
 
     // Default task
     grunt.registerTask('default', [ ]);
@@ -70,5 +88,5 @@ module.exports = function(grunt) {
     grunt.registerTask('watch', [ 'watch' ]);
 
     // Dev/Prod deployments
-    grunt.registerTask('deploy', [ 'aws_s3' ]);
+    grunt.registerTask('deploy', [ 'aws_s3', 'invalidate_cloudfront' ]);
 };
