@@ -1,0 +1,22 @@
+{
+  "name": "ReferenceSolutions",
+  "author": "Echo Customer Solutions Team",
+  "description": "Echo CST Reference Solutions",
+  "homepage": "http://aboutecho.com",
+  "version": "1.0.0",
+  "license": "Private",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/EchoCST/ReferenceSolutions.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EchoCST/ReferenceSolutions/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-s3": "~0.2.0-alpha.3"
+  }
+}

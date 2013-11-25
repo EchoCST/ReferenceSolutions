@@ -14,7 +14,8 @@
     "dashboards": [{
         "id": "instances",
         "title": "Instances",
-        "script": "//echosandbox.com/reference/apps/gallery/app/dashboard.js",
+        "script": "//d3owx0qmt32wcw.cloudfront.net/reference/apps/gallery/app/dashboard.js",
+//        "script": "//echosandbox.com/reference/apps/gallery/app/dashboard.js",
         "component": "Echo.Apps.MediaGallery.Dashboard",
         "config": {
             "instanceManager": {
@@ -31,7 +32,8 @@
     }],
     "client_widget": {
         "component": "Echo.Apps.MediaGallery",
-        "script": "//echosandbox.com/reference/apps/gallery/app/app.js"
+        "script": "//d3owx0qmt32wcw.cloudfront.net/reference/apps/gallery/app/app.js",
+//        "script": "//echosandbox.com/reference/apps/gallery/app/app.js"
     },
     "cloudapp_protocol_version": "1.0.0"
 }
