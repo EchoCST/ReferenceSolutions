@@ -26,34 +26,42 @@ module.exports = function(grunt) {
             }
         },
         aws: grunt.file.readJSON('grunt-aws.json'),
-        s3: {
+        aws_s3: {
             options: {
-                key: '<%= aws.key %>',
-                secret: '<%= aws.secret %>',
-                bucket: '<%= aws.bucket %>',
-                access: 'public-read',
-                headers: {
-                    // TODO: Increase this after first deployment.
-                    // 5-minute expiration policy
-                    "Cache-Control": "max-age=300, public",
-                    "Expires": new Date(Date.now() + 300000).toUTCString(),
-                    'X-Build': grunt.config("pkg.version")
-                },
-                encodePaths: true,
-                maxOperations: 20
+                accessKeyId: '<%= aws.key %>',
+                secretAccessKey: '<%= aws.secret %>',
+                //bucket: '<%= aws.bucket %>',
+                uploadConcurrency: 5,
+                downloadConcurrency: 5,
+                //access: 'public-read',
+                //headers: {
+                //    // TODO: Increase this after first deployment.
+                //    // 5-minute expiration policy
+                //    "Cache-Control": "max-age=300, public",
+                //    "Expires": new Date(Date.now() + 300000).toUTCString(),
+                //    'X-Build': grunt.config("pkg.version")
+                //},
+                //encodePaths: false,
+                //maxOperations: 20
             },
-            dev: {
-                upload: [{
-                    src: 'apps/**',
-                    dest: 'apps/'
-                }]
-            }
+            production: {
+                options: {
+                    bucket: '<%= aws.bucket %>',
+                    differential: true
+                },
+                files: [
+                    //{dest: 'apps/', cwd: 'backup/staging/', action: 'download'},
+                    {expand: true, cwd: 'apps/', src: ['**'], dest: 'apps/'},
+                    //{dest: 'src/app', action: 'delete'},
+                ]
+            },
         }
     });
 
     // Load the plugin that provides the "uglify" task.
+    grunt.loadNpmTasks('grunt-contrib');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-s3');
+    grunt.loadNpmTasks('grunt-aws-s3');
     grunt.loadNpmTasks('grunt-bump');
 
     // Default task
@@ -63,5 +71,5 @@ module.exports = function(grunt) {
     grunt.registerTask('watch', [ 'watch' ]);
 
     // Dev/Prod deployments
-    grunt.registerTask('deploy', [ 's3' ]);
+    grunt.registerTask('deploy', [ 'aws_s3' ]);
 };
