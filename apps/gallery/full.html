@@ -8,15 +8,15 @@
 <script type="text/javascript" src="//cdn.echoenabled.com/sdk/v3/loader.js"></script>
 
 <!-- Just a quick set of styles -->
-<link rel="stylesheet" href="demo.css" />
+<link rel="stylesheet" href="/apps/gallery/demo.css" />
 </head>
 <body>
 	<!-- Top black nav bar to select the visualization to display. -->
 	<nav><ul class="clearfix">
-		<li><a href="/reference/apps/gallery">Pinboard</a></li>
-		<li><a href="/reference/apps/gallery/streamlined.html">Streamlined Photo Wall</a></li>
-		<li><a href="/reference/apps/gallery/tabbed.html">Tabbed Pinboard</a></li>
-		<li><a href="/reference/apps/gallery/full.html" class="active">Full Screen Gallery</a></li>
+		<li><a href="/apps/gallery">Pinboard</a></li>
+		<li><a href="/apps/gallery/streamlined.html">Streamlined Photo Wall</a></li>
+		<li><a href="/apps/gallery/tabbed.html">Tabbed Pinboard</a></li>
+		<li><a href="/apps/gallery/full.html" class="active">Full Screen Gallery</a></li>
 	</ul></nav>
 
 	<!-- Populated by demo.js. Here we frame out ads. -->
@@ -60,7 +60,7 @@
 			};
 
 			Echo.Loader.initApplication({
-				"script": "//echosandbox.com/reference/apps/gallery/app/app.js",
+				"script": '//' + window.location.host + "/apps/gallery/app/app.js",
 				"component": "Echo.Apps.MediaGallery",
 				"backplane": backplane,
 				"config": {

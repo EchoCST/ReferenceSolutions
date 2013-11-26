@@ -103,7 +103,7 @@ gallery.renderers.stream = function(element) {
 	var plugins = [{
 		"name": "ItemsRollingWindow",
 		"moreButton": true,
-		"url": "http://cdn.echoenabled.com/apps/echo/dataserver/v3/plugins/items-rolling-window.js"
+		"url": "//cdn.echoenabled.com/apps/echo/dataserver/v3/plugins/items-rolling-window.js"
 	}];
 
 	switch (self.config.get("visualization")) {
@@ -111,12 +111,12 @@ gallery.renderers.stream = function(element) {
 			this.config.set("replies", false);
 			plugins.push({
 				"name": "MediaGallery",
-				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/media-gallery.js",
+				"url": "//" + window.location.host + "/apps/gallery/app/plugins/media-gallery.js",
 				"removeInvalidItems": true,
 			});
 			plugins.push({
 				"name": "StreamlinedPinboardVisualization",
-				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/visualizations/pinboard-streamlined.js",
+				"url": "//" + window.location.host + "/apps/gallery/app/plugins/visualizations/pinboard-streamlined.js",
 				"columns": [ 0, 330, 560, 900, 1100 ]
 			});
 			plugins.push({"name": "TweetDisplay"});
@@ -126,19 +126,19 @@ gallery.renderers.stream = function(element) {
 		case "tabbed":
 			plugins.push({
 				"name": "MediaGallery",
-				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/media-gallery.js",
+				"url": "//" + window.location.host + "/apps/gallery/app/plugins/media-gallery.js",
 				"removeInvalidItems": true,
 			});
 			plugins.push({
 				"name": "TabbedPinboardVisualization",
-				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/visualizations/pinboard-tabbed.js"
+				"url": "//" + window.location.host + "/apps/gallery/app/plugins/visualizations/pinboard-tabbed.js"
 			});
 			break;
 
 		case "full":
 			plugins.push({
 				"name": "FullScreenGalleryVisualization",
-				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/visualizations/gallery-fullscreen.js"
+				"url": "//" + window.location.host + "/apps/gallery/app/plugins/visualizations/gallery-fullscreen.js"
 			});
 			break;
 
@@ -146,12 +146,12 @@ gallery.renderers.stream = function(element) {
 		default:
 			plugins.push({
 				"name": "MediaGallery",
-				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/media-gallery.js",
+				"url": "//" + window.location.host + "/apps/gallery/app/plugins/media-gallery.js",
 				"removeInvalidItems": true,
 			});
 			plugins.push({
 				"name": "PinboardVisualization",
-				"url": "//echosandbox.com/reference/apps/gallery/app/plugins/visualizations/pinboard.js",
+				"url": "//" + window.location.host + "/apps/gallery/app/plugins/visualizations/pinboard.js",
 				"columns": [ 0, 330, 560, 900, 1100 ]
 			});
 			break;

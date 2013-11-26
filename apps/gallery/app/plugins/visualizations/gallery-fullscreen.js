@@ -385,7 +385,8 @@ plugin.methods._refreshView = function(refresh) {
 };
 
 plugin.css =
-	'.echo-streamserver-controls-stream-body { display: none; }' +
+	".{plugin.class:content} { position: relative; }" +
+//	".echo-streamserver-controls-stream-body { display: none; }" +
 	'.{class:gallery} { width: 100%; }' +
 
 	'.{class:gallery} .ad-region { height: 100%; }' +
