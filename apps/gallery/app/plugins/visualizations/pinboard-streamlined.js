@@ -312,6 +312,8 @@ plugin.css =
 	'.{plugin.class} .{class:plugin-TwitterIntents-tweetUserName} { margin-left: 0px; }' +
 	'.{class:plugin-TwitterIntents} .{plugin.class:childBody} { margin-left: 0; }' +
 
+	'.{class}.native-ad-placeholder { background: #2d1302; width: 300px; height: 250px; line-height: 250px; text-align: center; color: #fff; }' +
+
 	((typeof document.createElement("div").style.boxShadow === "undefined")
 		? '.{plugin.class} .{class:content} { border: 1px solid #d9d4d4; box-shadow: none; }'
 		: '');
@@ -365,6 +367,12 @@ plugin.config = {
 	"columns": 4,
 
 	/**
+	 * @cfg {Number} nativeAdInterval
+	 * Defines the spacing between native ad placeholders. Note that
+	 */
+	"nativeAdInterval": 4,
+
+	/**
 	 * @cfg {Object} isotope
 	 * Allows to configure the Isotope jQuery plugin, used by the plugin as the
 	 * rendering engine. The possible config values can be found at the Isotope
@@ -413,24 +421,20 @@ plugin.dependencies = [{
 	"url": "{config:cdnBaseURL.sdk}/third-party/jquery/jquery.isotope.min.js"
 }];
 
-plugin.events = {
-	"Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization.onMediaError": function(topic, args) {
-		var plugin = this;
-		$.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
-	},
-	"Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization.onMediaLoaded": function(topic, args) {
-		var plugin = this;
-		$.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
-	},
-	"Echo.StreamServer.Controls.Stream.onRender": function(topic, args) {
-		var plugin = this;
-		$.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
-	},
-	"Echo.StreamServer.Controls.Stream.onRefresh": function(topic, args) {
-		var plugin = this;
-		$.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
-	}
-};
+plugin.events = {};
+(function() {
+	$.map([
+		"Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization.onMediaError",
+		"Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization.onMediaLoaded",
+		"Echo.StreamServer.Controls.Stream.onRender",
+		"Echo.StreamServer.Controls.Stream.onRefresh"
+	], function(entry) {
+		plugin.events[entry] = function(topic, args) {
+			var plugin = this;
+			$.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
+		};
+	});
+})();
 
 plugin.methods._refreshView = function() {
 	var plugin = this, stream = this.component;
@@ -446,6 +450,24 @@ plugin.methods._refreshView = function() {
 	$body.find('.front.empty').each(function() {
 		$(this).closest('.echo-streamserver-controls-stream-item').remove();
 	});
+
+	// Create native-advertising placeholder slots as necessary.
+	var interval = this.config.get('nativeAdInterval', 0);
+	if (interval > 0) {
+		var $first = $body.find('.native-ad-placeholder').first();
+		var $prev = ($first.length > 0)
+					? $first.prevAll()
+					: $body.find('.echo-streamserver-controls-stream-item');
+
+		console.log($first);
+		console.log($prev);
+		while ($prev.length > interval) {
+			$prev = $prev.slice(0, $prev.length - interval);
+
+			$prev.last().before('<div class="echo-streamserver-controls-stream-item native-ad-placeholder">Native Ad Placeholder</div>');
+			break;
+		}
+	}
 
 	var bodyWidth = $body.width();
 
