@@ -5,17 +5,13 @@ var $ = jQuery;
 
 /**
  * @class Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization
- * The StreamlinedPinboardVisualization plugin transforms Stream.Item control into a
- * pinboard-style block.
- *
- * __Note__: This plugin modifies both Stream.Item and Stream itself to achieve
- * its effects. It also disables some options like "reTag" that are not
- * compatible with its display.
+ * Transforms a media stream into a pinboard with a streamlined interface.
  *
  * @extends Echo.Plugin
  */
 
-var plugin = Echo.Plugin.manifest("StreamlinedPinboardVisualization", "Echo.StreamServer.Controls.Stream.Item");
+var plugin = Echo.Plugin.manifest("StreamlinedPinboardVisualization",
+								  "Echo.StreamServer.Controls.Stream.Item");
 
 if (Echo.Plugin.isDefined(plugin)) return;
 
@@ -29,8 +25,9 @@ plugin.dependencies = [{
 	"loaded": function() { return !!Echo.jQuery().isotope; },
 	"url": "{config:cdnBaseURL.sdk}/third-party/jquery/jquery.isotope.min.js"
 }, {
-	"loaded": function() { return !!Echo.jQuery().smartresize; },
-	"url": "//echosandbox.com/reference/apps/gallery/app/smartresize.js"
+	"loaded": function() { return !!Echo.jQuery().doTimeout; },
+	// TODO: Appropriate pattern to define a config var for this?
+	"url": "//echocsthost.s3.amazonaws.com/apps/gallery/app/plugins/jquery.ba-dotimeout.min.js"
 }];
 
 plugin.config = {
@@ -78,19 +75,6 @@ plugin.labels = {
 (function() {
 
 /**
- * @echo_event Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization.onChangeView
- * Triggered if the view was changed.
- */
-var publish = function(force) {
-	this.events.publish({
-		"topic": "onChangeView",
-		"data": {
-			"force": force
-		}
-	});
-};
-
-/**
  * @echo_renderer
  */
 plugin.component.renderers.container = function(element) {
@@ -100,9 +84,9 @@ plugin.component.renderers.container = function(element) {
 	if (plugin.get("rendered")) {
 		element.queue("fx", function(next) {
 			next();
-			publish.call(plugin, true);
+//			publish.call(plugin, true);
 		});
-		publish.call(plugin, name === "expandChildren");
+//		publish.call(plugin, name === "expandChildren");
 	}
 
 	element.on('mouseover', function() {
@@ -115,60 +99,6 @@ plugin.component.renderers.container = function(element) {
 
 	return element;
 }
-
-/**
- * @echo_renderer
- */
-plugin.component.renderers.textToggleTruncated = function(element) {
-	var plugin = this, item = this.component;
-	return item.parentRenderer("textToggleTruncated", arguments).one('click', function() {
-		publish.call(plugin, true);
-	});
-};
-
-$.map(["Echo.StreamServer.Controls.Stream.Item.onRerender",
-	"Echo.StreamServer.Controls.Stream.Item.onDelete",
-	"Echo.StreamServer.Controls.Stream.Item.MediaGallery.onResize",
-	"Echo.StreamServer.Controls.Stream.Item.MediaGallery.onLoadMedia"], function(topic) {
-		plugin.events[topic] = function() {
-			var force = topic !== "Echo.StreamServer.Controls.Stream.Item.onDelete";
-			publish.call(this, force);
-		};
-});
-
-$.map(["Echo.StreamServer.Controls.Submit.onRender",
-	"Echo.StreamServer.Controls.Submit.Plugins.Edit.onEditError",
-	"Echo.StreamServer.Controls.Submit.Plugins.Edit.onEditComplete",
-	"Echo.StreamServer.Controls.Stream.Item.Plugins.Reply.onCollapse"], function(event) {
-	plugin.events[event] = function(topic, args) {
-		var plugin = this;
-		// in some cases we need to refresh isotope layout immediately
-		if (!plugin.get("rendered")) return;
-		setTimeout(function() {
-			publish.call(plugin, true);
-		}, 0);
-	};
-});
-
-// TODO: avoid coherence between plugin components
-plugin.events["Echo.StreamServer.Controls.Stream.Item.onRender"] = function(topic, args) {
-	var plugin = this, item = this.component;
-	var body = $(".echo-streamserver-controls-stream-body", item.config.get("parent.target"));
-	if (!body.data("isotope")) {
-		plugin.set("rendered", true);
-		return;
-	}
-	if (item.isRoot()) {
-		if (!plugin.get("rendered") && !item.config.get("live")) {
-			body.isotope("insert", item.config.get("target"));
-		} else {
-			publish.call(this, true);
-		}
-		plugin.set("rendered", true);
-	} else {
-		publish.call(this, true);
-	}
-};
 
 })();
 
@@ -231,11 +161,42 @@ plugin.renderers.mediafull = function(element) {
 
 	var selector = plugin.config.get("mediaSelector");
 	var mediaItems = $.map(selector(item.get("data.object.content")), function(entry) {
-		console.log(entry);
+		if (entry.nodeName == "IMG") {
+			// We don't want a hard-coded width/height - we are responsive
+			entry.removeAttribute('height');
+			entry.removeAttribute('width');
+
+			// We don't want the full size image necessarily but we probably
+			// need something bigger than the thumb because that's for tiny
+			// views in standard streams. See if there's a mid-size preview.
+			if (entry.hasAttribute('data-src-preview')) {
+				entry.setAttribute('src', entry.getAttribute('data-src-preview'));
+			} else if (entry.hasAttribute('data-src-full')) {
+				entry.setAttribute('src', entry.getAttribute('data-src-full'));
+			}
+		} else if (entry.nodeName == "IFRAME") {
+			// We don't want a hard-coded width/height - we are responsive
+			entry.removeAttribute('height');
+			entry.removeAttribute('width');
+
+			entry.setAttribute('width', '100%');
+		}
+
 		return entry;
 	});
 
-	element.append(mediaItems);
+	if (mediaItems.length < 1) {
+		element.addClass('empty');
+	} else {
+		element.append(mediaItems);
+		element.find('img, iframe').one('error', function() {
+			element.addClass('load-error');
+			plugin.events.publish({ "topic": "onMediaError", "data": {} });
+		}).one('load', function() {
+			element.addClass('loaded');
+			plugin.events.publish({ "topic": "onMediaLoaded", "data": {} });
+		});
+	}
 
 	return element;
 };
@@ -269,6 +230,8 @@ plugin.templates.container =
 							'<div class="{class:body} echo-primaryColor"> ' +
 								'<span class="{class:text}"></span>' +
 								'<span class="{class:textEllipses}">...</span>' +
+								// NOTE: Can't simply remove this from the template
+								// or stream.js dies.
 								'<span class="{class:textToggleTruncated} echo-linkColor echo-clickable"></span>' +
 							'</div>' +
 						'</div>' +
@@ -292,7 +255,8 @@ plugin.css =
 	'.{plugin.class}:hover .flipper { transform: rotateY(180deg); }' +
 	'.{plugin.class}.hover .flipper { transform: rotateY(180deg); }' +
 	'.{plugin.class:media} { margin-top: 7px; text-align: center; }' +
-	'.{plugin.class:mediafull} img { width: 100%; backface-visibility: hidden; }' +
+	'.{plugin.class:mediafull} { background: #000; }' +
+	'.{plugin.class:mediafull} img { max-width: 100%; backface-visibility: hidden; display: block; margin: 0 auto; }' +
 	'.{plugin.class:topContentWrapper} { margin-left: 5px; padding-left: 35px; }' +
 	'.{plugin.class:childBody} { float: none; display: inline; margin-left: 5px; }' +
 	'.{plugin.class:childBody} a { text-decoration: none; font-weight: bold; color: #524D4D; }' +
@@ -434,9 +398,9 @@ plugin.init = function() {
 	// representing the item, to avoid its incorrect positioning in the grid
 	this.component.config.set("slideTimeout", 0);
 
-	// update columnWidth on window resize
-	$(window).smartresize(function() {
-		plugin._refreshView();
+	// Update columnWidth on window resize
+	$(window).on('resize', function() {
+		$.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
 	});
 };
 
@@ -450,27 +414,21 @@ plugin.dependencies = [{
 }];
 
 plugin.events = {
+	"Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization.onMediaError": function(topic, args) {
+		var plugin = this;
+		$.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
+	},
+	"Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization.onMediaLoaded": function(topic, args) {
+		var plugin = this;
+		$.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
+	},
 	"Echo.StreamServer.Controls.Stream.onRender": function(topic, args) {
-		this._refreshView();
+		var plugin = this;
+		$.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
 	},
 	"Echo.StreamServer.Controls.Stream.onRefresh": function(topic, args) {
-		this._refreshView();
-	},
-	"Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization.onChangeView": function(topic, args) {
 		var plugin = this;
-		if (args.force) {
-			plugin._refreshView();
-		} else {
-			plugin.component.queueActivity({
-				"action": "rerender",
-				"item": plugin.component.items[args.item.data.unique],
-				"priority": "high",
-				"handler": function() {
-					plugin._refreshView();
-					plugin.component._executeNextActivity();
-				}
-			});
-		}
+		$.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
 	}
 };
 
@@ -482,6 +440,12 @@ plugin.methods._refreshView = function() {
 	if ($body.length < 1) {
 		return;
 	}
+
+	// Clean up any empty-media items - we don't want them in this visualization
+	// TODO: This works fine, but is it considered "correct"?
+	$body.find('.front.empty').each(function() {
+		$(this).closest('.echo-streamserver-controls-stream-item').remove();
+	});
 
 	var bodyWidth = $body.width();
 

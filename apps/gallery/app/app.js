@@ -22,7 +22,7 @@ gallery.config = {
 		"enabled": true,
 		"janrainApp": undefined
 	},
-	"itemsPerPage": 15,
+	"itemsPerPage": 30,
 	// We use SystemFlagged state to avoid false-positive responses from spam filter.
 	"itemState": "Untouched,ModeratorApproved",
 	"replies": false,
