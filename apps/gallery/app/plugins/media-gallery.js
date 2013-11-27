@@ -244,10 +244,13 @@ mediaGallery.methods._getHiddenElementDimensions = function(parent, element) {
 		"visibility": "",
 		"display": ""
 	});
+
 	return dimensions;
 };
 
 mediaGallery.methods._loadMediaHandler = function(element, elementContainer) {
+	// TODO: Now that we are responsive, verify that we even need this function
+	return;
 	var self = this;
 	var target = this.config.get("target");
 	var viewportDimensions = {

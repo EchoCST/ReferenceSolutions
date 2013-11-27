@@ -68,10 +68,6 @@ plugin.config = {
 	}
 };
 
-plugin.enabled = function() {
-	return document.compatMode !== "BackCompat"
-};
-
 plugin.labels = {
 	/**
 	 * @echo_label
@@ -210,8 +206,10 @@ plugin.renderers.childBody = function(element) {
  */
 plugin.renderers.media = function(element) {
 	var plugin = this, item = this.component;
-	var mediaItems = plugin.config.get("mediaSelector")(item.get("data.object.content"));
-	if (mediaItems.length) {
+
+//	var mediaItems = plugin.config.get("mediaSelector")(item.get("data.object.content"));
+
+/*	if (mediaItems.length) {
 		var config = $.extend(plugin.config.get("gallery"), {
 			"target": element,
 			"appkey": item.config.get("appkey"),
@@ -221,7 +219,7 @@ plugin.renderers.media = function(element) {
 		new Echo.StreamServer.Controls.Stream.Item.MediaGallery(plugin.config.assemble(config));
 	} else {
 		element.hide();
-	}
+	}*/
 	return element;
 };
 
@@ -231,8 +229,14 @@ plugin.renderers.media = function(element) {
 plugin.renderers.mediafull = function(element) {
 	var plugin = this, item = this.component;
 
-	var mediaItems = plugin.config.get("mediaSelector")(item.get("data.object.content"));
+	var selector = plugin.config.get("mediaSelector");
+	var mediaItems = $.map(selector(item.get("data.object.content")), function(entry) {
+		console.log(entry);
+		return entry;
+	});
+
 	element.append(mediaItems);
+
 	return element;
 };
 

@@ -111,11 +111,11 @@ gallery.renderers.stream = function(element) {
 	switch (self.config.get("display.visualization")) {
 		case "streamlined":
 			this.config.set("replies", false);
-			plugins.push({
-				"name": "MediaGallery",
-				"url": "//" + window.location.host + "/apps/gallery/app/plugins/media-gallery.js",
-				"removeInvalidItems": true,
-			});
+			//plugins.push({
+			//	"name": "MediaGallery",
+			//	"url": "//" + window.location.host + "/apps/gallery/app/plugins/media-gallery.js",
+			//	"removeInvalidItems": true,
+			//});
 			plugins.push({
 				"name": "StreamlinedPinboardVisualization",
 				"url": "//" + window.location.host + "/apps/gallery/app/plugins/visualizations/pinboard-streamlined.js",
