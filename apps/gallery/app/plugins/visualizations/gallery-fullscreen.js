@@ -278,10 +278,10 @@ plugin.enabled = function() { return true; };
 
 plugin.dependencies = [{
 	"loaded": function() { return false; },
-	"url": "//echosandbox.com/reference/apps/gallery/galleria/galleria-1.3.2.min.js"
+	"url": "//echocsthost.s3.amazonaws.com/apps/gallery/galleria/galleria-1.3.2.min.js"
 }, {
 	"loaded": function() { return false; },
-	"url": "//echosandbox.com/reference/apps/gallery/galleria/plugins/history/galleria.history.min.js"
+	"url": "//echocsthost.s3.amazonaws.com/apps/gallery/galleria/plugins/history/galleria.history.min.js"
 }];
 
 plugin.renderers.gallery = function(element) {
