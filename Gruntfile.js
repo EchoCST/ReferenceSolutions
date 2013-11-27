@@ -87,6 +87,9 @@ module.exports = function(grunt) {
     // Watch dev files for recompilation requirements
     grunt.registerTask('watch', [ 'watch' ]);
 
-    // Dev/Prod deployments
-    grunt.registerTask('deploy', [ 'aws_s3', 'invalidate_cloudfront' ]);
+    // Dev deployments
+    grunt.registerTask('deploy-dev', [ 'aws_s3' ]);
+
+    // Prod deployments
+    grunt.registerTask('deploy-prod', [ 'aws_s3', 'invalidate_cloudfront' ]);
 };

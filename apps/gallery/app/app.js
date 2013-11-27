@@ -214,6 +214,10 @@ gallery.renderers.stream = function(element) {
 };
 
 gallery.methods._isAuthEnabled = function() {
+	// TODO: We deferred this to a later phase. We need to look at people using
+	// Gigya, and what FilePicker will do in remote environments.
+	return false;
+
 	return this.config.get("auth.enabled") && !!this.config.get("auth.janrainApp");
 };
 
@@ -228,7 +232,7 @@ gallery.methods._getAuthPluginDefinition = function(config) {
 };
 
 gallery.css =
-	".{class:stream} { clear: both; margin: 14px .25%; }" +
+	".{class:stream} { clear: both; margin: 0; }" +
 
 	// Auth app CSS overrides...
 	".{class:container} .echo-identityserver-controls-auth-name { margin-right: 10px; }" +

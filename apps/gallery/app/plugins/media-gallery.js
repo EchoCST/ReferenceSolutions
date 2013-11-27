@@ -198,7 +198,13 @@ mediaGallery.methods._normalizeFlashContent = function(element) {
 	var tagName = element.get(0).tagName.toLowerCase();
 	if (tagName === "iframe") {
 		var parts = Echo.Utils.parseURL(element.attr("src") || "");
+		// We only process YouTube links at the moment
 		if (!/(www\.)?youtube\.com/.test(parts.domain)) return;
+
+		// Responsive...
+		element.removeAttr('height').attr('width', '100%');
+		console.log(element);
+
 		var query = parts.query;
 		query = query && ~query.indexOf("wmode")
 			? query.replace(/(wmode=)([^&?]+)/g, function($0, $1, $2) {
