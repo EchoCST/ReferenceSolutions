@@ -31,7 +31,9 @@ gallery.config = {
 	"sharing": false,
 
 	// May be one of: "pinboard", "streamlined", "tabbed", "full"
-	"visualization": "pinboard"
+	"display": {
+		"visualization": "pinboard"
+	}
 };
 
 gallery.dependencies = [{
@@ -43,7 +45,7 @@ gallery.dependencies = [{
 }];
 
 gallery.templates.main =
-	'<div class="{class:container} visualization-{config:visualization}">' +
+	'<div class="{class:container} visualization-{config:display.visualization}">' +
 		'<div class="{class:auth}"></div>' +
 		'<div class="{class:tabs}"></div>' +
 		'<div class="{class:stream}"></div>' +
@@ -106,7 +108,7 @@ gallery.renderers.stream = function(element) {
 		"url": "//cdn.echoenabled.com/apps/echo/dataserver/v3/plugins/items-rolling-window.js"
 	}];
 
-	switch (self.config.get("visualization")) {
+	switch (self.config.get("display.visualization")) {
 		case "streamlined":
 			this.config.set("replies", false);
 			plugins.push({
