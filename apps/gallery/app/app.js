@@ -204,7 +204,7 @@ gallery.renderers.stream = function(element) {
 			"query": query,
 			"plugins": plugins,
 			"slideTimeout": 0,
-			"liveUpdates": { "transport": "websockets" },
+			//"liveUpdates": { "transport": "websockets" },
 			"item": {
 				"viaLabel": {"icon": true}
 			}
