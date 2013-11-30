@@ -4,7 +4,7 @@
 var $ = jQuery;
 
 // TODO F:1630 we should move this class into dataserver component
-var dataSource = Echo.Control.manifest("Echo.Apps.DashboardControls.DataSourceGroup");
+var dataSource = Echo.Control.manifest("Echo.Apps.MediaGallery.DataSourceGroup");
 
 if (Echo.Control.isDefined(dataSource)) return;
 

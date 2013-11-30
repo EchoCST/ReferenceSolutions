@@ -7,6 +7,8 @@ angular.module("/gallery/app/dashboard", []).run(["$templateCache", function($te
     "<!-- APP Key -->\n" +
     "<select name=\"appkey\" title=\"Application key\" data-help=\"Specifies the application key for this instance\" />\n" +
     "\n" +
+    "<!--<select name=\"appkey2\" data-component=\"AppKeyList\" title=\"New Appkey\" data-help=\"Testing new appkey control\" />-->\n" +
+    "\n" +
     "<!-- Display -->\n" +
     "<fieldset name=\"display\">\n" +
     "  <legend class=\"icon-picture\">Display</legend>\n" +
