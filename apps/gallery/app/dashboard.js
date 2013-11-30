@@ -18,7 +18,7 @@ dashboard.dependencies = [{
 	"url": "//echocsthost.s3.amazonaws.com/apps/gallery/app/data-source.js",
 	"control": "Echo.Apps.MediaGallery.InstanceDataSource"
 }, {
-	"url": "//echocsthost.s3.amazonaws.com/apps/polyfill-ecl.js"
+	"url": "//echocsthost.s3.amazonaws.com/polyfills/ecl.js"
 },
 //{
 //	"url": "//code.angularjs.org/1.2.3/angular.min.js"
