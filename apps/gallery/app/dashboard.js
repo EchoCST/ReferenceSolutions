@@ -19,9 +19,11 @@ dashboard.dependencies = [{
 	"control": "Echo.Apps.MediaGallery.InstanceDataSource"
 }, {
 	"url": "//echocsthost.s3.amazonaws.com/apps/polyfill-ecl.js"
-}, {
-	"url": "//code.angularjs.org/1.2.3/angular.min.js"
-}, {
+},
+//{
+//	"url": "//code.angularjs.org/1.2.3/angular.min.js"
+//},
+{
 	"url": "//echocsthost.s3.amazonaws.com/apps/dashboard-templates.js"
 }];
 
@@ -37,182 +39,8 @@ dashboard.config = {
 	"janrainapps": []
 };
 
-// TODO: Discuss templating
-dashboard.config.ecl = [{
-	"component": "Select",
-	"name": "appkey",
-	"type": "string",
-	"config": {
-		"title": "Application key",
-		"desc": "Specifies the application key for this instance",
-		"options": []
-	}
-},
-{
-	"name": "display",
-	"component": "Group",
-	"type": "object",
-	"config": {
-		"title": "Display",
-		"icons": {"default": {"type": "bootstrap", "source": "icon-picture"}}
-	},
-	"items": [{
-		"component": "Select",
-		"name": "visualization",
-		"type": "string",
-		"config": {
-			"title": "Visualization",
-			"default": "pinboard",
-			"desc": "Select the display mode for the gallery",
-			"options": [{
-				"value": "pinboard",
-				"title": "Standard Pinboard"
-			}, {
-				"value": "streamlined",
-				"title": "Streamlined Pinboard"
-			}, {
-				"value": "tabbed",
-				"title": "Tabbed Pinboard"
-			}, {
-				"value": "fullscreen",
-				"title": "Full-Screen Slideshow"
-			}]
-		}
-	},
-	{
-		"name": "replies",
-		"component": "Checkbox",
-		"type": "boolean",
-		"default": true,
-		"config": {
-			"title": "Allow users to post replies",
-			"desc": "Check to display replies for each item and provide an ability for the users to post their replies"
-		}
-	}, {
-		"name": "likes",
-		"component": "Checkbox",
-		"type": "boolean",
-		"default": true,
-		"config": {
-			"title": "Allow users to Like items",
-			"desc": "Check to enable Likes for the items"
-		}
-	}, {
-		"name": "sharing",
-		"component": "Checkbox",
-		"type": "boolean",
-		"default": false,
-		"config": {
-			"title": "Allow users to share items",
-			"desc": "Check to provide an ability for the users to share the items with their friends via social networks"
-		}
-	}, {
-		"name": "flags",
-		"component": "Checkbox",
-		"type": "boolean",
-		"default": true,
-		"config": {
-			"title": "Allow community flagging",
-			"desc": "Check to add a button for the users to mark inappropriate content"
-		}
-	}, {
-		"name": "itemsPerPage",
-		"component": "Input",
-		"type": "number",
-		"default": 15,
-		"config": {
-			"title": "Items per page",
-			"desc": "Defines the amount of root items per page"
-		}
-	}]
-},
-{
-	"name": "integration",
-	"component": "Group",
-	"type": "object",
-	"config": {
-		"title": "Ads / Analytics Integration",
-		"icons": {"default": {"type": "bootstrap", "source": "icon-certificate"}}
-	},
-	"items": [{
-		"name": "nativeinterval",
-		"type": "number",
-		"component": "Input",
-		"default": 0,
-		"config": {
-			"title": "Native Ads Interval",
-			"desc": "Specifies the timeout between live updates requests (in seconds).",
-			"info": "in seconds",
-			"data": {"sample": "10, 20, 30"}
-		}
-	}]
-},
-{
-	"name": "upload",
-	"component": "Group",
-	"type": "object",
-	"config": {
-		"title": "Upload",
-		"icons": {"default": {"type": "bootstrap", "source": "icon-upload"}}
-	},
-	"items": [{
-		"name": "enabled",
-		"component": "Checkbox",
-		"type": "boolean",
-		"default": false,
-		"config": {
-			"title": "Provide an upload mechanism",
-			"desc": "Check to provide an ability for the users to share the items with their friends via social networks"
-		}
-	}, {
-		"name": "fpkey",
-		"type": "string",
-		"component": "Input",
-		"default": 0,
-		"config": {
-			"title": "FilePicker Key",
-			"desc": "API key for FilePicker"
-		}
-	}]
-}, {
-	"name": "auth",
-	"component": "Group",
-	"type": "object",
-	"config": {
-		"title": "Authorization",
-		"icons": {"default": {"type": "bootstrap", "source": "icon-user"}}
-	},
-	"items": [{
-		"name": "enabled",
-		"component": "Checkbox",
-		"type": "boolean",
-		"default": true,
-		"config": {
-			"title": "Enable user authorization",
-			"desc": "Check to enable authorization"
-		}
-	}, {
-		"name": "janrainApp",
-		"component": "Select",
-		"type": "string",
-		"config": {
-			"title": "Janrain app",
-			"desc": "Specifies the janrain application",
-			"options": []
-		}
-	}]
-}, {
-	"name": "targetURL",
-	"component": "Echo.Apps.MediaGallery.DataSourceGroup",
-	"type": "string",
-	"required": true,
-	"config": {
-		"title": "",
-		"apiBaseURLs": {
-			"DataServer": "http://nds.echoenabled.com/api/"
-		}
-	}
-}];
+// We will fill this in with an Angular-compatible template
+dashboard.config.ecl = [];
 
 dashboard.init = function() {
 	var self = this, parent = $.proxy(this.parent, this);
@@ -289,8 +117,11 @@ dashboard.methods._prepareECL = function(items) {
 };
 
 dashboard.methods._templateToECL = function(callback) {
+	var self = this;
+
 	console.log("Loading template...");
 	Echo.Polyfills.ECL.getTemplate("/gallery/app/dashboard", function(ecl) {
+		self.config.set("ecl", ecl);
 		console.log(ecl);
 		callback.call(self);
     });

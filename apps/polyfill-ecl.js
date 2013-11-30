@@ -1,5 +1,5 @@
 (function($) {
-"use strict";
+'use strict';
 
 Echo.Polyfills = Echo.Polyfills || {};
 
@@ -14,11 +14,10 @@ Echo.Polyfills.ECL = {
    * @param Function A callback to execute once the template is ready
    */
   getTemplate: function(template, callback) {
-    angular.module(template, []).run(["$templateCache", function($templateCache) {
+    angular.module(template, [])
+           .run(['$templateCache', function($templateCache) {
       var tmpl = $templateCache.get(template);
-      var ecl = Echo.Polyfills.ECL._parseTemplate(tmpl);
-      console.log(ecl);
-      callback(ecl);
+      callback(Echo.Polyfills.ECL._parseTemplate(tmpl));
     }]);
   },
 
@@ -33,79 +32,58 @@ Echo.Polyfills.ECL = {
   _parseTemplate: function(template) {
     var ecl = [];
 
-    $(template).each(function(index, el) {
-      var append = null;
+    $(template).each(function(i, el) {
+      // ECL currently has no way to represent static HTML
+      if (el.nodeName == '#comment' || el.nodeName == '#text') return;
 
-      console.dir(el);
+      // Defaults for all elements
+      var append = {
+        component: 'Input',
+        name: 'undefined',
+        type: 'string',
+        'default': '',
+        config: {
+          title: '',
+          desc: ''
+        }
+      };
 
+      // Defaults based on node type
       switch (el.nodeName) {
-        case 'SELECT':
-          append = {
-            component: "Select",
-            name: el.name,
-            type: "string",
-            config: {
-              title: el.getAttribute('data-title'),
-              desc: el.getAttribute('data-help'),
-              options: []
-            }
-          };
+        // TODO: Special cases for InputList, TextArea, Label, RadioGroup
 
+        case 'SELECT':
+          append.component = 'Select';
+          append.config.options = [];
+
+          // Don't recurse - we only support OPTION children for SELECTs
           $.map(el.children, function(child) {
-            if (child.nodeName == "OPTION") {
-              append.config.options.push({
-                value: child.value,
-                title: child.text,
-              });
+            if (child.nodeName != 'OPTION') return;
+
+            append.config.options.push({
+              title: child.innerHTML,
+              value: child.getAttribute('value')
+            });
+
+            if (child.getAttribute('selected') === 'selected') {
+              append['default'] = child.getAttribute('value');
             }
           });
           break;
 
-        case 'INPUT':
-          switch (el.type) {
-            case 'checkbox':
-              append = {
-                component: "Checkbox",
-                name: el.name,
-                type: "boolean",
-                "default": el.getAttribute('checked') == 'checked',
-                config: {
-                  title: el.getAttribute('data-title'),
-                  desc: el.getAttribute('data-help'),
-                }
-              };
-              break;
-
-            case 'text':
-              append = {
-                component: "Input",
-                name: el.name,
-                type: "string",
-                "default": el.getAttribute('value'),
-                config: {
-                  title: el.getAttribute('data-title'),
-                  desc: el.getAttribute('data-help'),
-                }
-              };
-              break;
-          }
-          break;
-
         case 'FIELDSET':
-          append = {
-            component: "Group",
-            name: el.name,
-            type: "object",
-            config: { }
-          };
+          // ECL supports Fieldset and Group, but HTML only has fieldsets. Since
+          // HTML fieldsets act a lot like ECL Groups, that's how we map them...
+          append.component = 'Group';
+          append.config.type = 'object';
 
           var children = [];
           $.map(el.children, function(child) {
-            if (child.nodeName == "LEGEND") {
-              append.config = {
-                title: child.innerHTML,
-                "default": {
-                  type: "bootstrap",
+            if (child.nodeName == 'LEGEND') {
+              append.config.title = child.innerHTML;
+              append.config.icons = {
+                'default': {
+                  type: 'bootstrap',
                   source: child.classList[0]
                 }
               };
@@ -117,18 +95,39 @@ Echo.Polyfills.ECL = {
           append.items = Echo.Polyfills.ECL._parseTemplate(children);
 
           break;
-
-        case '#comment':
-        case '#text':
-        default:
-          break;
       }
 
-      if (append != null) {
-        ecl.push(append);
-      }
+      // Then fill in overrides as necessary
+      $.each(el.attributes, function(i, attribute) {
+        var v = attribute.nodeValue;
+        switch (attribute.nodeName) {
+          // These map directly to various fields
+          case 'name':           append.name         = v; break;
+          case 'value':          append['default']   = v; break;
+          case 'data-storage':   append.type         = v; break;
+          case 'data-component': append.component    = v; break;
+          case 'data-url':       append.url          = v; break;
+          case 'title':          append.config.title = v; break;
+          case 'data-help':      append.config.desc  = v; break;
 
-      console.log(append);
+          // These are a little more special...
+          case 'data-required':  append.required = (v === 'true'); break;
+          case 'checked':        append['default'] = (v === 'checked'); break;
+
+          // The "type" attribute indicates an element sub-type, like CHECKBOX
+          case 'type':
+            switch (v) {
+              case 'checkbox':
+                append.component = 'Checkbox';
+                append.type = (append.type == 'string') ? 'boolean'
+                                                        : append.type;
+                break;
+            }
+            break;
+        }
+      });
+
+      ecl.push(append);
     });
 
     return ecl;
@@ -136,6 +135,8 @@ Echo.Polyfills.ECL = {
 };
 
 // Provide a stub for Angular since we aren't actually using it yet...
+// NOTE: TODO: This will break Angular if it actually exists on the page!
+// This polyfill needs more work to disable itself if Angular is found.
 window.angular = {
   $templateCache: {
     _templates: {},
@@ -156,11 +157,12 @@ window.angular = {
   },
 
   // The template compiler will call this like:
-  // angular.module("/gallery/app/dashboard", []).run(["$templateCache", function($templateCache) {
-  //  "use strict";
-  //   $templateCache.put("/gallery/app/dashboard", "...");
+  // angular.module('/gallery/app/dashboard', [])
+  //        .run(['$templateCache', function($templateCache) {
+  //  'use strict';
+  //   $templateCache.put('/gallery/app/dashboard', '...');
   run: function(init) {
-    if (!init || init.length != 2 || init[0] != "$templateCache") {
+    if (!init || init.length != 2 || init[0] != '$templateCache') {
       return window.angular;
     }
 

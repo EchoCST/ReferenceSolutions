@@ -5,52 +5,52 @@ angular.module("/gallery/app/dashboard", []).run(["$templateCache", function($te
   "use strict";
   $templateCache.put("/gallery/app/dashboard",
     "<!-- APP Key -->\n" +
-    "<select name=\"appkey\" data-title=\"Application key\" data-help=\"Specifies the application key for this instance\" />\n" +
+    "<select name=\"appkey\" title=\"Application key\" data-help=\"Specifies the application key for this instance\" />\n" +
     "\n" +
     "<!-- Display -->\n" +
     "<fieldset name=\"display\">\n" +
-    "	<legend class=\"icon-picture\">Display</legend>\n" +
+    "  <legend class=\"icon-picture\">Display</legend>\n" +
     "\n" +
-    "	<select name=\"visualization\" data-title=\"Visualization\" data-help=\"Select the display mode for the gallery\">\n" +
-    "		<option value=\"gallery\" selected>Pinboard-style Gallery</option>\n" +
-    "		<option value=\"streamlined-gallery\">Streamlined Gallery</option>\n" +
-    "		<option value=\"tabbed-gallery\">Tabbed Interface</option>\n" +
-    "		<option value=\"slideshow\">Slideshow w/ Full-Screen Support</option>\n" +
-    "	</select>\n" +
+    "  <select name=\"visualization\" title=\"Visualization\" data-help=\"Select the display mode for the gallery\">\n" +
+    "    <option value=\"gallery\" selected=\"selected\">Pinboard-style Gallery</option>\n" +
+    "    <option value=\"streamlined-gallery\">Streamlined Gallery</option>\n" +
+    "    <option value=\"tabbed-gallery\">Tabbed Interface</option>\n" +
+    "    <option value=\"slideshow\">Slideshow w/ Full-Screen Support</option>\n" +
+    "  </select>\n" +
     "\n" +
-    "	<input name=\"replies\" type=\"checkbox\" checked=\"checked\" data-title=\"Allow users to post replies\" data-help=\"Check to display replies for each item and provide an ability for the users to post their replies\" />\n" +
-    "	<input name=\"likes\" type=\"checkbox\" checked=\"checked\" data-title=\"Allow users to Like items\" data-help=\"Check to enable Likes for the items\" />\n" +
-    "	<input name=\"sharing\" type=\"checkbox\" data-title=\"Allow users to share items\" data-help=\"Check to provide an ability for the users to share the items with their friends via social networks\" />\n" +
-    "	<input name=\"flags\" type=\"checkbox\" checked=\"checked\" data-title=\"Allow community flagging\" data-help=\"Check to add a button for the users to mark inappropriate content\" />\n" +
+    "  <input name=\"replies\" type=\"checkbox\" checked=\"checked\" title=\"Allow users to post replies\" data-help=\"Check to display replies for each item and provide an ability for the users to post their replies\" />\n" +
+    "  <input name=\"likes\" type=\"checkbox\" checked=\"checked\" title=\"Allow users to Like items\" data-help=\"Check to enable Likes for the items\" />\n" +
+    "  <input name=\"sharing\" type=\"checkbox\" title=\"Allow users to share items\" data-help=\"Check to provide an ability for the users to share the items with their friends via social networks\" />\n" +
+    "  <input name=\"flags\" type=\"checkbox\" checked=\"checked\" title=\"Allow community flagging\" data-help=\"Check to add a button for the users to mark inappropriate content\" />\n" +
     "\n" +
-    "	<input name=\"itemsPerPage\" type=\"text\" value=\"15\" data-title=\"Items per page\" data-help=\"Defines the amount of root items per page\" />\n" +
+    "  <input name=\"itemsPerPage\" type=\"text\" value=\"15\" title=\"Items per page\" data-help=\"Defines the amount of root items per page\" />\n" +
     "</fieldset>\n" +
     "\n" +
     "<!-- Ad/analytics -->\n" +
     "<fieldset name=\"integration\">\n" +
-    "	<legend class=\"icon-certificate\">Ad / Analytics Integration</legend>\n" +
+    "  <legend class=\"icon-certificate\">Ad / Analytics Integration</legend>\n" +
     "\n" +
-    "	<input name=\"nativeinterval\" type=\"text\" data-title=\"Native Ad Interval\" data-help=\"Interval between native ad placeholders, or leave blank to disable\" />\n" +
+    "  <input name=\"nativeinterval\" type=\"text\" title=\"Native Ad Interval\" data-help=\"Interval between native ad placeholders, or leave blank to disable\" />\n" +
     "</fieldset>\n" +
     "\n" +
     "<!-- Upload -->\n" +
     "<fieldset name=\"upload\">\n" +
-    "	<legend class=\"icon-upload\">Upload Options</legend>\n" +
+    "  <legend class=\"icon-upload\">Upload Options</legend>\n" +
     "\n" +
-    "	<input name=\"enabled\" type=\"checkbox\" data-title=\"Enable Upload\" data-help=\"If checked, an upload Submit form will be displayed\" />\n" +
+    "  <input name=\"enabled\" type=\"checkbox\" title=\"Enable Upload\" data-help=\"If checked, an upload Submit form will be displayed\" />\n" +
     "\n" +
-    "	<input name=\"fpkey\" type=\"text\" data-title=\"FilePicker API Key\" data-help=\"If supplied, this will enable FilePicker in the upload form\" />\n" +
+    "  <input name=\"fpkey\" type=\"text\" title=\"FilePicker API Key\" data-help=\"If supplied, this will enable FilePicker in the upload form\" />\n" +
     "</fieldset>\n" +
     "\n" +
     "<!-- Authorization -->\n" +
     "<fieldset name=\"auth\">\n" +
-    "	<legend class=\"icon-user\">Authorization</legend>\n" +
+    "  <legend class=\"icon-user\">Authorization</legend>\n" +
     "\n" +
-    "	<input name=\"enabled\" type=\"checkbox\" checked=\"checked\" data-title=\"Enable user authorization\" data-help=\"Check to enable authorization\" />\n" +
-    "	<select name=\"janrainApp\" data-title=\"Janrain app\" data-help=\"Specifies the Janrain application\">\n" +
+    "  <input name=\"enabled\" type=\"checkbox\" checked=\"checked\" title=\"Enable user authorization\" data-help=\"Check to enable authorization\" />\n" +
+    "  <select name=\"janrainApp\" title=\"Janrain app\" data-help=\"Specifies the Janrain application\">\n" +
     "</fieldset>\n" +
     "\n" +
     "<!-- Target URL -->\n" +
-    "<input name=\"targetURL\" type=\"text\" required=\"required\" data-title=\"Target URL\" />\n" +
+    "<input name=\"targetURL\" type=\"text\" required=\"required\" title=\"Target URL\" />\n" +
     "");
 }]);
