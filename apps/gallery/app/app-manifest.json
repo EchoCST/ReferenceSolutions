@@ -1,6 +1,6 @@
 {
-    "id": "echo-media-gallery",
-    "name": "Media Gallery (Reference App)",
+    "id": "angular-echo-media-gallery",
+    "name": "Media Gallery (Angular)",
     "description": "The Media Gallery is a flexible stream display with a variety of visualizations intended for showing pinboards and social galleries.",
     "app_version": "1.0.0",
     "icon": "//cdn.echoenabled.com/apps/echo/media-gallery/icon.png",
