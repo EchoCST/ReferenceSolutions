@@ -108,8 +108,8 @@ module.exports = function(grunt) {
     grunt.registerTask('cc', [ 'html2js' ]);
 
     // Dev deployments
-    grunt.registerTask('deploy-dev', [ 'aws_s3' ]);
+    grunt.registerTask('deploy-dev', [ 'cc', 'aws_s3' ]);
 
     // Prod deployments
-    grunt.registerTask('deploy-prod', [ 'aws_s3', 'invalidate_cloudfront' ]);
+    grunt.registerTask('deploy-prod', [ 'cc', 'aws_s3', 'invalidate_cloudfront' ]);
 };
