@@ -4,6 +4,8 @@
  *
  * I did it this way instead of trying to inherit from .Select because I
  * couldn't figure out how the inheritance was supposed to work...
+ *
+ * It's probably pretty ugly...
  */
 
 (function(jQuery) {
@@ -36,7 +38,6 @@ appkeylist.init = function() {
 		timeout: 5000,
 		dataType: 'jsonp',
 		success: function(data) {
-			console.log(data);
 			var options = [];
 			$.each(data, function(i, entry) {
 				options.push({
@@ -144,6 +145,13 @@ appkeylist.methods.fillMenuItems = function(element) {
 		} else {
 			dropdown.addClass('disabled');
 		}
+	}
+
+	var selected = self.view.get('selected');
+	if (selected) {
+		var title = this.getTitle(this.get("data.value"))
+		            || this.config.get("defaultTitle");
+		selected.empty().append(title);
 	}
 
 	return element;
