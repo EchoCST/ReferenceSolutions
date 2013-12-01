@@ -5,9 +5,7 @@ angular.module("/gallery/app/dashboard", []).run(["$templateCache", function($te
   "use strict";
   $templateCache.put("/gallery/app/dashboard",
     "<!-- APP Key -->\n" +
-    "<select name=\"appkey\" title=\"Application key\" data-help=\"Specifies the application key for this instance\" />\n" +
-    "\n" +
-    "<!--<select name=\"appkey2\" data-component=\"AppKeyList\" title=\"New Appkey\" data-help=\"Testing new appkey control\" />-->\n" +
+    "<select name=\"appkey\" data-component=\"AppKeyList\" title=\"Application key\" data-help=\"Specifies the application key for this instance\" />\n" +
     "\n" +
     "<!-- Display -->\n" +
     "<fieldset name=\"display\">\n" +

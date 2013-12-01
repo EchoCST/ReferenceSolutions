@@ -38,7 +38,6 @@ dashboard.labels = {
 
 // TODO: Discuss refactoring
 dashboard.config = {
-	"appkeys": [],
 	"janrainapps": []
 };
 
@@ -61,11 +60,9 @@ dashboard.init = function() {
 };
 
 dashboard.methods.declareInitialConfig = function() {
-	var appkeys = this.config.get("appkeys");
 	var janrainapps = this.config.get("janrainapps");
 	return {
 		"targetURL": this._assembleTargetURL(),
-		"appkey": appkeys.length ? appkeys[0].key : undefined,
 		"auth": {
 			"janrainApp": janrainapps.length ? janrainapps[0].name : undefined
 		}
@@ -85,15 +82,6 @@ dashboard.methods._prepareECL = function(items) {
 					return self._assembleTargetURL();
 				}
 			}, item.config);
-			return item;
-		},
-		"appkey": function(item) {
-			item.config.options = $.map(self.config.get("appkeys"), function(appkey) {
-				return {
-					"title": appkey.key,
-					"value": appkey.key
-				};
-			});
 			return item;
 		},
 		"auth.janrainApp": function(item) {

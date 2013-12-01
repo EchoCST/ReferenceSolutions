@@ -11,7 +11,7 @@
 
 var $ = jQuery;
 
-if (Echo.AppServer.App.isDefined("Echo.AppServer.Controls.Configurator.Items.AppKeyList")) return;
+if (Echo.AppServer.App.isDefined("Echo.Apps.ppServer.Controls.Configurator.Items.AppKeyList")) return;
 
 var appkeylist = Echo.AppServer.App.manifest("Echo.AppServer.Controls.Configurator.Items.AppKeyList");
 
@@ -36,6 +36,7 @@ appkeylist.init = function() {
 		timeout: 5000,
 		dataType: 'jsonp',
 		success: function(data) {
+			console.log(data);
 			var options = [];
 			$.each(data, function(i, entry) {
 				options.push({
@@ -45,6 +46,7 @@ appkeylist.init = function() {
 			});
 
 			self.config.set('options', options);
+			self.fillMenuItems(self.view.get('menu'));
 		},
 		error: function() {
 			// TODO: What is an appropriate error mechanism for a control that
@@ -52,7 +54,9 @@ appkeylist.init = function() {
 			// terminate or reload the entire app?
 			alert('Error loading appkey list');
 		}
-	})
+	});
+
+	this.parent();
 }
 
 appkeylist.templates.main =
@@ -94,13 +98,9 @@ appkeylist.renderers.dropdown = function(element) {
 
 appkeylist.renderers.menu = function(element) {
 	var self = this, view = this.view.fork();
-	element.empty();
-	$.map(this.config.get("options") || [], function(option) {
-		element.append(view.render({
-			"template": self.templates.option,
-			"data": {"value": option.title}
-		}));
-	});
+
+	self.fillMenuItems(element);
+
 	return element;
 };
 
@@ -120,6 +120,33 @@ appkeylist.renderers.selected = function(element) {
 		|| this.config.get("defaultTitle");
 
 	return element.empty().append(title);
+};
+
+appkeylist.methods.fillMenuItems = function(element) {
+	var self = this,
+	    options = this.config.get("options") || [],
+	    // TODO: What is forking actually doing behind the scenes? This isn't
+		// clear to me... If it gets called multiple times, what happens?
+	    view = this.view.fork();
+
+	element.empty();
+	$.map(options, function(option) {
+		element.append(view.render({
+			"template": self.templates.option,
+			"data": {"value": option.title}
+		}));
+	});
+
+	var dropdown = self.view.get('dropdown');
+	if (dropdown) {
+		if (options.length > 0) {
+			dropdown.removeClass('disabled');
+		} else {
+			dropdown.addClass('disabled');
+		}
+	}
+
+	return element;
 };
 
 appkeylist.methods.getTitle = function(value) {
