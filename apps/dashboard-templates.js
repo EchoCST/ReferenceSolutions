@@ -5,7 +5,8 @@ angular.module("/gallery/app/dashboard", []).run(["$templateCache", function($te
   "use strict";
   $templateCache.put("/gallery/app/dashboard",
     "<!-- APP Key -->\n" +
-    "<select name=\"appkey\" data-component=\"AppKeyList\" title=\"Application key\" data-help=\"Specifies the application key for this instance\" />\n" +
+    "<select name=\"appkey\" required=\"required\" data-component=\"AppKeyList\" title=\"Application key\" data-help=\"Specifies the application key for this instance\" />\n" +
+    "<input name=\"query\" type=\"text\" required=\"required\" value=\"\" title=\"Query\" data-help=\"The query to execute. May be modified by components like the filter control.\" />\n" +
     "\n" +
     "<!-- Display -->\n" +
     "<fieldset name=\"display\">\n" +
@@ -18,19 +19,19 @@ angular.module("/gallery/app/dashboard", []).run(["$templateCache", function($te
     "    <option value=\"slideshow\">Slideshow w/ Full-Screen Support</option>\n" +
     "  </select>\n" +
     "\n" +
+    "  <input name=\"sourcefilter\" type=\"checkbox\" checked=\"checked\" title=\"Display a source filter control\" data-help=\"A drop-down or similar control will be displayed that allows the user to choose the source of the media shown\" />\n" +
+    "\n" +
     "  <input name=\"replies\" type=\"checkbox\" checked=\"checked\" title=\"Allow users to post replies\" data-help=\"Check to display replies for each item and provide an ability for the users to post their replies\" />\n" +
     "  <input name=\"likes\" type=\"checkbox\" checked=\"checked\" title=\"Allow users to Like items\" data-help=\"Check to enable Likes for the items\" />\n" +
     "  <input name=\"sharing\" type=\"checkbox\" title=\"Allow users to share items\" data-help=\"Check to provide an ability for the users to share the items with their friends via social networks\" />\n" +
     "  <input name=\"flags\" type=\"checkbox\" checked=\"checked\" title=\"Allow community flagging\" data-help=\"Check to add a button for the users to mark inappropriate content\" />\n" +
-    "\n" +
-    "  <input name=\"itemsPerPage\" type=\"text\" value=\"15\" title=\"Items per page\" data-help=\"Defines the amount of root items per page\" />\n" +
     "</fieldset>\n" +
     "\n" +
     "<!-- Ad/analytics -->\n" +
     "<fieldset name=\"integration\">\n" +
     "  <legend class=\"icon-certificate\">Ad / Analytics Integration</legend>\n" +
     "\n" +
-    "  <input name=\"nativeinterval\" type=\"text\" title=\"Native Ad Interval\" data-help=\"Interval between native ad placeholders, or leave blank to disable\" />\n" +
+    "  <input name=\"nativeinterval\" type=\"text\" title=\"Native Ad Interval\" data-help=\"Interval between native ad placeholders, or leave blank to disable. Subscribe to Echo.StreamServer.Controls.Stream.Item.onNativeAdRender to fill each placeholder.\" />\n" +
     "</fieldset>\n" +
     "\n" +
     "<!-- Upload -->\n" +
@@ -43,14 +44,13 @@ angular.module("/gallery/app/dashboard", []).run(["$templateCache", function($te
     "</fieldset>\n" +
     "\n" +
     "<!-- Authorization -->\n" +
+    "<!--\n" +
+    "Disabled for now, until we're ready to put upload back in.\n" +
     "<fieldset name=\"auth\">\n" +
     "  <legend class=\"icon-user\">Authorization</legend>\n" +
     "\n" +
     "  <input name=\"enabled\" type=\"checkbox\" checked=\"checked\" title=\"Enable user authorization\" data-help=\"Check to enable authorization\" />\n" +
     "  <select name=\"janrainApp\" title=\"Janrain app\" data-help=\"Specifies the Janrain application\">\n" +
     "</fieldset>\n" +
-    "\n" +
-    "<!-- Target URL -->\n" +
-    "<input name=\"targetURL\" type=\"text\" required=\"required\" title=\"Target URL\" />\n" +
-    "");
+    "-->");
 }]);

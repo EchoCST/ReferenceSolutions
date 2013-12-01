@@ -36,9 +36,7 @@ dashboard.labels = {
 	"failedToFetchDomains": "Failed to fetch customer domains: {reason}"
 };
 
-// TODO: Discuss refactoring
 dashboard.config = {
-	"janrainapps": []
 };
 
 // We will fill this in with an Angular-compatible template
@@ -49,8 +47,7 @@ dashboard.init = function() {
 
 	var deferreds = [$.Deferred(), $.Deferred(), $.Deferred()];
 	$.when.apply($, deferreds).done(function() {
-		var ecl = self._prepareECL(self.config.get("ecl"));
-		self.config.set("ecl", ecl);
+		// We hold off on calling our parent until everything else has loaded
 		parent();
 	});
 
@@ -60,51 +57,8 @@ dashboard.init = function() {
 };
 
 dashboard.methods.declareInitialConfig = function() {
-	var janrainapps = this.config.get("janrainapps");
 	return {
-		"targetURL": this._assembleTargetURL(),
-		"auth": {
-			"janrainApp": janrainapps.length ? janrainapps[0].name : undefined
-		}
-	}
-};
-
-dashboard.methods._prepareECL = function(items) {
-	var self = this;
-
-	var instructions = {
-		"targetURL": function(item) {
-			item.config = $.extend({
-				"instanceName": self.config.get("instance.name"),
-				"domains": self.config.get("domains"),
-				"apiToken": self.config.get("dataserverToken"),
-				"valueHandler": function() {
-					return self._assembleTargetURL();
-				}
-			}, item.config);
-			return item;
-		},
-		"auth.janrainApp": function(item) {
-			item.config.options = $.map(self.config.get("janrainapps"), function(app) {
-				return {
-					"title": app.name,
-					"value": app.name
-				};
-			});
-			return item;
-		}
 	};
-	return (function traverse(items, path) {
-		return $.map(items, function(item) {
-			var _path = path ? path + "." + item.name : item.name;
-			if (item.type === "object" && item.items) {
-				item.items = traverse(item.items, _path);
-			} else if (instructions[_path]) {
-				item = instructions[_path](item);
-			}
-			return item;
-		});
-	})(items, "");
 };
 
 dashboard.methods._templateToECL = function(callback) {
@@ -172,17 +126,6 @@ dashboard.methods._displayError = function(message) {
 		"target": this.config.get("target")
 	});
 	this.ready();
-};
-
-dashboard.methods._assembleTargetURL = function() {
-	var re =  new RegExp("\/" + this.config.get("instance.name") + "$");
-	var targetURL = this.config.get("instance.config.targetURL");
-
-	if (!targetURL || !targetURL.match(re)) {
-		targetURL =  "http://" + this.config.get("domains")[0] + "/social-source-input/" + this.config.get("instance.name");
-	}
-
-	return targetURL;
 };
 
 Echo.Control.create(dashboard);
