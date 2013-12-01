@@ -95,7 +95,6 @@ plugin.component.renderers.container = function(element) {
 plugin.component.renderers.body = function(element) {
 	var plugin = this, item = this.component;
 	element = item.parentRenderer("body", arguments);
-	console.log(element.html());
 	var filteredElements = plugin.config.get("mediaSelector")(item.get("data.object.content"));
 	$(filteredElements.selector, item.view.get("text")).remove();
 	var text = Echo.Utils.stripTags(item.get("data.object.content"));
@@ -244,7 +243,7 @@ plugin.css =
 	'.{plugin.class:hoverview}.over { display: block; position: absolute; top: 0; right: 0px; bottom: 0px; left: 0px; z-index: 2; border: 1px solid #999; background: #fff; box-shadow: 1px 1px 4px #999; overflow: hidden; }' +
 	'.{plugin.class}.over .{plugin.class:hoverview} { display: block; }' +
 	'.{plugin.class} .{class:container} { position: relative; padding: 0px; }' +
-	'.{plugin.class} .{class:content} { padding-bottom: 0px; background: white; box-shadow: 1px 1px 2px rgba(34, 25, 25, 0.4); margin: 4px; }' +
+	'.{plugin.class} .{class:content} { padding-bottom: 0px; background: white; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); margin: 5px; border: 1px solid #111; }' +
 	'.{plugin.class} .{class:authorName} { float: none; display: inline; margin-left: 0px; }' +
 	'.{plugin.class} .{class:body} { margin: 0px; }' +
 	'.{plugin.class} h2 { font-size: 1.1em; line-height: 1.2em; }' +
@@ -420,8 +419,7 @@ plugin.methods._refreshView = function() {
 	});
 
 	// Create native-advertising placeholder slots as necessary.
-	console.log(this.config.get('integration'));
-	var interval = this.config.get('integration.nativeinterval', 0);
+	var interval = stream.config.get('parent.integration.nativeinterval', 0);
 	if (interval > 0) {
 		var $first = $body.find('.native-ad-placeholder').first();
 		var $prev = ($first.length > 0)

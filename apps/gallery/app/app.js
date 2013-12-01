@@ -214,13 +214,7 @@ gallery.renderers.stream = function(element) {
 			"slideTimeout": 0,
 			"item": {
 				"viaLabel": {"icon": true}
-			},
-
-			// It would be nice if we could use $.extend but there are a lot of
-			// things in the full self.config object that throw off SS.
-			"display": self.config.get("display"),
-			"integration": self.config.get("integration"),
-			"upload": self.config.get("upload")
+			}
 		}
 	});
 	return element;
