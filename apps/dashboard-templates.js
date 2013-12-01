@@ -4,6 +4,17 @@ angular.module('templates-main', ['/gallery/app/dashboard']);
 angular.module("/gallery/app/dashboard", []).run(["$templateCache", function($templateCache) {
   "use strict";
   $templateCache.put("/gallery/app/dashboard",
+    "<!-- NOTES:\n" +
+    "\n" +
+    "1. You must make your app.config{} block defaults match these defaults _exactly_\n" +
+    "   or you will get unexpected behaviors when your app loads. If the user leaves\n" +
+    "   a field set to its default value, the field is _removed_ from the config\n" +
+    "   block. So if the default is true, it will not be sent at all if the checkbox\n" +
+    "   is checked. That means if you go to use it in app.js it can evaluate to false\n" +
+    "   unexpectedly. See the related comment there for details.\n" +
+    "\n" +
+    "-->\n" +
+    "\n" +
     "<!-- APP Key -->\n" +
     "<select name=\"appkey\" required=\"required\" data-component=\"AppKeyList\" title=\"Application key\" data-help=\"Specifies the application key for this instance\" />\n" +
     "<input name=\"query\" type=\"text\" required=\"required\" value=\"\" title=\"Query\" data-help=\"The query to execute. May be modified by components like the filter control.\" />\n" +
@@ -13,9 +24,8 @@ angular.module("/gallery/app/dashboard", []).run(["$templateCache", function($te
     "  <legend class=\"icon-picture\">Display</legend>\n" +
     "\n" +
     "  <select name=\"visualization\" title=\"Visualization\" data-help=\"Select the display mode for the gallery\">\n" +
-    "    <option value=\"gallery\" selected=\"selected\">Pinboard-style Gallery</option>\n" +
-    "    <option value=\"streamlined-gallery\">Streamlined Gallery</option>\n" +
-    "    <option value=\"tabbed-gallery\">Tabbed Interface</option>\n" +
+    "    <option value=\"pinboard\" selected=\"selected\">Pinboard-style Gallery</option>\n" +
+    "    <option value=\"streamlined\">Streamlined Gallery</option>\n" +
     "    <option value=\"slideshow\">Slideshow w/ Full-Screen Support</option>\n" +
     "  </select>\n" +
     "\n" +
@@ -31,7 +41,7 @@ angular.module("/gallery/app/dashboard", []).run(["$templateCache", function($te
     "<fieldset name=\"integration\">\n" +
     "  <legend class=\"icon-certificate\">Ad / Analytics Integration</legend>\n" +
     "\n" +
-    "  <input name=\"nativeinterval\" type=\"text\" title=\"Native Ad Interval\" data-help=\"Interval between native ad placeholders, or leave blank to disable. Subscribe to Echo.StreamServer.Controls.Stream.Item.onNativeAdRender to fill each placeholder.\" />\n" +
+    "  <input name=\"nativeinterval\" type=\"text\" data-storage=\"number\" title=\"Native Ad Interval\" data-help=\"Interval between native ad placeholders, or leave blank to disable. Subscribe to Echo.StreamServer.Controls.Stream.Item.onNativeAdRender to fill each placeholder.\" />\n" +
     "</fieldset>\n" +
     "\n" +
     "<!-- Upload -->\n" +

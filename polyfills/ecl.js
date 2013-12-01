@@ -75,7 +75,7 @@ Echo.Polyfills.ECL = {
           // ECL supports Fieldset and Group, but HTML only has fieldsets. Since
           // HTML fieldsets act a lot like ECL Groups, that's how we map them...
           append.component = 'Group';
-          append.config.type = 'object';
+          append.type = 'object';
 
           var children = [];
           $.map(el.children, function(child) {
@@ -119,8 +119,8 @@ Echo.Polyfills.ECL = {
             switch (v) {
               case 'checkbox':
                 append.component = 'Checkbox';
-                append.type = (append.type == 'string') ? 'boolean'
-                                                        : append.type;
+                append['default'] = !!append['default'];
+                if (append.type == 'string') append.type = 'boolean';
                 break;
             }
             break;

@@ -16,24 +16,51 @@ gallery.labels = {
 	"signin": "Please sign in..."
 };
 
+/**
+ * Configuration defaults.
+ *
+ * NOTE: These defaults must match those defined in the Dashboard template
+ * _exactly_. When we receive an app config, if the user sets a setting to its
+ * default value, the setting is _removed_. That means if we define a different
+ * default here, we will get the default app.js defines, not the default from
+ * the dashboard.
+ *
+ * This is especially confusing for checkboxes. If a checkbox defaults to True
+ * in Dashboard and the user has it checked, if we then have it defaulting to
+ * false here or simply not defined it will always evaluate to false!
+ */
 gallery.config = {
-	"targetURL": undefined,
-	"auth": {
-		"enabled": true,
-		"janrainApp": undefined
-	},
-	"itemsPerPage": 30,
-	// We use SystemFlagged state to avoid false-positive responses from spam filter.
-	"itemState": "Untouched,ModeratorApproved",
-	"replies": false,
-	"likes": true,
-	"flags": true,
-	"sharing": false,
+	appkey: "",
+	query: "",
 
-	// May be one of: "pinboard", "streamlined", "tabbed", "full"
-	"display": {
-		"visualization": "pinboard"
-	}
+	display: {
+		visualization: "pinboard",
+		sourcefilter: true,
+		replies: true,
+		likes: true,
+		sharing: false,
+		flags: true,
+	},
+
+	integration: {
+		nativeinterval: 0
+	},
+
+	upload: {
+		enabled: false,
+		fpkey: ""
+	},
+
+	auth: {
+		enabled: false,
+		janrainApp: undefined
+	},
+
+	// We don't use this but StreamServer dies if we don't have it
+	children: {
+		maxDepth: 0,
+		itemsPerPage: 15
+	},
 };
 
 gallery.dependencies = [{
@@ -94,13 +121,8 @@ gallery.renderers.auth = function(element) {
 };
 
 gallery.renderers.stream = function(element) {
-	var self = this;
-	var janrainApp = this.config.get("auth.janrainApp");
-
-	// Helper to reduce a repeated code line
-	var isEnabled = function(name) {
-		return !!self.config.get(name);
-	};
+	var self = this,
+	janrainApp = this.config.get("auth.janrainApp");
 
 	var plugins = [{
 		"name": "ItemsRollingWindow",
@@ -110,12 +132,8 @@ gallery.renderers.stream = function(element) {
 
 	switch (self.config.get("display.visualization")) {
 		case "streamlined":
-			this.config.set("replies", false);
-			//plugins.push({
-			//	"name": "MediaGallery",
-			//	"url": "//" + window.location.host + "/apps/gallery/app/plugins/media-gallery.js",
-			//	"removeInvalidItems": true,
-			//});
+			this.config.set("display.replies", false);
+
 			plugins.push({
 				"name": "StreamlinedPinboardVisualization",
 				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/app/plugins/visualizations/pinboard-streamlined.js",
@@ -137,7 +155,7 @@ gallery.renderers.stream = function(element) {
 			});
 			break;
 
-		case "full":
+		case "slideshow":
 			plugins.push({
 				"name": "FullScreenGalleryVisualization",
 				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/app/plugins/visualizations/gallery-fullscreen.js"
@@ -159,17 +177,7 @@ gallery.renderers.stream = function(element) {
 			break;
 	}
 
-	var itemState = this.config.get("itemState");
-	var childrenQuery = this.config.get("replies")
-		? "children:1 state:" + itemState
-		: "children:0";
-	var query = "childrenof:" + this.config.get("targetURL", "") +
-			" itemsPerPage:" + this.config.get("itemsPerPage") +
-			" safeHTML:off" +
-			//" markers:photo" +
-			" state:" + itemState + " " + childrenQuery;
-
-	if (isEnabled("replies")) {
+	if (!!self.config.get("display.replies")) {
 		var reply = {"name": "Reply"};
 		if (this._isAuthEnabled()) {
 			var auth = this._getAuthPluginDefinition({
@@ -181,18 +189,18 @@ gallery.renderers.stream = function(element) {
 		plugins.push(reply);
 	}
 
-	if (isEnabled("sharing") && janrainApp) {
+	if (!!self.config.get("display.sharing") && janrainApp) {
 		plugins.push({
 			"name": "JanrainSharing",
 			"appId": janrainApp
 		});
 	}
 
-	if (isEnabled("likes")) {
+	if (!!self.config.get("display.likes")) {
 		plugins.push({"name": "Like"});
 	}
 
-	if (isEnabled("flags")) {
+	if (!!self.config.get("display.flags")) {
 		plugins.push({"name": "CommunityFlag"});
 	}
 
@@ -201,13 +209,18 @@ gallery.renderers.stream = function(element) {
 		"component": "Echo.StreamServer.Controls.Stream",
 		"config": {
 			"target": element,
-			"query": query,
+			"query": self.config.get("query"),
 			"plugins": plugins,
 			"slideTimeout": 0,
-			//"liveUpdates": { "transport": "websockets" },
 			"item": {
 				"viaLabel": {"icon": true}
-			}
+			},
+
+			// It would be nice if we could use $.extend but there are a lot of
+			// things in the full self.config object that throw off SS.
+			"display": self.config.get("display"),
+			"integration": self.config.get("integration"),
+			"upload": self.config.get("upload")
 		}
 	});
 	return element;
@@ -218,7 +231,8 @@ gallery.methods._isAuthEnabled = function() {
 	// Gigya, and what FilePicker will do in remote environments.
 	return false;
 
-	return this.config.get("auth.enabled") && !!this.config.get("auth.janrainApp");
+	return this.config.get("auth.enabled") &&
+	       !!this.config.get("auth.janrainApp");
 };
 
 gallery.methods._getAuthPluginDefinition = function(config) {

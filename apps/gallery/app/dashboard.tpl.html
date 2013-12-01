@@ -1,3 +1,14 @@
+<!-- NOTES:
+
+1. You must make your app.config{} block defaults match these defaults _exactly_
+   or you will get unexpected behaviors when your app loads. If the user leaves
+   a field set to its default value, the field is _removed_ from the config
+   block. So if the default is true, it will not be sent at all if the checkbox
+   is checked. That means if you go to use it in app.js it can evaluate to false
+   unexpectedly. See the related comment there for details.
+
+-->
+
 <!-- APP Key -->
 <select name="appkey" required="required" data-component="AppKeyList" title="Application key" data-help="Specifies the application key for this instance" />
 <input name="query" type="text" required="required" value="" title="Query" data-help="The query to execute. May be modified by components like the filter control." />
@@ -7,9 +18,8 @@
   <legend class="icon-picture">Display</legend>
 
   <select name="visualization" title="Visualization" data-help="Select the display mode for the gallery">
-    <option value="gallery" selected="selected">Pinboard-style Gallery</option>
-    <option value="streamlined-gallery">Streamlined Gallery</option>
-    <option value="tabbed-gallery">Tabbed Interface</option>
+    <option value="pinboard" selected="selected">Pinboard-style Gallery</option>
+    <option value="streamlined">Streamlined Gallery</option>
     <option value="slideshow">Slideshow w/ Full-Screen Support</option>
   </select>
 
@@ -25,7 +35,7 @@
 <fieldset name="integration">
   <legend class="icon-certificate">Ad / Analytics Integration</legend>
 
-  <input name="nativeinterval" type="text" title="Native Ad Interval" data-help="Interval between native ad placeholders, or leave blank to disable. Subscribe to Echo.StreamServer.Controls.Stream.Item.onNativeAdRender to fill each placeholder." />
+  <input name="nativeinterval" type="text" data-storage="number" title="Native Ad Interval" data-help="Interval between native ad placeholders, or leave blank to disable. Subscribe to Echo.StreamServer.Controls.Stream.Item.onNativeAdRender to fill each placeholder." />
 </fieldset>
 
 <!-- Upload -->

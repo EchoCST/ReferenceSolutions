@@ -9,7 +9,6 @@ var $ = jQuery;
  *
  * @extends Echo.Plugin
  */
-
 var plugin = Echo.Plugin.manifest("StreamlinedPinboardVisualization",
 								  "Echo.StreamServer.Controls.Stream.Item");
 
@@ -31,12 +30,6 @@ plugin.dependencies = [{
 }];
 
 plugin.config = {
-	/**
-	 * @cfg {Number} maxChildrenBodyCharacters
-	 * Truncate the reply text displayed under t6he root item to N characters.
-	 */
-	"maxChildrenBodyCharacters": 50,
-
 	/**
 	 * @cfg {Function} mediaSelector
 	 * Override this to define the function that extracts media from arriving
@@ -66,10 +59,6 @@ plugin.config = {
 };
 
 plugin.labels = {
-	/**
-	 * @echo_label
-	 */
-	"childrenMoreItems": "View more items..."
 };
 
 (function() {
@@ -84,9 +73,7 @@ plugin.component.renderers.container = function(element) {
 	if (plugin.get("rendered")) {
 		element.queue("fx", function(next) {
 			next();
-//			publish.call(plugin, true);
 		});
-//		publish.call(plugin, name === "expandChildren");
 	}
 
 	element.on('mouseover', function() {
@@ -118,25 +105,10 @@ plugin.component.renderers.body = function(element) {
 /**
  * @echo_renderer
  */
-plugin.renderers.childBody = function(element) {
-	var plugin = this, item = this.component;
-	if (item.isRoot()) {
-		return element.empty();
-	}
-	var text = Echo.Utils.htmlTextTruncate(
-		Echo.Utils.stripTags(item.get("data.object.content")),
-		plugin.config.get("maxChildrenBodyCharacters"),
-		"..."
-	);
-	return element.empty().append(text);
-};
-
-/**
- * @echo_renderer
- */
 plugin.renderers.media = function(element) {
 	var plugin = this, item = this.component;
 
+	plugin.processMedia(element, false);
 //	var mediaItems = plugin.config.get("mediaSelector")(item.get("data.object.content"));
 
 /*	if (mediaItems.length) {
@@ -159,7 +131,8 @@ plugin.renderers.media = function(element) {
 plugin.renderers.mediafull = function(element) {
 	var plugin = this, item = this.component;
 
-	var selector = plugin.config.get("mediaSelector");
+	plugin.processMedia(element, true);
+/*	var selector = plugin.config.get("mediaSelector");
 	var mediaItems = $.map(selector(item.get("data.object.content")), function(entry) {
 		if (entry.nodeName == "IMG") {
 			// We don't want a hard-coded width/height - we are responsive
@@ -183,6 +156,49 @@ plugin.renderers.mediafull = function(element) {
 		}
 
 		return entry;
+	});*/
+
+
+	return element;
+};
+
+/**
+ * Helper since the media is processed twice.
+ */
+plugin.methods.processMedia = function(element, publishEvents) {
+	var plugin = this, item = this.component;
+
+	var selector = plugin.config.get("mediaSelector");
+	var mediaItems = $.map(selector(item.get("data.object.content")),
+						   function(entry) {
+		switch (entry.nodeName) {
+			case "IMG":
+				// We don't want a hard-coded width/height - we are responsive
+				entry.removeAttribute('height');
+				entry.removeAttribute('width');
+
+				// We don't want the full size image necessarily but we probably
+				// need something bigger than the thumb because that's for tiny
+				// views in standard streams. See if there's a mid-size preview.
+				if (entry.hasAttribute('data-src-preview')) {
+					entry.setAttribute('src',
+									   entry.getAttribute('data-src-preview'));
+				} else if (entry.hasAttribute('data-src-full')) {
+					entry.setAttribute('src',
+									   entry.getAttribute('data-src-full'));
+				}
+				break;
+
+			case "IFRAME":
+				// We don't want a hard-coded width/height - we are responsive
+				entry.removeAttribute('height');
+				entry.removeAttribute('width');
+
+				entry.setAttribute('width', '100%');
+				break;
+		}
+
+		return entry;
 	});
 
 	if (mediaItems.length < 1) {
@@ -191,14 +207,16 @@ plugin.renderers.mediafull = function(element) {
 		element.append(mediaItems);
 		element.find('img, iframe').one('error', function() {
 			element.addClass('load-error');
-			plugin.events.publish({ "topic": "onMediaError", "data": {} });
+			if (publishEvents) {
+				plugin.events.publish({ "topic": "onMediaError", "data": {} });
+			}
 		}).one('load', function() {
 			element.addClass('loaded');
-			plugin.events.publish({ "topic": "onMediaLoaded", "data": {} });
+			if (publishEvents) {
+				plugin.events.publish({ "topic": "onMediaLoaded", "data": {} });
+			}
 		});
 	}
-
-	return element;
 };
 
 /**
@@ -251,49 +269,40 @@ plugin.templates.container =
 
 plugin.css =
 	'.{plugin.class} { perspective: 1000; -webkit-perspective: 1000; }' +
+	'.{plugin.class} a { color: #2CA0C7; }' +
 	'.{plugin.class} .flipper { transition: 0.6s; transform-style: preserve-3d; }' +
 	'.{plugin.class}:hover .flipper { transform: rotateY(180deg); }' +
 	'.{plugin.class}.hover .flipper { transform: rotateY(180deg); }' +
-	'.{plugin.class:media} { margin-top: 7px; text-align: center; }' +
+	'.{plugin.class:media} { margin: 4px 7px 0 0; width: 25%; float: left; }' +
 	'.{plugin.class:mediafull} { background: #000; }' +
 	'.{plugin.class:mediafull} img { max-width: 100%; backface-visibility: hidden; display: block; margin: 0 auto; }' +
-	'.{plugin.class:topContentWrapper} { margin-left: 5px; padding-left: 35px; }' +
+	'.{plugin.class:topContentWrapper} { padding-left: 45px; }' +
 	'.{plugin.class:childBody} { float: none; display: inline; margin-left: 5px; }' +
 	'.{plugin.class:childBody} a { text-decoration: none; font-weight: bold; color: #524D4D; }' +
 	'.{plugin.class:hoverview} { display: none; backface-visibility: hidden; }' +
-	'.{plugin.class:hoverview}.over { display: block; position: absolute; top: 0; right: 0px; bottom: 0px; left: 0px; z-index: 2; border: 1px solid #999; background: #fff; padding: 20px; box-shadow: 1px 1px 4px #999; overflow: hidden; }' +
+	'.{plugin.class:hoverview}.over { display: block; position: absolute; top: 0; right: 0px; bottom: 0px; left: 0px; z-index: 2; border: 1px solid #999; background: #fff; padding: 10px; box-shadow: 1px 1px 4px #999; overflow: hidden; }' +
 	'.{plugin.class}.over .{plugin.class:hoverview} { display: block; }' +
 	'.{plugin.class} .{class:container} { position: relative; padding: 0px; }' +
-	'.{plugin.class} .{class:content} { padding-bottom: 0px; background: white; box-shadow: 1px 1px 2px rgba(34, 25, 25, 0.4); margin: 4px; border: 1px solid #D9D4D4; border-bottom: none; border-right: none; }' +
+	'.{plugin.class} .{class:content} { padding-bottom: 0px; background: white; box-shadow: 1px 1px 2px rgba(34, 25, 25, 0.4); margin: 4px; }' +
 	'.{plugin.class} .{class:authorName} { float: none; display: inline; margin-left: 0px; }' +
 	'.{plugin.class} .{class:body} { margin: 0px; }' +
-	'.{plugin.class} .{class:avatar} { float: left; width: 30px; height: 30px; padding-right: 10px; }' +
+	'.{plugin.class} h2 { font-size: 1.1em; line-height: 1.2em; }' +
+	'.{plugin.class} .{class:avatar} { float: left; width: 40px; height: 40px; }' +
 	'.{plugin.class} .{class:depth-1} { margin-left: 0px; border-bottom: none; }' +
 	'.{plugin.class} .{class:depth-1} .{class:authorName} { display: inline; font-size: 12px; }' +
 	'.{plugin.class} .{class:depth-0} { padding: 0; }' +
 	'.{plugin.class} .{class:depth-0} .{class:authorName} { font-size: 15px; margin-top: 4px; }' +
 	'.{plugin.class} .{class:wrapper} { float: none; }' +
 	'.{plugin.class} .{class:subcontainer} { float: none; }' +
-	'.{plugin.class} .{class:date} { color: #C6C6C6; text-decoration: none; font-weight: normal; }' +
-	'.{plugin.class} .{class:footer} a { color: #C6C6C6; text-decoration: none; font-weight: normal; }' +
+	'.{plugin.class} .{class:date} { color: #666; text-decoration: none; font-weight: normal; }' +
+	'.{plugin.class} .{class:footer} a { color: #666; text-decoration: none; font-weight: normal; }' +
 	'.{plugin.class} .{class:footer} a:hover { text-decoration: underline; }' +
-	'.{plugin.class} .{class:container} .{class:footer} { margin-top: 5px; }' +
-	'.{plugin.class} .{class:children} .{class:header} { margin-left: 0px; }' +
-	'.{plugin.class} .{class:children} .{class:container} { background-color: #F2F0F0; }' +
-	'.{plugin.class} .{class:childrenByCurrentActorLive} .{class:container} { background-color: #F2F0F0; }' +
-	'.{plugin.class} .{class:children} .{class:wrapper}  { display: none; }' +
-	'.{plugin.class} .{class:childrenByCurrentActorLive} .{class:wrapper} {display: none}' +
-	'.{plugin.class} .{class:children} .{class:content} { box-shadow: none; margin: 0px; padding: 0px; border: none; border-bottom: 1px solid #d9d4d4; background-color: #F2F0F0; }' +
-	'.{plugin.class} .{class:childrenByCurrentActorLive} .{class:content} { box-shadow: none; margin: 0px; padding: 0px; border: none; border-bottom: 1px solid #d9d4d4; background-color: #F2F0F0; }' +
+	'.{plugin.class} .{class:container} .{class:footer} { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; background: #f0f0f0; border-top: 1px solid #ccc; padding: 4px 8px; }' +
 	'.{plugin.class} .{class:container-child} { margin: 0px; padding: 10px 15px; }' +
 	'.{plugin.class} .echo-linkColor { text-decoration: none; font-weight: bold; color: #524D4D; }' +
 	'.{plugin.class} .echo-linkColor a { text-decoration: none; font-weight: bold; color: #524D4D; }' +
-	'.{plugin.class} .{class:buttons} .echo-linkColor { font-weight: normal; color: #C6C6C6; }' +
-	'.{plugin.class} .{class:buttons} .echo-linkColor:hover { font-weight: normal; color: #C6C6C6; }' +
-	'.{plugin.class} .{class:expandChildren} .echo-message-icon { background-image: none; }' +
-	'.{plugin.class} .{class:expandChildren} { border-bottom: 1px solid #D9D4D4; background-color: #F2F0F0; }' +
-	'.{plugin.class} .{class:expandChildren} .{class:message-loading} { background-image: none; font-weight: bold; }' +
-	'.{plugin.class} .{class:expandChildren} .{class:expandChildrenLabel} { padding-left: 0px; background-image: none; }' +
+	'.{plugin.class} .{class:buttons} .echo-linkColor { font-weight: normal; color: #666; }' +
+	'.{plugin.class} .{class:buttons} .echo-linkColor:hover { font-weight: normal; color: #666; }' +
 	// plugins styles
 	'.{plugin.class} .{class:plugin-Like-likedBy} { margin-top: 5px; }' +
 	'.{plugin.class} .{class:plugin-Reply-submitForm} { box-shadow: none; margin: 0px; border: none; background-color: #F2F0F0; }' +
@@ -312,11 +321,7 @@ plugin.css =
 	'.{plugin.class} .{class:plugin-TwitterIntents-tweetUserName} { margin-left: 0px; }' +
 	'.{class:plugin-TwitterIntents} .{plugin.class:childBody} { margin-left: 0; }' +
 
-	'.{class}.native-ad-placeholder { background: #2d1302; width: 300px; height: 250px; line-height: 250px; text-align: center; color: #fff; }' +
-
-	((typeof document.createElement("div").style.boxShadow === "undefined")
-		? '.{plugin.class} .{class:content} { border: 1px solid #d9d4d4; box-shadow: none; }'
-		: '');
+	'.{class}.native-ad-placeholder { background: #2d1302; width: 300px; height: 250px; line-height: 250px; text-align: center; color: #fff; }';
 
 Echo.Plugin.create(plugin);
 
@@ -365,12 +370,6 @@ plugin.config = {
 	 *   "columns": [ 0, 330, 560, 900, 1100 ]
 	 */
 	"columns": 4,
-
-	/**
-	 * @cfg {Number} nativeAdInterval
-	 * Defines the spacing between native ad placeholders. Note that
-	 */
-	"nativeAdInterval": 4,
 
 	/**
 	 * @cfg {Object} isotope
@@ -452,15 +451,14 @@ plugin.methods._refreshView = function() {
 	});
 
 	// Create native-advertising placeholder slots as necessary.
-	var interval = this.config.get('nativeAdInterval', 0);
+	console.log(this.config.get('integration'));
+	var interval = this.config.get('integration.nativeinterval', 0);
 	if (interval > 0) {
 		var $first = $body.find('.native-ad-placeholder').first();
 		var $prev = ($first.length > 0)
 					? $first.prevAll()
 					: $body.find('.echo-streamserver-controls-stream-item');
 
-		console.log($first);
-		console.log($prev);
 		while ($prev.length > interval) {
 			$prev = $prev.slice(0, $prev.length - interval);
 
@@ -499,7 +497,7 @@ plugin.methods._refreshView = function() {
 };
 
 plugin.css =
-	'.{plugin.class} { background: #fff; }' +
+	'.{plugin.class} { background: #333; }' +
 	'.{plugin.class} .isotope { -webkit-transition-property: height, width; -moz-transition-property: height, width; -o-transition-property: height, width; transition-property: height, width;  -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }' +
 	// TODO: These classes below should probably move up to the Stream.Item plugin
 	'.{plugin.class} .isotope .isotope-item { -webkit-transition-property: -webkit-transform, opacity; -moz-transition-property: -moz-transform, opacity; -o-transition-property: top, left, opacity; transition-property:transform, opacity; -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }';
