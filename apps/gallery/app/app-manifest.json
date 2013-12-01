@@ -1,8 +1,8 @@
 {
-    "id": "angular-echo-media-gallery",
-    "name": "Media Gallery (Angular)",
+    "id": "echo-media-gallery-cst",
+    "name": "Media Gallery (2.0)",
     "description": "The Media Gallery is a flexible stream display with a variety of visualizations intended for showing pinboards and social galleries.",
-    "app_version": "1.0.0",
+    "app_version": "2.0.0",
     "icon": "//cdn.echoenabled.com/apps/echo/media-gallery/icon.png",
     "developer": {
         "id": "echo",
@@ -31,6 +31,7 @@
     }],
     "client_widget": {
         "component": "Echo.Apps.MediaGallery",
+        "scriptX": "//echocsthost.s3.amazonaws.com/apps/gallery/app/app.js",
         "script": "//d3owx0qmt32wcw.cloudfront.net/apps/gallery/app/app.js"
     },
     "cloudapp_protocol_version": "1.0.0"
