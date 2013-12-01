@@ -95,6 +95,7 @@ plugin.component.renderers.container = function(element) {
 plugin.component.renderers.body = function(element) {
 	var plugin = this, item = this.component;
 	element = item.parentRenderer("body", arguments);
+	console.log(element.html());
 	var filteredElements = plugin.config.get("mediaSelector")(item.get("data.object.content"));
 	$(filteredElements.selector, item.view.get("text")).remove();
 	var text = Echo.Utils.stripTags(item.get("data.object.content"));
@@ -109,19 +110,6 @@ plugin.renderers.media = function(element) {
 	var plugin = this, item = this.component;
 
 	plugin.processMedia(element, false);
-//	var mediaItems = plugin.config.get("mediaSelector")(item.get("data.object.content"));
-
-/*	if (mediaItems.length) {
-		var config = $.extend(plugin.config.get("gallery"), {
-			"target": element,
-			"appkey": item.config.get("appkey"),
-			"elements": mediaItems,
-			"item": item
-		});
-		new Echo.StreamServer.Controls.Stream.Item.MediaGallery(plugin.config.assemble(config));
-	} else {
-		element.hide();
-	}*/
 	return element;
 };
 
@@ -132,33 +120,6 @@ plugin.renderers.mediafull = function(element) {
 	var plugin = this, item = this.component;
 
 	plugin.processMedia(element, true);
-/*	var selector = plugin.config.get("mediaSelector");
-	var mediaItems = $.map(selector(item.get("data.object.content")), function(entry) {
-		if (entry.nodeName == "IMG") {
-			// We don't want a hard-coded width/height - we are responsive
-			entry.removeAttribute('height');
-			entry.removeAttribute('width');
-
-			// We don't want the full size image necessarily but we probably
-			// need something bigger than the thumb because that's for tiny
-			// views in standard streams. See if there's a mid-size preview.
-			if (entry.hasAttribute('data-src-preview')) {
-				entry.setAttribute('src', entry.getAttribute('data-src-preview'));
-			} else if (entry.hasAttribute('data-src-full')) {
-				entry.setAttribute('src', entry.getAttribute('data-src-full'));
-			}
-		} else if (entry.nodeName == "IFRAME") {
-			// We don't want a hard-coded width/height - we are responsive
-			entry.removeAttribute('height');
-			entry.removeAttribute('width');
-
-			entry.setAttribute('width', '100%');
-		}
-
-		return entry;
-	});*/
-
-
 	return element;
 };
 
@@ -224,7 +185,7 @@ plugin.methods.processMedia = function(element, publishEvents) {
  */
 plugin.templates.container =
 	// TODO: Move ontouchstart out
-	'<div class="{class:container}" ontouchstart="this.classList.toggle(\'hover\');">' +
+	'<div class="{class:container} source-{data:source.name}" ontouchstart="this.classList.toggle(\'hover\');">' +
 		'<div class="flipper">' +
 			'<div class="{plugin.class:mediafull} front"></div>' +
 			'<div class="{plugin.class:hoverview} back">' +
@@ -280,7 +241,7 @@ plugin.css =
 	'.{plugin.class:childBody} { float: none; display: inline; margin-left: 5px; }' +
 	'.{plugin.class:childBody} a { text-decoration: none; font-weight: bold; color: #524D4D; }' +
 	'.{plugin.class:hoverview} { display: none; backface-visibility: hidden; }' +
-	'.{plugin.class:hoverview}.over { display: block; position: absolute; top: 0; right: 0px; bottom: 0px; left: 0px; z-index: 2; border: 1px solid #999; background: #fff; padding: 10px; box-shadow: 1px 1px 4px #999; overflow: hidden; }' +
+	'.{plugin.class:hoverview}.over { display: block; position: absolute; top: 0; right: 0px; bottom: 0px; left: 0px; z-index: 2; border: 1px solid #999; background: #fff; box-shadow: 1px 1px 4px #999; overflow: hidden; }' +
 	'.{plugin.class}.over .{plugin.class:hoverview} { display: block; }' +
 	'.{plugin.class} .{class:container} { position: relative; padding: 0px; }' +
 	'.{plugin.class} .{class:content} { padding-bottom: 0px; background: white; box-shadow: 1px 1px 2px rgba(34, 25, 25, 0.4); margin: 4px; }' +
@@ -292,12 +253,20 @@ plugin.css =
 	'.{plugin.class} .{class:depth-1} .{class:authorName} { display: inline; font-size: 12px; }' +
 	'.{plugin.class} .{class:depth-0} { padding: 0; }' +
 	'.{plugin.class} .{class:depth-0} .{class:authorName} { font-size: 15px; margin-top: 4px; }' +
-	'.{plugin.class} .{class:wrapper} { float: none; }' +
+	'.{plugin.class} .{class:wrapper} { float: none; padding: 10px; }' +
 	'.{plugin.class} .{class:subcontainer} { float: none; }' +
 	'.{plugin.class} .{class:date} { color: #666; text-decoration: none; font-weight: normal; }' +
 	'.{plugin.class} .{class:footer} a { color: #666; text-decoration: none; font-weight: normal; }' +
 	'.{plugin.class} .{class:footer} a:hover { text-decoration: underline; }' +
+
+	'.{plugin.class} .{class:container} .{class:header} { padding: 5px; background: #f0f0f0; border-bottom: 1px solid #ccc; }' +
 	'.{plugin.class} .{class:container} .{class:footer} { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; background: #f0f0f0; border-top: 1px solid #ccc; padding: 4px 8px; }' +
+
+	'.{plugin.class} .{class:container}.source-Twitter .{class:header} { background: #E5F5FF; border-bottom: 1px solid #A1C7DF; }' +
+	'.{plugin.class} .{class:container}.source-Twitter .{class:footer} { background: #E5F5FF; border-top: 1px solid #A1C7DF; }' +
+	'.{plugin.class} .{class:container}.source-Instagram .{class:header} { background: #E4CAB1; border-bottom: 1px solid #B49F8B; }' +
+	'.{plugin.class} .{class:container}.source-Instagram .{class:footer} { background: #E4CAB1; border-top: 1px solid #B49F8B; }' +
+
 	'.{plugin.class} .{class:container-child} { margin: 0px; padding: 10px 15px; }' +
 	'.{plugin.class} .echo-linkColor { text-decoration: none; font-weight: bold; color: #524D4D; }' +
 	'.{plugin.class} .echo-linkColor a { text-decoration: none; font-weight: bold; color: #524D4D; }' +
