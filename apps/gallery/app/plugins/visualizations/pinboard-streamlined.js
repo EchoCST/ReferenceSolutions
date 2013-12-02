@@ -397,6 +397,7 @@ plugin.events = {};
 		"Echo.StreamServer.Controls.Stream.onRefresh"
 	], function(entry) {
 		plugin.events[entry] = function(topic, args) {
+			console.log(topic);
 			var plugin = this;
 			$.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
 		};
@@ -418,19 +419,21 @@ plugin.methods._refreshView = function() {
 		$(this).closest('.echo-streamserver-controls-stream-item').remove();
 	});
 
-	// Create native-advertising placeholder slots as necessary.
+	// Create native-advertising placeholder slots as necessary. Note that we
+	// use index() instead of prevAll() because prevAll() returns its elements
+	// in reverse order!
 	var interval = stream.config.get('parent.integration.nativeinterval', 0);
 	if (interval > 0) {
-		var $first = $body.find('.native-ad-placeholder').first();
-		var $prev = ($first.length > 0)
-					? $first.prevAll()
-					: $body.find('.echo-streamserver-controls-stream-item');
+		// If there are no placeholders yet, work backward from the last item.
+		// Otherwise, work backward from the first placeholder.
+		var $items = $body.find('.echo-streamserver-controls-stream-item');
+		var index = $items.index($body.find('.native-ad-placeholder').first());
+		var $prev = (index > 0) ? $items.slice(0, index) : $items;
 
 		while ($prev.length > interval) {
 			$prev = $prev.slice(0, $prev.length - interval);
 
-			$prev.last().before('<div class="echo-streamserver-controls-stream-item native-ad-placeholder">Native Ad Placeholder</div>');
-			break;
+			$prev.last().after('<div class="echo-streamserver-controls-stream-item native-ad-placeholder">Native Ad Placeholder</div>');
 		}
 	}
 
@@ -461,6 +464,12 @@ plugin.methods._refreshView = function() {
 			? $body.isotope("reloadItems").isotope(config)
 			: $body.isotope("destroy"))
 		: hasEntries && $body.isotope(config);
+
+	// Temporary hack while we research why the Twitter-Display plugin isn't
+	// always doing this itself
+	if (window.twttr && window.twttr.widgets) {
+		window.twttr.widgets.load();
+	}
 };
 
 plugin.css =
