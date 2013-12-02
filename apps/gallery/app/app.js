@@ -130,6 +130,10 @@ gallery.renderers.stream = function(element) {
 		"url": "//cdn.echoenabled.com/apps/echo/dataserver/v3/plugins/items-rolling-window.js"
 	}];
 
+	//if (!!self.config.get("display.likes")) {
+		plugins.push({"name": "Like"});
+	//}
+
 	switch (self.config.get("display.visualization")) {
 		case "streamlined":
 			this.config.set("display.replies", false);
@@ -177,7 +181,7 @@ gallery.renderers.stream = function(element) {
 			break;
 	}
 
-	if (!!self.config.get("display.replies")) {
+	//if (!!self.config.get("display.replies")) {
 		var reply = {"name": "Reply"};
 		if (this._isAuthEnabled()) {
 			var auth = this._getAuthPluginDefinition({
@@ -187,17 +191,13 @@ gallery.renderers.stream = function(element) {
 			reply.nestedPlugins = [auth];
 		}
 		plugins.push(reply);
-	}
+	//}
 
 	if (!!self.config.get("display.sharing") && janrainApp) {
 		plugins.push({
 			"name": "JanrainSharing",
 			"appId": janrainApp
 		});
-	}
-
-	if (!!self.config.get("display.likes")) {
-		plugins.push({"name": "Like"});
 	}
 
 	if (!!self.config.get("display.flags")) {

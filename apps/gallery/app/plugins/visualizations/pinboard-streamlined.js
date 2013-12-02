@@ -21,6 +21,12 @@ plugin.init = function() {
 };
 
 plugin.dependencies = [{
+	"loaded": function() { },
+	"url": "//cdn.echoenabled.com/sdk/v3/gui.pack.js"
+}, {
+        "loaded": function() { },
+        "url": "//cdn.echoenabled.com/sdk/v3/gui.pack.css"
+}, {
 	"loaded": function() { return !!Echo.jQuery().isotope; },
 	"url": "{config:cdnBaseURL.sdk}/third-party/jquery/jquery.isotope.min.js"
 }, {
@@ -109,6 +115,73 @@ plugin.renderers.media = function(element) {
 	var plugin = this, item = this.component;
 
 	plugin.processMedia(element, false);
+	return element;
+};
+
+plugin.renderers.comments = function(element) {
+	var plugin = this, item = this.component;
+
+	element.on('click', function(e) {
+		e.preventDefault();
+		console.log(item);
+
+		var terms = item.config.data.parent.query.split(' ');
+		terms.shift();
+		terms.unshift('scope:' + item.data.id);
+		var query = terms.join(' ');
+		console.log(query);
+
+		// Couldn't figure out a more appropriate place to store this... Relied on
+		// closure behavior for now. Plugin? DOM? Parent config?
+		var stream = null;
+
+		var myModal = new Echo.GUI.Modal({
+			show: true,
+			backdrop: true,
+			keyboard: true,
+			closeButton: true,
+			remote: false,
+			extraClass: "",
+			data: {
+				// Why on Earth doesn't plugin.labels.get("commentsCaption") work here?
+				// I tried three ways of getting 'plugin' defined here (in case I was
+				// pointing to a base class or something?) and none of the three yielded
+				// a get() function on this object.
+				title: plugin.labels["commentsCaption"] + item.data.actor.title,
+				// So this is super frustrating. If you try to render something directly
+				// into .modal-body from onShow() below, something appears to block or
+				// overwrite this. I normally hate hard-coding things like this, but it
+				// seemed like the fastest solution for now.
+				body: function() {
+					return '<div id="comment-target"></div>';
+				}
+			},
+			width: "600px",
+			height: "500",
+			padding: "10",
+			footer: false,
+			header: true,
+			fade: true,
+			onShow: function() {
+				// This is just horrible...
+				var $target = $('#comment-target');
+
+				stream = new Echo.StreamServer.Controls.Stream({
+					"target": $target[0],
+					"query": query,
+					"appkey": "echo.jssdk.demo.aboutecho.com"
+				});
+			},
+
+			onHide: function() {
+				if (stream != null) {
+					stream.destroy();
+					stream = null;
+				}
+			}
+		});
+	});
+
 	return element;
 };
 
@@ -219,6 +292,7 @@ plugin.templates.container =
 							'<div class="{class:from}"></div>' +
 							'<div class="{class:via}"></div>' +
 							'<div class="{class:buttons}"></div>' +
+							'<a href="#" class="{plugin.class:comments}"><i class="icon-comment"></i></a>' +
 							'<div class="echo-clear"></div>' +
 						'</div>' +
 					'</div>' +
@@ -230,23 +304,27 @@ plugin.templates.container =
 plugin.css =
 	'.{plugin.class} { perspective: 1000; -webkit-perspective: 1000; }' +
 	'.{plugin.class} a { color: #2CA0C7; }' +
-	'.{plugin.class} .flipper { transition: 0.6s; transform-style: preserve-3d; }' +
-	'.{plugin.class}:hover .flipper { transform: rotateY(180deg); }' +
-	'.{plugin.class}.hover .flipper { transform: rotateY(180deg); }' +
+
+	'.{plugin.class} .flipper { transition: 0.6s; transform-style: preserve-3d; position: relative; -webkit-perspective: 800; }' +
+	'.{plugin.class} .flipper > div { -webkit-backface-visibility: hidden; transition: 350ms ease-in-out; -webkit-transition: 350ms ease-in-out; position: static; }' +
+	'.{plugin.class} .flipper > .back { -webkit-transform: rotatey(-180deg); transform: rotateY(-180deg); position: absolute; top: 0; bottom: 0; }' +
+	'.{plugin.class} .flipper:hover > .front { -webkit-transform: rotatey(180deg); transform: rotateY(180deg); }' +
+	'.{plugin.class} .flipper:hover > .back { -webkit-transform: rotatey(0deg); transform: rotateY(-0deg); }' +
+
 	'.{plugin.class:media} { margin: 4px 7px 0 0; width: 25%; float: left; }' +
 	'.{plugin.class:mediafull} { background: #000; }' +
 	'.{plugin.class:mediafull} img { max-width: 100%; backface-visibility: hidden; display: block; margin: 0 auto; }' +
 	'.{plugin.class:topContentWrapper} { padding-left: 45px; }' +
 	'.{plugin.class:childBody} { float: none; display: inline; margin-left: 5px; }' +
 	'.{plugin.class:childBody} a { text-decoration: none; font-weight: bold; color: #524D4D; }' +
-	'.{plugin.class:hoverview} { display: none; backface-visibility: hidden; }' +
-	'.{plugin.class:hoverview}.over { display: block; position: absolute; top: 0; right: 0px; bottom: 0px; left: 0px; z-index: 2; border: 1px solid #999; background: #fff; box-shadow: 1px 1px 4px #999; overflow: hidden; }' +
-	'.{plugin.class}.over .{plugin.class:hoverview} { display: block; }' +
+	//'.{plugin.class:hoverview} { display: none; backface-visibility: hidden; }' +
+	//'.{plugin.class:hoverview}.over { display: block; position: absolute; top: 0; right: 0px; bottom: 0px; left: 0px; z-index: 2; border: 1px solid #999; background: #fff; box-shadow: 1px 1px 4px #999; overflow: hidden; }' +
+	//'.{plugin.class}.over .{plugin.class:hoverview} { display: block; }' +
 	'.{plugin.class} .{class:container} { position: relative; padding: 0px; }' +
 	'.{plugin.class} .{class:content} { padding-bottom: 0px; background: white; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); margin: 5px; border: 1px solid #111; }' +
 	'.{plugin.class} .{class:authorName} { float: none; display: inline; margin-left: 0px; }' +
 	'.{plugin.class} .{class:body} { margin: 0px; }' +
-	'.{plugin.class} h2 { font-size: 1.1em; line-height: 1.2em; }' +
+	'.{plugin.class} h2.echo-item-title { font-size: 1.1em; line-height: 1.2em; }' +
 	'.{plugin.class} .{class:avatar} { float: left; width: 40px; height: 40px; }' +
 	'.{plugin.class} .{class:depth-1} { margin-left: 0px; border-bottom: none; }' +
 	'.{plugin.class} .{class:depth-1} .{class:authorName} { display: inline; font-size: 12px; }' +
@@ -271,6 +349,12 @@ plugin.css =
 	'.{plugin.class} .echo-linkColor a { text-decoration: none; font-weight: bold; color: #524D4D; }' +
 	'.{plugin.class} .{class:buttons} .echo-linkColor { font-weight: normal; color: #666; }' +
 	'.{plugin.class} .{class:buttons} .echo-linkColor:hover { font-weight: normal; color: #666; }' +
+
+	// TODO: There must be a better way to do this...
+	'.{plugin.class:comments} { float: right; display: block; } ' +
+	'#comment-target .echo-control-message-info { color: #333; } ' +
+	'#comment-target .echo-control-message-info:after { content: " (This is where we would handle commenting...)" } ' +
+
 	// plugins styles
 	'.{plugin.class} .{class:plugin-Like-likedBy} { margin-top: 5px; }' +
 	'.{plugin.class} .{class:plugin-Reply-submitForm} { box-shadow: none; margin: 0px; border: none; background-color: #F2F0F0; }' +
@@ -397,7 +481,6 @@ plugin.events = {};
 		"Echo.StreamServer.Controls.Stream.onRefresh"
 	], function(entry) {
 		plugin.events[entry] = function(topic, args) {
-			console.log(topic);
 			var plugin = this;
 			$.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
 		};
@@ -430,10 +513,25 @@ plugin.methods._refreshView = function() {
 		var index = $items.index($body.find('.native-ad-placeholder').first());
 		var $prev = (index > 0) ? $items.slice(0, index) : $items;
 
+		var rendered = [];
 		while ($prev.length > interval) {
 			$prev = $prev.slice(0, $prev.length - interval);
 
-			$prev.last().after('<div class="echo-streamserver-controls-stream-item native-ad-placeholder">Native Ad Placeholder</div>');
+			var $el = $('<div class="echo-streamserver-controls-stream-item native-ad-placeholder">Native Ad Placeholder</div>');
+			rendered.push($el);
+			$el.insertAfter($prev.last());
+		}
+
+		// Let the main page know we have new placeholders to fill
+		if (rendered.length > 0) {
+			Echo.Events.publish({
+				topic: 'Echo.StreamServer.Controls.Stream.onAdPlaceholder',
+				data: {
+					stream: stream,
+					body: $body,
+					elements: rendered
+				}
+			});
 		}
 	}
 
