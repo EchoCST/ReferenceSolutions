@@ -225,6 +225,8 @@ plugin.css =
     '.{plugin.class} .{plugin.class:media} img { margin: 0 auto; }' +
     '.{plugin.class} .{plugin.class:media} iframe { margin: 0 auto; }' +
 
+	//'.echo-streamserver-controls-stream-body { display: none; }' +
+
 	'';
 
 Echo.Plugin.create(plugin);
@@ -309,7 +311,7 @@ plugin.events = {
 		gallery.splice(4, 0, ad);
 
 		// Configure Galleria for our later use. For now we give it no data.
-		Galleria.loadTheme('galleria/themes/echoshow/galleria.echoshow.js');
+		Galleria.loadTheme('//echocsthost.s3.amazonaws.com/apps/gallery/galleria/themes/echoshow/galleria.echoshow.js');
 		Galleria.configure({
 			dataSource: gallery,
 			debug: true,
@@ -320,7 +322,7 @@ plugin.events = {
 				left: this.prev
 			});
 
-			this.bind("loadstart", function(galleriaData, imageTarget, thumbTarget, index) {
+			this.bind("loadstart", function(data) {
 				var count = stream.get('adcounter', 0) + 1;
 				stream.set('adcounter', count);
 
@@ -328,6 +330,10 @@ plugin.events = {
 					$('#ad-banner').html('Banner Ad ' + count);
 					$('#ad-companion').html('Companion Ad ' + count);
 				}
+
+				var $body = stream.view.get('body');
+				var $item = $body.find('> div').eq(data.index);
+				$('.galleria-streamitem').html($item.html());
 			});
 		});
 
@@ -386,10 +392,18 @@ plugin.methods._refreshView = function(refresh) {
 
 plugin.css =
 	".{plugin.class:content} { position: relative; }" +
-//	".echo-streamserver-controls-stream-body { display: none; }" +
+	".echo-streamserver-controls-stream-body { display: none; }" +
 	'.{class:gallery} { width: 100%; }' +
 
-	'.{class:gallery} .ad-region { height: 100%; }' +
+	'.{class:gallery} .ad-region { background: #2d1302; height: 100%; text-align: center; line-height: 300px; }' +
+	'.{class:gallery} .ad-region img { display: none; }' +
+
+	'.galleria-streamitem { overflow: hidden; } ' +
+	'.galleria-streamitem .echo-streamserver-controls-stream-item-content { padding: 7px; } ' +
+	'.galleria-streamitem .echo-streamserver-controls-stream-item-header { float: left; width: 30%; } ' +
+	'.galleria-streamitem {} ' +
+	'.galleria-streamitem {} ' +
+
 
 	'';
 //	'.{plugin.class} .isotope { -webkit-transition-property: height, width; -moz-transition-property: height, width; -o-transition-property: height, width; transition-property: height, width;  -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }' +

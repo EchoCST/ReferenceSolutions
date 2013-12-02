@@ -143,7 +143,6 @@ gallery.renderers.stream = function(element) {
 				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/app/plugins/visualizations/pinboard-streamlined.js",
 				"columns": [ 0, 330, 560, 900, 1100 ]
 			});
-			plugins.push({"name": "TweetDisplay"});
 
 			break;
 
@@ -180,6 +179,8 @@ gallery.renderers.stream = function(element) {
 			});
 			break;
 	}
+
+	plugins.push({"name": "TweetDisplay"});
 
 	//if (!!self.config.get("display.replies")) {
 		var reply = {"name": "Reply"};
@@ -255,6 +256,9 @@ gallery.css =
 
 	// Visualization-specific
 	".visualization-pinboard .{class:auth} { float: left; margin: 14px .5%; border: 1px solid #ddd; background: #fff; box-shadow: 1px 1px 3px #666; padding: 0.5%; margin: 0.5%; width: 98%; }" +
+    ".visualization-pinboard h2.echo-item-title { font-size: 1em; font-weight: normal; }" +
+
+	".echo-streamserver-controls-stream-item-data img { display: block; }" +
 
 	".visualization-streamlined .{class:auth} { float: left; margin: 14px .5%; border: 1px solid #ddd; background: #fff; box-shadow: 1px 1px 3px #666; padding: 0.5%; margin: 0.5%; width: 98%; }" +
 

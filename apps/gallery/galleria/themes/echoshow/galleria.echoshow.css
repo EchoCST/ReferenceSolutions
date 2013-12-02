@@ -61,7 +61,10 @@
 .galleria-container.videoplay .galleria-info,
 .galleria-container.videoplay .galleria-counter { display: none !important; }
 
-.galleria-streamitem { bottom: 40px; height: 100px; background: #12131b; width: 100%; position: absolute; }
+.galleria-streamitem { bottom: 40px; height: 100px; background: #000; width: 100%; position: absolute; }
+.galleria-streamitem h2.echo-item-title { font-size: 1em; font-weight: normal; }
+.galleria-streamitem .echo-streamserver-controls-stream-item-plugin-FullScreenGalleryVisualization-media,
+.galleria-streamitem .echo-item-files { display: none; }
 
 .galleria-bar { height: 40px; position: absolute; bottom: 0; left: 0; right: 0; z-index: 3; overflow: hidden; background: #202020; }
 
