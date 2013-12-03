@@ -52,6 +52,8 @@ module.exports = function(grunt) {
                 files: [
                     //{dest: 'apps/', cwd: 'backup/staging/', action: 'download'},
                     {expand: true, cwd: 'apps/', src: ['**'], dest: 'apps/'},
+                    {expand: true, cwd: 'polyfills/', src: ['**'], dest: 'polyfills/'},
+                    {expand: true, cwd: 'controls/', src: ['**'], dest: 'controls/'},
                     //{dest: 'src/app', action: 'delete'},
                 ]
             },

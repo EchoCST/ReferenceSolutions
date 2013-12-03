@@ -13,6 +13,7 @@
     },
     "dashboards": [{
         "id": "instances",
+        "type": "instances",
         "title": "Instances",
         "script": "//echocsthost.s3.amazonaws.com/apps/gallery/app/dashboard.js",
         "component": "Echo.Apps.MediaGallery.Dashboard",

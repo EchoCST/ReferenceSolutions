@@ -305,21 +305,22 @@ plugin.css =
 	'.{plugin.class} { perspective: 1000; -webkit-perspective: 1000; }' +
 	'.{plugin.class} a { color: #2CA0C7; }' +
 
+	// Transitions for card flipping
 	'.{plugin.class} .flipper { transition: 0.6s; transform-style: preserve-3d; position: relative; -webkit-perspective: 800; }' +
-	'.{plugin.class} .flipper > div { -webkit-backface-visibility: hidden; transition: 350ms ease-in-out; -webkit-transition: 350ms ease-in-out; position: static; }' +
+	'.{plugin.class} .flipper > div { -webkit-backface-visibility: hidden; transition: 350ms cubic-bezier(.8,.01,.74,.79); -webkit-transition: 350ms cubic-bezier(.8,.01,.74,.79); position: static; }' +
 	'.{plugin.class} .flipper > .back { -webkit-transform: rotatey(-180deg); transform: rotateY(-180deg); position: absolute; top: 0; bottom: 0; }' +
 	'.{plugin.class} .flipper:hover > .front { -webkit-transform: rotatey(180deg); transform: rotateY(180deg); }' +
 	'.{plugin.class} .flipper:hover > .back { -webkit-transform: rotatey(0deg); transform: rotateY(-0deg); }' +
 
+	// General media visuals
 	'.{plugin.class:media} { margin: 4px 7px 0 0; width: 25%; float: left; }' +
 	'.{plugin.class:mediafull} { background: #000; }' +
 	'.{plugin.class:mediafull} img { max-width: 100%; backface-visibility: hidden; display: block; margin: 0 auto; }' +
+
 	'.{plugin.class:topContentWrapper} { padding-left: 45px; }' +
 	'.{plugin.class:childBody} { float: none; display: inline; margin-left: 5px; }' +
 	'.{plugin.class:childBody} a { text-decoration: none; font-weight: bold; color: #524D4D; }' +
-	//'.{plugin.class:hoverview} { display: none; backface-visibility: hidden; }' +
-	//'.{plugin.class:hoverview}.over { display: block; position: absolute; top: 0; right: 0px; bottom: 0px; left: 0px; z-index: 2; border: 1px solid #999; background: #fff; box-shadow: 1px 1px 4px #999; overflow: hidden; }' +
-	//'.{plugin.class}.over .{plugin.class:hoverview} { display: block; }' +
+
 	'.{plugin.class} .{class:container} { position: relative; padding: 0px; }' +
 	'.{plugin.class} .{class:content} { padding-bottom: 0px; background: white; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); margin: 5px; border: 1px solid #111; }' +
 	'.{plugin.class} .{class:authorName} { float: none; display: inline; margin-left: 0px; }' +
@@ -330,14 +331,14 @@ plugin.css =
 	'.{plugin.class} .{class:depth-1} .{class:authorName} { display: inline; font-size: 12px; }' +
 	'.{plugin.class} .{class:depth-0} { padding: 0; }' +
 	'.{plugin.class} .{class:depth-0} .{class:authorName} { font-size: 15px; margin-top: 4px; }' +
-	'.{plugin.class} .{class:wrapper} { float: none; padding: 10px; }' +
-	'.{plugin.class} .{class:subcontainer} { float: none; }' +
+	'.{plugin.class} .{class:wrapper} { float: none; width: 100%; }' +
+	'.{plugin.class} .{class:subcontainer} { float: none; width: auto; margin: 10px; }' +
 	'.{plugin.class} .{class:date} { color: #666; text-decoration: none; font-weight: normal; }' +
 	'.{plugin.class} .{class:footer} a { color: #666; text-decoration: none; font-weight: normal; }' +
 	'.{plugin.class} .{class:footer} a:hover { text-decoration: underline; }' +
 
 	'.{plugin.class} .{class:container} .{class:header} { padding: 5px; background: #f0f0f0; border-bottom: 1px solid #ccc; }' +
-	'.{plugin.class} .{class:container} .{class:footer} { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; background: #f0f0f0; border-top: 1px solid #ccc; padding: 4px 8px; }' +
+	'.{plugin.class} .{class:container} .{class:footer} { position: absolute; bottom: 0; left: 0; right: 0; height: 16px; background: #f0f0f0; border-top: 1px solid #ccc; padding: 4px 8px; }' +
 
 	'.{plugin.class} .{class:container}.source-Twitter .{class:header} { background: #E5F5FF; border-bottom: 1px solid #A1C7DF; }' +
 	'.{plugin.class} .{class:container}.source-Twitter .{class:footer} { background: #E5F5FF; border-top: 1px solid #A1C7DF; }' +
