@@ -1,0 +1,14 @@
+{
+    "aws": {
+        "key": "AMAZON ACCESS KEY",
+        "secret": "AMAZON SECRET KEY",
+        "bucket": "AMAZON S3 BUCKET",
+        "distribution": "AMAZON CLOUDFRONT DISTRIBUTION"
+    },
+    "accounts": {
+        "ACCOUNT1NAME": {
+            "key": "ACCOUNT1KEY",
+            "secret": "ACCOUNT1SECRET"
+        }
+    }
+}

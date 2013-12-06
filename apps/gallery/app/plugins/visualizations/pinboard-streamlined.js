@@ -302,7 +302,8 @@ plugin.templates.container =
 	'</div>';
 
 plugin.css =
-	'.{plugin.class} { perspective: 1000; -webkit-perspective: 1000; }' +
+	'.{plugin.class} { perspective: 1000; -webkit-perspective: 1000; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.9); }' +
+	'.{plugin.class} div { box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; } ' +
 	'.{plugin.class} a { color: #2CA0C7; }' +
 
 	// Transitions for card flipping
@@ -338,10 +339,11 @@ plugin.css =
 	'.{plugin.class} .{class:footer} a:hover { text-decoration: underline; }' +
 
 	'.{plugin.class} .{class:container} .{class:header} { padding: 5px; background: #f0f0f0; border-bottom: 1px solid #ccc; }' +
-	'.{plugin.class} .{class:container} .{class:footer} { position: absolute; bottom: 0; left: 0; right: 0; height: 16px; background: #f0f0f0; border-top: 1px solid #ccc; padding: 4px 8px; }' +
+	'.{plugin.class} .{class:container} .{class:footer} { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; background: #f0f0f0; border-top: 1px solid #ccc; padding: 4px 8px; }' +
 
 	'.{plugin.class} .{class:container}.source-Twitter .{class:header} { background: #E5F5FF; border-bottom: 1px solid #A1C7DF; }' +
 	'.{plugin.class} .{class:container}.source-Twitter .{class:footer} { background: #E5F5FF; border-top: 1px solid #A1C7DF; }' +
+	'.{plugin.class} .{class:container}.source-Twitter .echo-streamserver-controls-stream-item-button-Share { display: none; }' +
 	'.{plugin.class} .{class:container}.source-Instagram .{class:header} { background: #E4CAB1; border-bottom: 1px solid #B49F8B; }' +
 	'.{plugin.class} .{class:container}.source-Instagram .{class:footer} { background: #E4CAB1; border-top: 1px solid #B49F8B; }' +
 

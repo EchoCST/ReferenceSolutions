@@ -1,18 +1,22 @@
 Echo CST Reference Solutions
 ============================
 
-This repository provides a set of reference implementations of Echo-driven
-experiences. The modules provided here are fully functional, but they are not
-meant to be used directly in production deployments but rather as starting
-points for new applications that take advantage of everything Echo has to offer.
+This repository provides a set of Apps and reference implementations of
+Echo-driven experiences. For questions or support on these items, please contact
+the Echo Customer Solutions Team at solutions@aboutecho.com.
 
-For questions or support on these items, please contact the Echo Customer
-Solutions Team at solutions@aboutecho.com.
+
+Setup
+-----
+Before using the Grunt build script or support scripts (scripts/ folder), you
+need to create a config.json file. To do this, copy config-sample.json to
+config.json and edit it to supply your API keys as required.
+
 
 Tips
 ----
-When developing Echo Apps, a good dev/debug workflow helps a lot. Since these
-apps are best hosted on a CDN it can be tricky deal with upload/purge cycles to
-test iterations. Try using Charles Proxy and a Map Local rule like the following:
+To avoid the need for constant edit/deploy cycles during development, consider
+using a tool such as Charles Proxy or Fiddler, which allow you to "map" requests
+for remote files to local assets. Example:
 
   http://MYCDN:80/myapp/* -> C:\myproject\myapp

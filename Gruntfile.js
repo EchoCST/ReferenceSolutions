@@ -3,26 +3,19 @@
  *
  * Environment setup:
  * 1. npm install
- * 2. Create local grunt-aws.json with AWS credentials. See sample below.
- * 3. Run "grunt deploy" to update production.
- *
- * Sample grunt-aws.json:
- *
- *   {
- *     "key": "AWSACCESSKEY",
- *     "secret": "AWSSECRETKEY",
- *     "bucket": "AWSBUCKET",
- *     "distribution": "CLOUDFRONTDISTRIB"
- *   }
- *
+ * 2. Copy config-sample.json to config.json and edit the file to supply your
+ *    API keys and settings.
+ * 3. Run "grunt deploy" and/or other scripts as desired.
  */
 
 module.exports = function(grunt) {
     "use strict";
 
-    var apps = [ "gallery" ];
+    var apps = [ "gallery", "poll" ];
+    var config = grunt.file.readJSON('config.json');
 
     grunt.initConfig({
+        config: config,
         pkg: grunt.file.readJSON('package.json'),
         bump: {
             options: {
@@ -36,17 +29,17 @@ module.exports = function(grunt) {
                 pushTo: 'upstream',
             }
         },
-        aws: grunt.file.readJSON('grunt-aws.json'),
+        aws: grunt.file.readJSON('config.json'),
         aws_s3: {
             options: {
-                accessKeyId: '<%= aws.key %>',
-                secretAccessKey: '<%= aws.secret %>',
+                accessKeyId: '<%= config.aws.key %>',
+                secretAccessKey: '<%= config.aws.secret %>',
                 uploadConcurrency: 5,
                 downloadConcurrency: 5,
             },
             production: {
                 options: {
-                    bucket: '<%= aws.bucket %>',
+                    bucket: '<%= config.aws.bucket %>',
                     differential: true
                 },
                 files: [
@@ -60,9 +53,9 @@ module.exports = function(grunt) {
         },
         invalidate_cloudfront: {
             options: {
-                key: '<%= aws.key %>',
-                secret: '<%= aws.secret %>',
-                distribution: '<%= aws.distribution %>'
+                key: '<%= config.aws.key %>',
+                secret: '<%= config.aws.secret %>',
+                distribution: '<%= config.aws.distribution %>'
             },
             production: {
                 files: [{

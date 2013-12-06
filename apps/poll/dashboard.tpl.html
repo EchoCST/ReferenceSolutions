@@ -1,0 +1,37 @@
+<!-- NOTES:
+
+1. You must make your app.config{} block defaults match these defaults _exactly_
+   or you will get unexpected behaviors when your app loads. If the user leaves
+   a field set to its default value, the field is _removed_ from the config
+   block. So if the default is true, it will not be sent at all if the checkbox
+   is checked. That means if you go to use it in app.js it can evaluate to false
+   unexpectedly. See the related comment there for details.
+
+-->
+
+<select name="appkey" required="required" data-component="AppKeyList" title="Application key" data-help="Specifies the application key for this instance" />
+
+<input name="parentURL" type="text" title="Parent URL" data-help="The root item that contains the poll." />
+
+<fieldset name="display">
+  <legend class="icon-picture">Display</legend>
+
+  <select name="layout" title="Layout" data-help="How should the individual poll elements be arranged?">
+    <option value="list" selected="selected">Vertical List</option>
+    <option value="sidebyside">Side by Side</option>
+    <option value="tugowar">Tug Of War (Nested)</option>
+  </select>
+</fieldset>
+
+<fieldset name="results">
+  <legend class="icon-tasks">Results</legend>
+
+  <select name="format" title="Format" data-help="Select the graphic display format for the results.">
+    <option value="hbar" selected="selected">Horizontal Bar</option>
+    <option value="vbar">Vertical Bar</option>
+    <option value="pie">Pie Chart</option>
+  </select>
+
+  <input name="percent" type="checkbox" checked="checked" title="Show Percentage" data-help="If checked, a percentage value will be displayed in the result elements." />
+  <input name="count" type="checkbox" checked="checked" title="Show Vote Count" data-help="If checked, the vote count will be displayed in the result elements." />
+</fieldset>

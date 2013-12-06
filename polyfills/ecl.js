@@ -10,8 +10,12 @@ Echo.Polyfills.ECL = {
    * load asynchronously in Angular, although we are pre-loading them via a
    * Grunt task in this Polyfill.
    *
-   * @param String The name of the template to be loaded
-   * @param Function A callback to execute once the template is ready
+   * This method is a service function that may be called directly, but most
+   * Apps will typically want to call templateECL() instead, which will return
+   * an ECL object instead of the raw template.
+   *
+   * @param String template The name of the template to be loaded
+   * @param Function callback A callback to execute once the template is ready
    */
   getTemplate: function(template, callback) {
     angular.module(template, [])
@@ -19,6 +23,26 @@ Echo.Polyfills.ECL = {
       var tmpl = $templateCache.get(template);
       callback(Echo.Polyfills.ECL._parseTemplate(tmpl));
     }]);
+  },
+
+  /**
+   * Load an HTML template file and parse it into ECL JSON. Note that templates
+   * load asynchronously in Angular, although we are pre-loading them via a
+   * Grunt task in this Polyfill.
+   *
+   * This method is a service function that may be called directly, but most
+   * Apps will typically want to call templateECL() instead, which will return
+   * an ECL object instead of the raw template.
+   *
+   * @param Echo.Apps.Poll.Dashboard dashboard The App Dashboard that needs the ECL
+   * @param String template The name of the template to load
+   * @param Function A callback to execute once the template is ready
+   */
+  templateECL: function(dashboard, template, callback) {
+	Echo.Polyfills.ECL.getTemplate(template, function(ecl) {
+		dashboard.config.set("ecl", ecl);
+		callback.call(dashboard);
+    });
   },
 
   /**
