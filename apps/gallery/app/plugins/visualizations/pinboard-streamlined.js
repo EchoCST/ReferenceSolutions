@@ -7,6 +7,11 @@ var $ = jQuery;
  * @class Echo.StreamServer.Controls.Stream.Item.Plugins.StreamlinedPinboardVisualization
  * Transforms a media stream into a pinboard with a streamlined interface.
  *
+ * Apps that use this plugin should also include the TweetDisplay plugin. It is
+ * optional but recommended to also include ItemSourceClass. CSS styles are
+ * defined here that expect these plugins to be available, although this module
+ * will not break if they're missing.
+ *
  * @extends Echo.Plugin
  */
 var plugin = Echo.Plugin.manifest("StreamlinedPinboardVisualization",
@@ -15,9 +20,7 @@ var plugin = Echo.Plugin.manifest("StreamlinedPinboardVisualization",
 if (Echo.Plugin.isDefined(plugin)) return;
 
 plugin.init = function() {
-	var self = this, item = this.component;
-
-	this.extendTemplate("replace", "container", plugin.templates.container);
+	this.extendTemplate("insertAfter", "container", plugin.templates.mediafull);
 };
 
 plugin.dependencies = [{
@@ -67,33 +70,37 @@ plugin.config = {
 plugin.labels = {
 };
 
-(function() {
+/**
+ * @echo_template
+ */
+plugin.templates.mediafull = '<div class="{plugin.class:mediafull}"></div>';
 
 /**
+ * Rendering magic to create a header DIV and position the required elements
+ * within it from their usual spots.
+ *
  * @echo_renderer
  */
-plugin.component.renderers.container = function(element) {
-	var plugin = this, item = this.component;
+plugin.component.renderers.frame = function(element) {
+	var item = this.component,
+	    headerClass = this.cssPrefix + 'header';
 
-	element = item.parentRenderer(name, arguments);
-	if (plugin.get("rendered")) {
-		element.queue("fx", function(next) {
-			next();
-		});
-	}
+	// We need the frame rendered before we can monkey with it
+	element = item.parentRenderer("frame", arguments);
 
-	element.on('mouseover', function() {
-		var hoverview = plugin.view.get('hoverview');
-		hoverview.addClass('over');
-	}).on('mouseout', function() {
-		var hoverview = plugin.view.get('hoverview');
-		hoverview.removeClass('over');
-	});
+	// Most of the header elements are a set of DIV siblings found just before
+	// the data block. We won't always know which ones are there because some
+	// are generated with plugins. Instead, we find our data element and wrap
+	// all of the prev-siblings before it.
+	$(item.view.get('data').prevAll().get().reverse())
+	        .wrapAll('<div class="' + this.cssPrefix + 'header"></div>');
+
+	// Now move the avatar into the header we just made
+	var avatar = item.view.get("avatar-wrapper");
+	$('.' + headerClass, element).prepend(avatar);
 
 	return element;
-}
-
-})();
+};
 
 /**
  * @echo_renderer
@@ -104,83 +111,6 @@ plugin.component.renderers.body = function(element) {
 	var filteredElements = plugin.config.get("mediaSelector")(item.get("data.object.content"));
 	$(filteredElements.selector, item.view.get("text")).remove();
 	var text = Echo.Utils.stripTags(item.get("data.object.content"));
-
-	return element;
-};
-
-/**
- * @echo_renderer
- */
-plugin.renderers.media = function(element) {
-	var plugin = this, item = this.component;
-
-	plugin.processMedia(element, false);
-	return element;
-};
-
-plugin.renderers.comments = function(element) {
-	var plugin = this, item = this.component;
-
-	element.on('click', function(e) {
-		e.preventDefault();
-		console.log(item);
-
-		var terms = item.config.data.parent.query.split(' ');
-		terms.shift();
-		terms.unshift('scope:' + item.data.id);
-		var query = terms.join(' ');
-		console.log(query);
-
-		// Couldn't figure out a more appropriate place to store this... Relied on
-		// closure behavior for now. Plugin? DOM? Parent config?
-		var stream = null;
-
-		var myModal = new Echo.GUI.Modal({
-			show: true,
-			backdrop: true,
-			keyboard: true,
-			closeButton: true,
-			remote: false,
-			extraClass: "",
-			data: {
-				// Why on Earth doesn't plugin.labels.get("commentsCaption") work here?
-				// I tried three ways of getting 'plugin' defined here (in case I was
-				// pointing to a base class or something?) and none of the three yielded
-				// a get() function on this object.
-				title: plugin.labels["commentsCaption"] + item.data.actor.title,
-				// So this is super frustrating. If you try to render something directly
-				// into .modal-body from onShow() below, something appears to block or
-				// overwrite this. I normally hate hard-coding things like this, but it
-				// seemed like the fastest solution for now.
-				body: function() {
-					return '<div id="comment-target"></div>';
-				}
-			},
-			width: "600px",
-			height: "500",
-			padding: "10",
-			footer: false,
-			header: true,
-			fade: true,
-			onShow: function() {
-				// This is just horrible...
-				var $target = $('#comment-target');
-
-				stream = new Echo.StreamServer.Controls.Stream({
-					"target": $target[0],
-					"query": query,
-					"appkey": "echo.jssdk.demo.aboutecho.com"
-				});
-			},
-
-			onHide: function() {
-				if (stream != null) {
-					stream.destroy();
-					stream = null;
-				}
-			}
-		});
-	});
 
 	return element;
 };
@@ -239,12 +169,12 @@ plugin.methods.processMedia = function(element, publishEvents) {
 	} else {
 		element.append(mediaItems);
 		element.find('img, iframe').one('error', function() {
-			element.addClass('load-error');
+			item.view.get('content').parent().addClass('load-error');
 			if (publishEvents) {
 				plugin.events.publish({ "topic": "onMediaError", "data": {} });
 			}
 		}).one('load', function() {
-			element.addClass('loaded');
+			item.view.get('content').parent().addClass('loaded');
 			if (publishEvents) {
 				plugin.events.publish({ "topic": "onMediaLoaded", "data": {} });
 			}
@@ -252,131 +182,46 @@ plugin.methods.processMedia = function(element, publishEvents) {
 	}
 };
 
-/**
- * @echo_template
- */
-plugin.templates.container =
-	// TODO: Move ontouchstart out
-	'<div class="{class:container} source-{data:source.name}" ontouchstart="this.classList.toggle(\'hover\');">' +
-		'<div class="flipper">' +
-			'<div class="{plugin.class:mediafull} front"></div>' +
-			'<div class="{plugin.class:hoverview} back">' +
-				'<div class="{class:header}">' +
-					'<div class="{class:avatar-wrapper}">' +
-						'<div class="{class:avatar}"></div>' +
-					'</div>' +
-					'<div class="{plugin.class:topContentWrapper}">' +
-						'<div class="{class:authorName} echo-linkColor"></div>' +
-						'<div class="{plugin.class:childBody}"></div>' +
-						'<div class="echo-clear"></div>' +
-					'</div>' +
-					'<div class="echo-clear"></div>' +
-				'</div>' +
-				'<input type="hidden" class="{class:modeSwitch}">' +
-				'<div class="echo-clear"></div>' +
-				'<div class="{class:wrapper}">' +
-					'<div class="{class:subcontainer}">' +
-						'<div class="{class:data}">' +
-							'<div class="{plugin.class:media}"></div>' +
-							'<div class="{class:body} echo-primaryColor"> ' +
-								'<span class="{class:text}"></span>' +
-								'<span class="{class:textEllipses}">...</span>' +
-								// NOTE: Can't simply remove this from the template
-								// or stream.js dies.
-								'<span class="{class:textToggleTruncated} echo-linkColor echo-clickable"></span>' +
-							'</div>' +
-						'</div>' +
-						'<div class="{class:footer} echo-secondaryColor echo-secondaryFont">' +
-							'<img class="{class:sourceIcon} echo-clickable">' +
-							'<div class="{class:date}"></div>' +
-							'<div class="{class:from}"></div>' +
-							'<div class="{class:via}"></div>' +
-							'<div class="{class:buttons}"></div>' +
-							'<a href="#" class="{plugin.class:comments}"><i class="icon-comment"></i></a>' +
-							'<div class="echo-clear"></div>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-		'</div>' +
-	'</div>';
-
 plugin.css =
-	'.{plugin.class} { perspective: 1000; -webkit-perspective: 1000; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.9); }' +
-	'.{plugin.class} div { box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; } ' +
+	// Override some incompatible default styles
+	'.{class:container} { padding: 0px; }' +
+	'.{class:subwrapper} { margin-left: 0px; }' +
+	'.{class:avatar-wrapper} { margin-right: 7px; }' +
 	'.{plugin.class} a { color: #2CA0C7; }' +
 
+	// General layout
+	'.{plugin.class} { perspective: 1000; -webkit-perspective: 1000; }' +
+	'.{plugin.class} img, .{plugin.class} iframe { display: block; ; }' +
+	'.{plugin.class} div { box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; } ' +
+	'.{plugin.class} .{class:data} { padding: 7px; }' +
+
 	// Transitions for card flipping
-	'.{plugin.class} .flipper { transition: 0.6s; transform-style: preserve-3d; position: relative; -webkit-perspective: 800; }' +
-	'.{plugin.class} .flipper > div { -webkit-backface-visibility: hidden; transition: 350ms cubic-bezier(.8,.01,.74,.79); -webkit-transition: 350ms cubic-bezier(.8,.01,.74,.79); position: static; }' +
-	'.{plugin.class} .flipper > .back { -webkit-transform: rotatey(-180deg); transform: rotateY(-180deg); position: absolute; top: 0; bottom: 0; }' +
-	'.{plugin.class} .flipper:hover > .front { -webkit-transform: rotatey(180deg); transform: rotateY(180deg); }' +
-	'.{plugin.class} .flipper:hover > .back { -webkit-transform: rotatey(0deg); transform: rotateY(-0deg); }' +
+	'.{plugin.class} .{class:content} { transition: 0.6s; transform-style: preserve-3d; position: relative; -webkit-perspective: 800; padding-bottom: 0px; margin: 5px; }' +
+	'.{plugin.class} .{class:content} .{class:container}, ' +
+	'.{plugin.class} .{class:content} .{plugin.class:mediafull} { -webkit-backface-visibility: hidden; transition: 250ms cubic-bezier(.8,.01,.74,.79); -webkit-transition: 250ms cubic-bezier(.8,.01,.74,.79); position: static; border: 1px solid #111; background: white; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); }' +
+	'.{plugin.class} .{class:content} .{class:container} { -webkit-transform: rotatey(-180deg); transform: rotateY(-180deg); position: absolute; top: 0; bottom: 0; width: 100%; }' +
+	'.{plugin.class} .{class:content}:hover > .{plugin.class:mediafull} { -webkit-transform: rotatey(180deg); transform: rotateY(180deg); }' +
+	'.{plugin.class} .{class:content}:hover > .{class:container} { -webkit-transform: rotatey(0deg); transform: rotateY(-0deg); }' +
 
 	// General media visuals
 	'.{plugin.class:media} { margin: 4px 7px 0 0; width: 25%; float: left; }' +
 	'.{plugin.class:mediafull} { background: #000; }' +
 	'.{plugin.class:mediafull} img { max-width: 100%; backface-visibility: hidden; display: block; margin: 0 auto; }' +
 
-	'.{plugin.class:topContentWrapper} { padding-left: 45px; }' +
-	'.{plugin.class:childBody} { float: none; display: inline; margin-left: 5px; }' +
-	'.{plugin.class:childBody} a { text-decoration: none; font-weight: bold; color: #524D4D; }' +
+	// Separate the header visually, and color-code it
+	'.{plugin.class} .{plugin.class:header} { padding: 5px; background: #f0f0f0; border-bottom: 1px solid #ccc; }' +
+	'.{plugin.class} .item-source-twitter .{plugin.class:header} { background: #E5F5FF; border-bottom: 1px solid #A1C7DF; }' +
+	'.{plugin.class} .item-source-instagram .{plugin.class:header} { background: #E4CAB1; border-bottom: 1px solid #B49F8B; }' +
 
-	'.{plugin.class} .{class:container} { position: relative; padding: 0px; }' +
-	'.{plugin.class} .{class:content} { padding-bottom: 0px; background: white; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); margin: 5px; border: 1px solid #111; }' +
-	'.{plugin.class} .{class:authorName} { float: none; display: inline; margin-left: 0px; }' +
-	'.{plugin.class} .{class:body} { margin: 0px; }' +
-	'.{plugin.class} h2.echo-item-title { font-size: 1.1em; line-height: 1.2em; }' +
-	'.{plugin.class} .{class:avatar} { float: left; width: 40px; height: 40px; }' +
-	'.{plugin.class} .{class:depth-1} { margin-left: 0px; border-bottom: none; }' +
-	'.{plugin.class} .{class:depth-1} .{class:authorName} { display: inline; font-size: 12px; }' +
-	'.{plugin.class} .{class:depth-0} { padding: 0; }' +
-	'.{plugin.class} .{class:depth-0} .{class:authorName} { font-size: 15px; margin-top: 4px; }' +
-	'.{plugin.class} .{class:wrapper} { float: none; width: 100%; }' +
-	'.{plugin.class} .{class:subcontainer} { float: none; width: auto; margin: 10px; }' +
-	'.{plugin.class} .{class:date} { color: #666; text-decoration: none; font-weight: normal; }' +
-	'.{plugin.class} .{class:footer} a { color: #666; text-decoration: none; font-weight: normal; }' +
-	'.{plugin.class} .{class:footer} a:hover { text-decoration: underline; }' +
+	// Separate the footer visually, and color-code it
+	'.{plugin.class} .{class:footer} { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; background: #f0f0f0; border-top: 1px solid #ccc; padding: 4px 8px; }' +
+	'.{plugin.class} .item-source-twitter .{class:footer} { background: #E5F5FF; border-top: 1px solid #A1C7DF; }' +
+	'.{plugin.class} .item-source-twitter .{class:button-Share} { display: none; }' +
+	'.{plugin.class} .item-source-instagram .{class:footer} { background: #E4CAB1; border-top: 1px solid #B49F8B; }' +
 
-	'.{plugin.class} .{class:container} .{class:header} { padding: 5px; background: #f0f0f0; border-bottom: 1px solid #ccc; }' +
-	'.{plugin.class} .{class:container} .{class:footer} { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; background: #f0f0f0; border-top: 1px solid #ccc; padding: 4px 8px; }' +
-
-	'.{plugin.class} .{class:container}.source-Twitter .{class:header} { background: #E5F5FF; border-bottom: 1px solid #A1C7DF; }' +
-	'.{plugin.class} .{class:container}.source-Twitter .{class:footer} { background: #E5F5FF; border-top: 1px solid #A1C7DF; }' +
-	'.{plugin.class} .{class:container}.source-Twitter .echo-streamserver-controls-stream-item-button-Share { display: none; }' +
-	'.{plugin.class} .{class:container}.source-Instagram .{class:header} { background: #E4CAB1; border-bottom: 1px solid #B49F8B; }' +
-	'.{plugin.class} .{class:container}.source-Instagram .{class:footer} { background: #E4CAB1; border-top: 1px solid #B49F8B; }' +
-
-	'.{plugin.class} .{class:container-child} { margin: 0px; padding: 10px 15px; }' +
-	'.{plugin.class} .echo-linkColor { text-decoration: none; font-weight: bold; color: #524D4D; }' +
-	'.{plugin.class} .echo-linkColor a { text-decoration: none; font-weight: bold; color: #524D4D; }' +
-	'.{plugin.class} .{class:buttons} .echo-linkColor { font-weight: normal; color: #666; }' +
-	'.{plugin.class} .{class:buttons} .echo-linkColor:hover { font-weight: normal; color: #666; }' +
-
-	// TODO: There must be a better way to do this...
-	'.{plugin.class:comments} { float: right; display: block; } ' +
-	'#comment-target .echo-control-message-info { color: #333; } ' +
-	'#comment-target .echo-control-message-info:after { content: " (This is where we would handle commenting...)" } ' +
-
-	// plugins styles
-	'.{plugin.class} .{class:plugin-Like-likedBy} { margin-top: 5px; }' +
-	'.{plugin.class} .{class:plugin-Reply-submitForm} { box-shadow: none; margin: 0px; border: none; background-color: #F2F0F0; }' +
-	'.{plugin.class} .{class:plugin-Reply-compactForm} { box-shadow: none; margin: 0px; border: none; background-color: #F2F0F0; }' +
-	'.{plugin.class} .{class:plugin-Reply-replyForm} .echo-identityserver-controls-auth-name { font-size: 12px; }' +
-	'.{plugin.class} .{class:plugin-Reply-replyForm} .echo-identityserver-controls-auth-logout { line-height: 24px; }' +
-	'.{plugin.class} .{class:plugin-Reply-replyForm} .echo-streamserver-controls-submit-userInfoWrapper {  margin: 5px 0px; }' +
-	'.{plugin.class} .{class:plugin-Reply-replyForm} .echo-streamserver-controls-submit-plugin-FormAuth-forcedLoginMessage { font-size: 13px; }' +
-	'.{plugin.class} .{class:plugin-Moderation-status}  { width: 30px; clear: both; }' +
-	'.{plugin.class} .{class:plugin-TweetDisplay-tweetUserName}, .{plugin.class} .{class:authorName} { float: none; word-wrap: normal; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }' +
-	'.{plugin.class} .{class:plugin-TweetDisplay-tweetUserName} { margin-left: 0px; }' +
-	'.{class:plugin-TweetDisplay} .{plugin.class:childBody} { margin-left: 0; }' +
-
-	// TODO: Remove this block after TwitterIntents removing
-	'.{plugin.class} .{class:plugin-TwitterIntents-tweetUserName}, .{plugin.class} .{class:authorName} { float: none; word-wrap: normal; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }' +
-	'.{plugin.class} .{class:plugin-TwitterIntents-tweetUserName} { margin-left: 0px; }' +
-	'.{class:plugin-TwitterIntents} .{plugin.class:childBody} { margin-left: 0; }' +
-
-	'.{class}.native-ad-placeholder { background: #2d1302; width: 300px; height: 250px; line-height: 250px; text-align: center; color: #fff; }';
+	// Un-float the auth/user values since there won't be room for them side-by-side. Also add ellipsis if necessary
+	'.{plugin.class} .{class:plugin-TweetDisplay-tweetUserName},' +
+	'.{plugin.class} .{class:authorName} { float: none; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; margin-left: 0px; }';
 
 Echo.Plugin.create(plugin);
 
@@ -499,11 +344,8 @@ plugin.methods._refreshView = function() {
 		return;
 	}
 
-	// Clean up any empty-media items - we don't want them in this visualization
-	// TODO: This works fine, but is it considered "correct"?
-	$body.find('.front.empty').each(function() {
-		$(this).closest('.echo-streamserver-controls-stream-item').remove();
-	});
+	// Clean up any broken images before they disrupt the visualization.
+	$body.find('.load-error').remove();
 
 	// Create native-advertising placeholder slots as necessary. Note that we
 	// use index() instead of prevAll() because prevAll() returns its elements

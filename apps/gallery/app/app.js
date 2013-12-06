@@ -144,6 +144,11 @@ gallery.renderers.stream = function(element) {
 				"columns": [ 0, 330, 560, 900, 1100 ]
 			});
 
+			plugins.push({
+				"name": "ItemSourceClass",
+				"url": "//echocsthost.s3.amazonaws.com/plugins/item-source-class.js"
+			});
+
 			break;
 
 		case "tabbed":
@@ -214,6 +219,7 @@ gallery.renderers.stream = function(element) {
 			"plugins": plugins,
 			"slideTimeout": 0,
 			"item": {
+				"reTag": false,
 				"viaLabel": {"icon": true}
 			}
 		}
