@@ -145,10 +145,10 @@ plugin.renderers.mediafull = function(element) {
 
 plugin.css =
 	// Override some incompatible default styles
-	'.{class:container} { padding: 0px; }' +
-	'.{class:subwrapper} { margin-left: 0px; }' +
-	'.{class:avatar-wrapper} { margin-right: 7px; }' +
-	'.{plugin.class} a { color: #2CA0C7; }' +
+	'.{plugin.class} .{class:container} { padding: 0px; }' +
+	'.{plugin.class} .{class:subwrapper} { margin-left: 0px; }' +
+	'.{plugin.class} .{class:avatar-wrapper} { margin-right: 7px; }' +
+	'.{plugin.class} .{plugin.class} a { color: #2CA0C7; }' +
 
 	// General layout
 	'.{plugin.class} { perspective: 1000; -webkit-perspective: 1000; }' +
@@ -156,13 +156,15 @@ plugin.css =
 	'.{plugin.class} div { box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; } ' +
 	'.{plugin.class} .{class:data} { padding: 7px; }' +
 
-	// Transitions for card flipping
+	// Transitions for card flipping. Note that flipping is only enabled in
+	// WebKit browsers for compatibility reasons - we use a normal hide/show
+	// effect for others.
 	'.{plugin.class} .{class:content} { transition: 0.6s; transform-style: preserve-3d; position: relative; -webkit-perspective: 800; padding-bottom: 0px; margin: 5px; }' +
 	'.{plugin.class} .{class:content} .{class:container}, ' +
-	'.{plugin.class} .{class:content} .{plugin.class:mediafull} { -webkit-backface-visibility: hidden; transition: 250ms cubic-bezier(.8,.01,.74,.79); -webkit-transition: 250ms cubic-bezier(.8,.01,.74,.79); position: static; border: 1px solid #111; background: white; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); }' +
-	'.{plugin.class} .{class:content} .{class:container} { -webkit-transform: rotatey(-180deg); transform: rotateY(-180deg); position: absolute; top: 0; bottom: 0; width: 100%; }' +
-	'.{plugin.class} .{class:content}:hover > .{plugin.class:mediafull} { -webkit-transform: rotatey(180deg); transform: rotateY(180deg); }' +
-	'.{plugin.class} .{class:content}:hover > .{class:container} { -webkit-transform: rotatey(0deg); transform: rotateY(-0deg); }' +
+	'.{plugin.class} .{class:content} .{plugin.class:mediafull} { -webkit-backface-visibility: hidden; -webkit-transition: 250ms cubic-bezier(.8,.01,.74,.79); position: static; border: 1px solid #111; background: white; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); }' +
+	'.{plugin.class} .{class:content} .{class:container} { -webkit-transform: rotatey(-180deg); position: absolute; top: 0; bottom: 0; width: 100%; }' +
+	'.{plugin.class} .{class:content}:hover > .{plugin.class:mediafull} { -webkit-transform: rotatey(180deg); }' +
+	'.{plugin.class} .{class:content}:hover > .{class:container} { -webkit-transform: rotatey(0deg); }' +
 
 	// General media visuals
 	'.{plugin.class:media} { margin: 4px 7px 0 0; width: 25%; float: left; }' +
@@ -248,13 +250,13 @@ plugin.config = {
 		"resizable": false,
 		"animationOptions": {
 			// change duration for mozilla browsers
-			"duration": isMozillaBrowser ? 0 : 2750,
+			"duration": 2750,//isMozillaBrowser ? 0 : 2750,
 			"easing": "linear",
 			"queue": false
 		},
 		// use only jQuery engine for animation in mozilla browsers
 		// due to the issues with video display with CSS transitions
-		"animationEngine": isMozillaBrowser ? "jquery" : "best-available"
+		"animationEngine": "best-available",//isMozillaBrowser ? "jquery" : "best-available"
 	}
 };
 
@@ -339,7 +341,7 @@ plugin.methods._refreshView = function() {
 	// Temporary hack while we research why the Twitter-Display plugin isn't
 	// always doing this itself
 	if (window.twttr && window.twttr.widgets) {
-		window.twttr.widgets.load();
+		//window.twttr.widgets.load();
 	}
 };
 
