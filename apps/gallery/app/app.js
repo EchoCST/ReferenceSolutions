@@ -128,6 +128,9 @@ gallery.renderers.stream = function(element) {
 		"name": "ItemsRollingWindow",
 		"moreButton": true,
 		"url": "//cdn.echoenabled.com/apps/echo/dataserver/v3/plugins/items-rolling-window.js"
+	}, {
+		"name": "NativeAdvertising",
+		"url": "//echocsthost.s3.amazonaws.com/plugins/native-advertising.js"
 	}];
 
 	//if (!!self.config.get("display.likes")) {
@@ -218,6 +221,7 @@ gallery.renderers.stream = function(element) {
 			"query": self.config.get("query"),
 			"plugins": plugins,
 			"slideTimeout": 0,
+			"nativeAdInterval": self.config.get("integration.nativeinterval"),
 			"item": {
 				"reTag": false,
 				"viaLabel": {"icon": true}

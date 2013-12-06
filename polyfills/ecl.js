@@ -14,8 +14,8 @@ Echo.Polyfills.ECL = {
    * Apps will typically want to call templateECL() instead, which will return
    * an ECL object instead of the raw template.
    *
-   * @param String template The name of the template to be loaded
-   * @param Function callback A callback to execute once the template is ready
+   * @param {String} template The name of the template to be loaded
+   * @param {Function} callback A callback to execute once the template is ready
    */
   getTemplate: function(template, callback) {
     angular.module(template, [])
@@ -34,9 +34,9 @@ Echo.Polyfills.ECL = {
    * Apps will typically want to call templateECL() instead, which will return
    * an ECL object instead of the raw template.
    *
-   * @param Echo.Apps.Poll.Dashboard dashboard The App Dashboard that needs the ECL
-   * @param String template The name of the template to load
-   * @param Function A callback to execute once the template is ready
+   * @param {Echo.Apps.Poll.Dashboard} dashboard The App Dashboard that needs the ECL
+   * @param {String} template The name of the template to load
+   * @param {Function} A callback to execute once the template is ready
    */
   templateECL: function(dashboard, template, callback) {
 	Echo.Polyfills.ECL.getTemplate(template, function(ecl) {
@@ -51,7 +51,7 @@ Echo.Polyfills.ECL = {
    *
    * NOTE: This calls itself recursively to deal with FIELDSET nesting.
    *
-   * @param template The DOM element nodelist to parse
+   * @param {Element} template The DOM element nodelist to parse
    */
   _parseTemplate: function(template) {
     var ecl = [];

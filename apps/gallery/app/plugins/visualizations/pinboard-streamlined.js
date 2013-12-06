@@ -27,15 +27,19 @@ plugin.dependencies = [{
 	"loaded": function() { },
 	"url": "//cdn.echoenabled.com/sdk/v3/gui.pack.js"
 }, {
-        "loaded": function() { },
-        "url": "//cdn.echoenabled.com/sdk/v3/gui.pack.css"
+	"loaded": function() { },
+	"url": "//cdn.echoenabled.com/sdk/v3/gui.pack.css"
 }, {
 	"loaded": function() { return !!Echo.jQuery().isotope; },
 	"url": "{config:cdnBaseURL.sdk}/third-party/jquery/jquery.isotope.min.js"
 }, {
+	// This plugin lets us debounce events
 	"loaded": function() { return !!Echo.jQuery().doTimeout; },
-	// TODO: Appropriate pattern to define a config var for this?
-	"url": "//echocsthost.s3.amazonaws.com/apps/gallery/app/plugins/jquery.ba-dotimeout.min.js"
+	"url": "//echocsthost.s3.amazonaws.com/plugins/jquery.ba-dotimeout.min.js"
+}, {
+	// The Media Polyfill is used to extract IMG/etc tags for separate display
+	"loaded": function() { return !!Echo.Polyfills && !!Echo.Polyfills.Media; },
+	"url": "//echocsthost.s3.amazonaws.com/polyfills/media.js"
 }];
 
 plugin.config = {
@@ -121,48 +125,7 @@ plugin.component.renderers.body = function(element) {
 plugin.renderers.mediafull = function(element) {
 	var plugin = this, item = this.component;
 
-	plugin.processMedia(element, true);
-	return element;
-};
-
-/**
- * Helper since the media is processed twice.
- */
-plugin.methods.processMedia = function(element, publishEvents) {
-	var plugin = this, item = this.component;
-
-	var selector = plugin.config.get("mediaSelector");
-	var mediaItems = $.map(selector(item.get("data.object.content")),
-						   function(entry) {
-		switch (entry.nodeName) {
-			case "IMG":
-				// We don't want a hard-coded width/height - we are responsive
-				entry.removeAttribute('height');
-				entry.removeAttribute('width');
-
-				// We don't want the full size image necessarily but we probably
-				// need something bigger than the thumb because that's for tiny
-				// views in standard streams. See if there's a mid-size preview.
-				if (entry.hasAttribute('data-src-preview')) {
-					entry.setAttribute('src',
-									   entry.getAttribute('data-src-preview'));
-				} else if (entry.hasAttribute('data-src-full')) {
-					entry.setAttribute('src',
-									   entry.getAttribute('data-src-full'));
-				}
-				break;
-
-			case "IFRAME":
-				// We don't want a hard-coded width/height - we are responsive
-				entry.removeAttribute('height');
-				entry.removeAttribute('width');
-
-				entry.setAttribute('width', '100%');
-				break;
-		}
-
-		return entry;
-	});
+	var mediaItems = Echo.Polyfills.Media.processMedia(item);
 
 	if (mediaItems.length < 1) {
 		element.addClass('empty');
@@ -170,16 +133,14 @@ plugin.methods.processMedia = function(element, publishEvents) {
 		element.append(mediaItems);
 		element.find('img, iframe').one('error', function() {
 			item.view.get('content').parent().addClass('load-error');
-			if (publishEvents) {
-				plugin.events.publish({ "topic": "onMediaError", "data": {} });
-			}
+			plugin.events.publish({ "topic": "onMediaError", "data": {} });
 		}).one('load', function() {
 			item.view.get('content').parent().addClass('loaded');
-			if (publishEvents) {
-				plugin.events.publish({ "topic": "onMediaLoaded", "data": {} });
-			}
+			plugin.events.publish({ "topic": "onMediaLoaded", "data": {} });
 		});
 	}
+
+	return element;
 };
 
 plugin.css =
@@ -346,39 +307,6 @@ plugin.methods._refreshView = function() {
 
 	// Clean up any broken images before they disrupt the visualization.
 	$body.find('.load-error').remove();
-
-	// Create native-advertising placeholder slots as necessary. Note that we
-	// use index() instead of prevAll() because prevAll() returns its elements
-	// in reverse order!
-	var interval = stream.config.get('parent.integration.nativeinterval', 0);
-	if (interval > 0) {
-		// If there are no placeholders yet, work backward from the last item.
-		// Otherwise, work backward from the first placeholder.
-		var $items = $body.find('.echo-streamserver-controls-stream-item');
-		var index = $items.index($body.find('.native-ad-placeholder').first());
-		var $prev = (index > 0) ? $items.slice(0, index) : $items;
-
-		var rendered = [];
-		while ($prev.length > interval) {
-			$prev = $prev.slice(0, $prev.length - interval);
-
-			var $el = $('<div class="echo-streamserver-controls-stream-item native-ad-placeholder">Native Ad Placeholder</div>');
-			rendered.push($el);
-			$el.insertAfter($prev.last());
-		}
-
-		// Let the main page know we have new placeholders to fill
-		if (rendered.length > 0) {
-			Echo.Events.publish({
-				topic: 'Echo.StreamServer.Controls.Stream.onAdPlaceholder',
-				data: {
-					stream: stream,
-					body: $body,
-					elements: rendered
-				}
-			});
-		}
-	}
 
 	var bodyWidth = $body.width();
 
