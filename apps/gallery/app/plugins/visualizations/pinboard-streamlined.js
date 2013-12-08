@@ -20,16 +20,14 @@ var plugin = Echo.Plugin.manifest("StreamlinedPinboardVisualization",
 if (Echo.Plugin.isDefined(plugin)) return;
 
 plugin.init = function() {
+	// Cache any media found in the Stream.Item for later use
+	this.set('media', Echo.Polyfills.Media.processMedia(this.component));
+
+	// Add a media container for the "front" side of the card
 	this.extendTemplate("insertAfter", "container", plugin.templates.mediafull);
 };
 
 plugin.dependencies = [{
-	"loaded": function() { },
-	"url": "//cdn.echoenabled.com/sdk/v3/gui.pack.js"
-}, {
-	"loaded": function() { },
-	"url": "//cdn.echoenabled.com/sdk/v3/gui.pack.css"
-}, {
 	"loaded": function() { return !!Echo.jQuery().isotope; },
 	"url": "{config:cdnBaseURL.sdk}/third-party/jquery/jquery.isotope.min.js"
 }, {
@@ -37,42 +35,14 @@ plugin.dependencies = [{
 	"loaded": function() { return !!Echo.jQuery().doTimeout; },
 	"url": "//echocsthost.s3.amazonaws.com/plugins/jquery.ba-dotimeout.min.js"
 }, {
+	// Flip animation polyfill for browsers that don't support CSS3
+	"loaded": function() { return !!Echo.jQuery().flipp; },
+	"url": "//echocsthost.s3.amazonaws.com/plugins/jquery.flippy.min.js"
+}, {
 	// The Media Polyfill is used to extract IMG/etc tags for separate display
 	"loaded": function() { return !!Echo.Polyfills && !!Echo.Polyfills.Media; },
 	"url": "//echocsthost.s3.amazonaws.com/polyfills/media.js"
 }];
-
-plugin.config = {
-	/**
-	 * @cfg {Function} mediaSelector
-	 * Override this to define the function that extracts media from arriving
-	 * stream items.
-	 *
-	 * The default function looks for IMG, VIDEO, EMBED, and IFRAME tags using
-	 * the following code:
-	 *
-	 * 	"mediaSelector": function(content) {
-	 * 		var dom = $("<div>" + content + "</div>");
-	 * 		return $("img, video, embed, iframe", dom);
-	 * 	}
-	 */
-	"mediaSelector": function(content) {
-		var dom = $("<div>" + content + "</div>");
-		return $("img, video, embed, iframe", dom);
-	},
-
-	/**
-	 * @cfg {Object} gallery
-	 * Pinboard requires the MediaGallery plugin. Any settings defined here will
-	 * be passed through to it.
-	 */
-	"gallery": {
-		"resizeDuration": 250
-	}
-};
-
-plugin.labels = {
-};
 
 /**
  * @echo_template
@@ -109,23 +79,11 @@ plugin.component.renderers.frame = function(element) {
 /**
  * @echo_renderer
  */
-plugin.component.renderers.body = function(element) {
-	var plugin = this, item = this.component;
-	element = item.parentRenderer("body", arguments);
-	var filteredElements = plugin.config.get("mediaSelector")(item.get("data.object.content"));
-	$(filteredElements.selector, item.view.get("text")).remove();
-	var text = Echo.Utils.stripTags(item.get("data.object.content"));
-
-	return element;
-};
-
-/**
- * @echo_renderer
- */
 plugin.renderers.mediafull = function(element) {
-	var plugin = this, item = this.component;
+	var plugin = this,
+	    item = this.component;
 
-	var mediaItems = Echo.Polyfills.Media.processMedia(item);
+	var mediaItems = plugin.get('media', []);
 
 	if (mediaItems.length < 1) {
 		element.addClass('empty');
@@ -151,7 +109,7 @@ plugin.css =
 	'.{plugin.class} .{plugin.class} a { color: #2CA0C7; }' +
 
 	// General layout
-	'.{plugin.class} { perspective: 1000; -webkit-perspective: 1000; }' +
+	'.{plugin.class} { perspective: 1000; -webkit-perspective: 1000; -webkit-transition-property: -webkit-transform, opacity; -moz-transition-property: -moz-transform, opacity; -o-transition-property: top, left, opacity; transition-property:transform, opacity; -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }' +
 	'.{plugin.class} img, .{plugin.class} iframe { display: block; ; }' +
 	'.{plugin.class} div { box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; } ' +
 	'.{plugin.class} .{class:data} { padding: 7px; }' +
@@ -161,10 +119,11 @@ plugin.css =
 	// effect for others.
 	'.{plugin.class} .{class:content} { transition: 0.6s; transform-style: preserve-3d; position: relative; -webkit-perspective: 800; padding-bottom: 0px; margin: 5px; }' +
 	'.{plugin.class} .{class:content} .{class:container}, ' +
-	'.{plugin.class} .{class:content} .{plugin.class:mediafull} { -webkit-backface-visibility: hidden; -webkit-transition: 250ms cubic-bezier(.8,.01,.74,.79); position: static; border: 1px solid #111; background: white; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); }' +
-	'.{plugin.class} .{class:content} .{class:container} { -webkit-transform: rotatey(-180deg); position: absolute; top: 0; bottom: 0; width: 100%; }' +
-	'.{plugin.class} .{class:content}:hover > .{plugin.class:mediafull} { -webkit-transform: rotatey(180deg); }' +
-	'.{plugin.class} .{class:content}:hover > .{class:container} { -webkit-transform: rotatey(0deg); }' +
+	'.{plugin.class} .{class:content} .{plugin.class:mediafull} { -webkit-backface-visibility: hidden; -webkit-transition: 250ms cubic-bezier(.8,.01,.74,.79); -moz-backface-visibility: hidden; -moz-transition: 250ms cubic-bezier(.8,.01,.74,.79); position: static; border: 1px solid #111; background: white; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); -moz-transform-style: preserve-3d; -moz-backface-visibility: hidden; }' +
+	'.{plugin.class} .{class:content} .{class:container} { -webkit-transform: rotatey(-180deg); -moz-transform: rotatey(-180deg); position: absolute; top: 0; bottom: 0; width: 100%; }' +
+	'.{plugin.class} .{class:content}:hover > .{plugin.class:mediafull} { -webkit-transform: rotatey(180deg); -moz-transform: rotatey(180deg); }' +
+	'.{plugin.class} .{class:content}:hover > .{class:container} { -webkit-transform: rotatey(0deg); -moz-transform: rotatey(0deg); }' +
+	'.{plugin.class} .{class:content} .{class:container} .media-processed { display: none; }' +
 
 	// General media visuals
 	'.{plugin.class:media} { margin: 4px 7px 0 0; width: 25%; float: left; }' +
@@ -299,20 +258,26 @@ plugin.events = {};
 })();
 
 plugin.methods._refreshView = function() {
-	var plugin = this, stream = this.component;
-	var hasEntries = stream.threads.length;
+	var plugin = this,
+	    stream = this.component,
+	    hasEntries = stream.threads.length,
+		$body = stream.view.get("body"),
+		columns = plugin.config.get("columns", 4);
 
-	var $body = stream.view.get("body");
-	if ($body.length < 1) {
-		return;
-	}
+	// In case we get called before even this element is rendered
+	if ($body.length < 1) return;
 
 	// Clean up any broken images before they disrupt the visualization.
-	$body.find('.load-error').remove();
+	// TODO: The first line is an ugly hack to bubble up a class from a lower
+	// element until we get a chance to move the class itself
+	$body.find('.empty').each(function() {
+		$(this).closest('.echo-streamserver-controls-stream-item')
+		       .addClass('empty');
+	});
+	$body.find('.load-error, .empty').remove();
 
+	// Figure out how many columns we should render
 	var bodyWidth = $body.width();
-
-	var columns = plugin.config.get("columns", 4);
 	if ($.isArray(columns)) {
 		var length = columns.length;
 		for (var i = 0; i < length; i++) {
@@ -324,6 +289,7 @@ plugin.methods._refreshView = function() {
 		columns = i;
 	}
 
+	// Set up our Isotope options
 	var config = $.extend({
 		sortBy: "original-order",
 		masonry: {
@@ -337,19 +303,11 @@ plugin.methods._refreshView = function() {
 			? $body.isotope("reloadItems").isotope(config)
 			: $body.isotope("destroy"))
 		: hasEntries && $body.isotope(config);
-
-	// Temporary hack while we research why the Twitter-Display plugin isn't
-	// always doing this itself
-	if (window.twttr && window.twttr.widgets) {
-		//window.twttr.widgets.load();
-	}
 };
 
 plugin.css =
 	'.{plugin.class} { background: #333; }' +
-	'.{plugin.class} .isotope { -webkit-transition-property: height, width; -moz-transition-property: height, width; -o-transition-property: height, width; transition-property: height, width;  -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }' +
-	// TODO: These classes below should probably move up to the Stream.Item plugin
-	'.{plugin.class} .isotope .isotope-item { -webkit-transition-property: -webkit-transform, opacity; -moz-transition-property: -moz-transform, opacity; -o-transition-property: top, left, opacity; transition-property:transform, opacity; -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }';
+	'.{plugin.class} .isotope { -webkit-transition-property: height, width; -moz-transition-property: height, width; -o-transition-property: height, width; transition-property: height, width;  -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }';
 
 Echo.Plugin.create(plugin);
 

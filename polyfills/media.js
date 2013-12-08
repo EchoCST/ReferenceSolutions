@@ -5,9 +5,25 @@ Echo.Polyfills = Echo.Polyfills || {};
 
 // Done as a singleton because we aren't going to instantiate this...
 Echo.Polyfills.Media = {
-	defaultMediaSelector: function(content) {
-		var dom = $("<div>" + content + "</div>");
-		return $("img, video, embed, iframe", dom);
+	/**
+	 * Default extractor to obtain media elements from an Item's content
+	 * property, and mark them as processed. May be used as-is, or may be copied
+	 * to serve as a template for making new selectors.
+	 *
+	 * @param {Stream.Item} item The item to process.
+	 */
+	defaultMediaSelector: function(item) {
+		// We need a DIV wrapper because some items may just be text.
+		var $dom = $("<div>" + item.get("data.object.content") + "</div>");
+
+		// Find our media, and mark it processed.
+		var $media = $("img, video, embed, iframe", $dom);
+		$media.addClass('media-processed');
+
+		// Update the item so our classes 'stick'
+		item.set("data.object.content", $dom.html());
+		
+		return $media;
 	},
 
     /**
@@ -23,7 +39,7 @@ Echo.Polyfills.Media = {
     processMedia: function(item, selector) {
         var _sel = selector || Echo.Polyfills.Media.defaultMediaSelector;
 
-        return $.map(_sel(item.get("data.object.content")), function(e) {
+        return $.map(_sel(item), function(e) {
             // Remove hard-coded sizes to support responsive layouts
             e.setAttribute('width', '100%');
             e.removeAttribute('height');
