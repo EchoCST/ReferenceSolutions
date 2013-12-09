@@ -75,6 +75,8 @@ querybuilder.templates.main =
 				'</div>' +
 			'</div>' +
 			'<div class="{inherited.class:valueContainer} {class:valueContainer} clearfix">' +
+				// TODO: It seems like we ought to need less code for every drop-down we want to render
+				'<span class="sentence">Pull data from </span>' +
 				'<div class="{inherited.class:value} {class:value} btn-group">' +
 					'<button type="button" class="btn btn-mini dropdown-toggle {class:dropdown}" data-toggle="dropdown">' +
 						'<span class="caret pull-right"></span>' +
@@ -82,6 +84,15 @@ querybuilder.templates.main =
 					'</button>' +
 					'<ul class="dropdown-menu {class:menu}" role="menu"></ul>' +
 				'</div>' +
+
+				'<div class="{inherited.class:value} {class:value} btn-group">' +
+					'<button type="button" class="btn btn-mini dropdown-toggle {class:dropdown}" data-toggle="dropdown">' +
+						'<span class="caret pull-right"></span>' +
+						'<span class="{class:selected}"></span>' +
+					'</button>' +
+					'<ul class="dropdown-menu {class:menu}" role="menu"></ul>' +
+				'</div>' +
+
 			'</div>' +
 			'<div class="{inherited.class:error} {class:error} clearfix"></div>' +
 		'</div>' +
@@ -91,7 +102,7 @@ querybuilder.templates.option =
 	'<li><a class="{class:option}">{data:value}</a></li>';
 
 querybuilder.renderers.dropdown = function(element) {
-	if (this.config.get("options").length === 0) element.addClass("disabled");
+	//if (this.config.get("options").length === 0) element.addClass("disabled");
 	return element.dropdown();
 };
 

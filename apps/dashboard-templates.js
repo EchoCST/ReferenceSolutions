@@ -18,6 +18,7 @@ angular.module("/gallery/dashboard", []).run(["$templateCache", function($templa
     "<!-- APP Key -->\n" +
     "<select name=\"appkey\" required=\"required\" data-component=\"AppKeyList\" title=\"Application key\" data-help=\"Specifies the application key for this instance\" />\n" +
     "<input name=\"query\" type=\"text\" required=\"required\" value=\"\" title=\"Query\" data-help=\"The query to execute. May be modified by components like the filter control.\" />\n" +
+    "<input name=\"queryb\" type=\"text\" data-component=\"QueryBuilder\" value=\"\" title=\"Query Builder\" data-help=\"Work in progress.\" />\n" +
     "\n" +
     "<!-- Display -->\n" +
     "<fieldset name=\"display\">\n" +

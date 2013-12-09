@@ -19,18 +19,17 @@ dashboard.dependencies = [{
 	"url": "//echocsthost.s3.amazonaws.com/controls/app-key-list.js",
 	"control": "Echo.AppServer.Controls.Configurator.Items.AppKeyList"
 }, {
+	"url": "//echocsthost.s3.amazonaws.com/controls/query-builder.js",
+	"control": "Echo.AppServer.Controls.Configurator.Items.QueryBuilder"
+}, {
 	"url": "//echocsthost.s3.amazonaws.com/polyfills/ecl.js"
 },  {
 	"url": "//echocsthost.s3.amazonaws.com/apps/dashboard-templates.js"
-}
-/*, { "url": "//code.angularjs.org/1.2.3/angular.min.js" } */
-];
+}];
 
 dashboard.config = {
+	ecl: []
 };
-
-// We will fill this in with an Angular-compatible template
-dashboard.config.ecl = [];
 
 /**
  * Convert our template into ECL when we get loaded.
@@ -48,7 +47,7 @@ dashboard.init = function() {
 };
 
 /**
- * TODO:
+ * TODO: What is this used for?
  */
 dashboard.methods.declareInitialConfig = function() {
 	return {
@@ -61,7 +60,7 @@ dashboard.methods.declareInitialConfig = function() {
 dashboard.methods._templateToECL = function(callback) {
 	var self = this;
 
-	Echo.Polyfills.ECL.getTemplate("/gallery/app/dashboard", function(ecl) {
+	Echo.Polyfills.ECL.getTemplate("/gallery/dashboard", function(ecl) {
 		self.config.set("ecl", ecl);
 		callback.call(self);
     });
