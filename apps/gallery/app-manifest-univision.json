@@ -15,7 +15,7 @@
         "id": "instances",
         "type": "instances",
         "title": "Instances",
-        "script": "//echocsthost.s3.amazonaws.com/apps/gallery/app/dashboard.js",
+        "script": "//echocsthost.s3.amazonaws.com/apps/gallery/dashboard.js",
         "component": "Echo.Apps.MediaGallery.Dashboard",
         "config": {
             "instanceManager": {
@@ -32,8 +32,8 @@
     }],
     "client_widget": {
         "component": "Echo.Apps.MediaGallery",
-        "scriptX": "//echocsthost.s3.amazonaws.com/apps/gallery/app/app.js",
-        "script": "//d3owx0qmt32wcw.cloudfront.net/apps/gallery/app/app.js"
+        "scriptX": "//echocsthost.s3.amazonaws.com/apps/gallery/app.js",
+        "script": "//d3owx0qmt32wcw.cloudfront.net/apps/gallery/app.js"
     },
     "cloudapp_protocol_version": "1.0.0"
 }

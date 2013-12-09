@@ -143,7 +143,7 @@ gallery.renderers.stream = function(element) {
 
 			plugins.push({
 				"name": "StreamlinedPinboardVisualization",
-				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/app/plugins/visualizations/pinboard-streamlined.js",
+				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/visualizations/pinboard-streamlined.js",
 				"columns": [ 0, 330, 560, 900, 1100 ]
 			});
 
@@ -157,19 +157,19 @@ gallery.renderers.stream = function(element) {
 		case "tabbed":
 			plugins.push({
 				"name": "MediaGallery",
-				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/app/plugins/media-gallery.js",
+				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/plugins/media-gallery.js",
 				"removeInvalidItems": true,
 			});
 			plugins.push({
 				"name": "TabbedPinboardVisualization",
-				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/app/plugins/visualizations/pinboard-tabbed.js"
+				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/visualizations/pinboard-tabbed.js"
 			});
 			break;
 
 		case "slideshow":
 			plugins.push({
 				"name": "FullScreenGalleryVisualization",
-				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/app/plugins/visualizations/gallery-fullscreen.js"
+				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/visualizations/gallery-fullscreen.js"
 			});
 			break;
 
@@ -177,12 +177,12 @@ gallery.renderers.stream = function(element) {
 		default:
 			plugins.push({
 				"name": "MediaGallery",
-				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/app/plugins/media-gallery.js",
+				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/plugins/media-gallery.js",
 				"removeInvalidItems": true,
 			});
 			plugins.push({
 				"name": "PinboardVisualization",
-				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/app/plugins/visualizations/pinboard.js",
+				"url": "//echocsthost.s3.amazonaws.com/apps/gallery/visualizations/pinboard.js",
 				"columns": [ 0, 330, 560, 900, 1100 ]
 			});
 			break;

@@ -11,18 +11,18 @@ Contents
 
   ***apps*** - Fully functional Echo Applications that may be used as-is, or as
   the basis for new applications of your own.
-  
+
   ***controls*** - Dashboard controls that provide extra functionality for
   the configuration / management side of Apps.
-  
+
   ***plugins*** - Re-usable code modules that provide new or enhanced behaviors
   for the end-user side of Apps.
-  
+
   ***polyfills*** - Support routines that may be shared by Apps. Where Plugins
   and Controls provide native add-ons, these Polyfills provide "bridge"
   functionality that might one day become part of the SDK itself, such as
   support for Angular-compatible templates.
-  
+
   scripts - Support routines to do things like upload or manipulate sample
   data in DataServer / StreamServer when building and deploying Apps.
 
