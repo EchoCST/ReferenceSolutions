@@ -31,14 +31,6 @@ plugin.dependencies = [{
     loaded: function() { return !!Echo.jQuery().isotope; },
     url: '{config:cdnBaseURL.sdk}/third-party/jquery/jquery.isotope.min.js'
 }, {
-    // This plugin lets us use most CSS3 properties without prefixes
-    loaded: function() { return false; },
-    url: '//echocsthost.s3.amazonaws.com/plugins/prefixfree.min.js'
-}, {
-    // This plugin makes prefixfree work the way Echo stuffs CSS into the doc
-    loaded: function() { return false; },
-    url: '//echocsthost.s3.amazonaws.com/plugins/prefixfree.dynamic-dom.min.js'
-}, {
     // This plugin lets us debounce events
     loaded: function() { return !!Echo.jQuery().doTimeout; },
     url: '//echocsthost.s3.amazonaws.com/plugins/jquery.ba-dotimeout.min.js'
@@ -121,26 +113,24 @@ plugin.css =
     '.{plugin.class} .{plugin.class} a { color: #2CA0C7; }' +
 
     // General layout
-    '.{plugin.class} { perspective: 1000; -webkit-perspective: 1000; -webkit-transition-property: -webkit-transform, opacity; -moz-transition-property: -moz-transform, opacity; -o-transition-property: top, left, opacity; transition-property:transform, opacity; -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }' +
-    '.{plugin.class} img, .{plugin.class} iframe { display: block; ; }' +
-    '.{plugin.class} div { box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; } ' +
+    '.{plugin.class} { perspective: 1000; -webkit-transition-property: transform, opacity; -moz-transition-property: transform, opacity; -ms-transition-property: transform, opacity; -wekit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -ms-transition-duration: 0.8s; }' +
+    '.{plugin.class} img, .{plugin.class} iframe { display: block; }' +
+    '.{plugin.class} div { box-sizing: border-box; } ' +
     '.{plugin.class} .{class:data} { padding: 7px; }' +
 
-    // Transitions for card flipping. Note that flipping is only enabled in
-    // WebKit browsers for compatibility reasons - we use a normal hide/show
-    // effect for others.
-    '.{plugin.class} .{class:content} { transition: 0.6s; transform-style: preserve-3d; position: relative; perspective: 800; padding-bottom: 0px; margin: 5px; }' +
+    // Transitions for card flipping.
+    '.{plugin.class} .{class:content} { -webkit-transition: 0.6s; -moz-transition: 0.6s; -ms-transition: 0.6s; -webkit-transform-style: preserve-3d; -moz-transform-style: preserve-3d; -ms-transform-style: preserve-3d; position: relative; -webkit-perspective: 800; -moz-perspective: 800; -ms-perspective: 800; padding-bottom: 0px; margin: 5px; }' +
     '.{plugin.class} .{class:content} .{class:container}, ' +
-    '.{plugin.class} .{class:content} .{plugin.class:mediafull} { backface-visibility: hidden; transition: 250ms cubic-bezier(.8,.01,.74,.79); position: static; border: 1px solid #111; background: white; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); transform-style: preserve-3d; }' +
-    '.{plugin.class} .{class:content} .{class:container} { transform: rotatey(-180deg); position: absolute; top: 0; bottom: 0; width: 100%; }' +
-    '.{plugin.class} .{class:content}:hover > .{plugin.class:mediafull} { transform: rotatey(180deg); }' +
-    '.{plugin.class} .{class:content}:hover > .{class:container} { transform: rotatey(0deg); }' +
+    '.{plugin.class} .{class:content} .{plugin.class:mediafull} { -webkit-backface-visibility: hidden; -moz-backface-visibility: hidden; -ms-backface-visibility: hidden; -webkit-transition: 250ms cubic-bezier(.8,.01,.74,.79); -moz-transition: 250ms cubic-bezier(.8,.01,.74,.79); -ms-transition: 250ms cubic-bezier(.8,.01,.74,.79); position: static; border: 1px solid #111; background: white; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); -webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); -moz-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); -ms-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); -webkit-transform-style: preserve-3d; -moz-transform-style: preserve-3d; -ms-transform-style: preserve-3d; }' +
+    '.{plugin.class} .{class:content} .{class:container} { -webkit-transform: rotatey(-180deg); -moz-transform: rotatey(-180deg); -ms-transform: rotatey(-180deg); position: absolute; top: 0; bottom: 0; width: 100%; }' +
+    '.{plugin.class} .{class:content}:hover > .{plugin.class:mediafull} { -webkit-transform: rotatey(180deg); -moz-transform: rotatey(180deg); -ms-transform: rotatey(180deg); }' +
+    '.{plugin.class} .{class:content}:hover > .{class:container} { -webkit-transform: rotatey(0deg); -moz-transform: rotatey(0deg); -ms-transform: rotatey(0deg); }' +
     '.{plugin.class} .{class:content} .{class:container} .media-processed { display: none; }' +
 
     // General media visuals
     '.{plugin.class:media} { margin: 4px 7px 0 0; width: 25%; float: left; }' +
     '.{plugin.class:mediafull} { background: #000; }' +
-    '.{plugin.class:mediafull} img { max-width: 100%; backface-visibility: hidden; display: block; margin: 0 auto; }' +
+    '.{plugin.class:mediafull} img { max-width: 100%; display: block; margin: 0 auto; }' +
 
     // Separate the header visually, and color-code it
     '.{plugin.class} .{plugin.class:header} { padding: 5px; background: #f0f0f0; border-bottom: 1px solid #ccc; }' +
@@ -239,9 +229,7 @@ plugin.methods._refreshView = function() {
     // Clean up any broken images before they disrupt the visualization.
     // TODO: The first line is an ugly hack to bubble up a class from a lower
     // element until we get a chance to move the class itself
-    console.log($body);
     $body.find('.empty').each(function() {
-        console.log($(this));
         $(this).closest('.echo-streamserver-controls-stream-item')
                .addClass('load-error');
     });
