@@ -189,7 +189,9 @@ plugin.init = function() {
     // Update columnWidth on window resize. We do this more smoothly than
     // Isotope does.
     $(window).on('resize', function() {
-        $.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
+        $.doTimeout('refresh-view', 250, function() {
+            plugin._refreshView();
+        });
     });
 };
 
@@ -212,7 +214,9 @@ plugin.events = {};
     ], function(entry) {
         plugin.events[entry] = function(topic, args) {
             var plugin = this;
-            $.doTimeout('refresh-view', 250, function() { plugin._refreshView(); });
+            $.doTimeout('refresh-view', 250, function() {
+                plugin._refreshView();
+            });
         };
     });
 })();
