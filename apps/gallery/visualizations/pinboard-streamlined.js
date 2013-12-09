@@ -181,45 +181,11 @@ if (Echo.Plugin.isDefined(plugin)) return;
 
 plugin.config = {
     /**
-     * @cfg {Array} columns
-     * A single integer column count, or an array of breakpoint widths. If
-     * supplied as an array, each value should be a pixel width for each
-     * desired column count. The index of the array is columnCount-1. Examples:
-     *
-     *   Always use four columns, specify integer 4:
-     *   'columns': 4
-     *
-     *   Use one column minimum, two columns at >=330px wide, three columns at
-     *   >=560px wide, four columns at >=900px wide, and five columns for any
-     *   width >=1100px:
-     *   'columns': [ 0, 330, 560, 900, 1100 ]
+     * @cfg {Number} minColWidth
+     * The smallest a column is allowed to be. This controls the responsive
+     * resizing behavior. Column count is reduced as necessary to meet this.
      */
-    columns: 4,
-
-    /**
-     * @cfg {Object} isotope
-     * Allows to configure the Isotope jQuery plugin, used by the plugin as the
-     * rendering engine. The possible config values can be found at the Isotope
-     * plugin homepage ([http://isotope.metafizzy.co/](http://isotope.metafizzy.co/)). It's NOT recommended to
-     * change the settings of the Isotope unless it's really required.
-     *
-     *__Note__: the Isotope JS library doesn't work in IE <a href='http://en.wikipedia.org/wiki/Quirks_mode'>quirks mode</a>.
-     * Due to this fact you should declare the necessary <a href='http://en.wikipedia.org/wiki/DOCTYPE'>\<DOCTYPE\></a>
-     * on the page. We recommend to use a
-     * <a href='http://en.wikipedia.org/wiki/DOCTYPE#HTML5_DTD-less_DOCTYPE'>HTML5 DOCTYPE</a> declaration.
-     */
-    isotope: {
-        itemPositionDataEnabled: true,
-        layoutMode: 'masonry',
-/*        animationOptions: {
-            duration: 2750,
-            easing: 'linear',
-            queue: false
-        },
-        // use only jQuery engine for animation in mozilla browsers
-        // due to the issues with video display with CSS transitions
-        animationEngine: 'best-available', */
-    }
+    minColWidth: 300,
 };
 
 plugin.init = function() {
@@ -265,8 +231,7 @@ plugin.methods._refreshView = function() {
     var plugin = this,
         stream = this.component,
         hasEntries = stream.threads.length,
-        $body = stream.view.get('body'),
-        columns = plugin.config.get('columns', 4);
+        $body = stream.view.get('body');
 
     // In case we get called before even this element is rendered
     if ($body.length < 1) return;
@@ -282,27 +247,27 @@ plugin.methods._refreshView = function() {
     });
     $body.find('.load-error').remove();
 
-    // Figure out how many columns we should render
-    var bodyWidth = $body.width();
-    if ($.isArray(columns)) {
-        var length = columns.length;
-        for (var i = 0; i < length; i++) {
-            if (bodyWidth < columns[i]) {
-                break;
-            }
-        }
+    // Figure out how many columns we should render. We need at least one
+    // column, so we start checking for cols > 1.
+    var minColWidth = plugin.config.get('minColWidth'),
+        bodyWidth = $body.width(),
+        columns = 1;
+    for ( ; (Math.floor(bodyWidth / (columns+1)) >= minColWidth); columns++)
+        ;
 
-        columns = i;
-    }
-
-    // Set up our Isotope options
-    var config = $.extend({
+    // Set up our Isotope options. Note that the original gallery allowed these
+    // options to be extended or overridden. We removed this ability because we
+    // will probably move this to Packery very shortly. We don't want anybody to
+    // build an App that depends on an Isotope option until we evaluate this.
+    var config = {
         sortBy: 'original-order',
         resizable: false,
+        itemPositionDataEnabled: true,
+        layoutMode: 'masonry',
         masonry: {
             columnWidth: Math.floor(bodyWidth / columns)
         }
-    }, plugin.config.get('isotope'));
+    };
 
     $body.children().css({ 'max-width': config.masonry.columnWidth + 'px' });
     $body.data('isotope')
@@ -312,9 +277,7 @@ plugin.methods._refreshView = function() {
         : hasEntries && $body.isotope(config);
 };
 
-plugin.css =
-    '.{plugin.class} { background: #333; }' +
-    '.{plugin.class} .isotope { -webkit-transition-property: height, width; -moz-transition-property: height, width; -o-transition-property: height, width; transition-property: height, width;  -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }';
+plugin.css = '.{plugin.class} .isotope { transition-property: height, width; transition-duration: 0.8s; }';
 
 Echo.Plugin.create(plugin);
 
