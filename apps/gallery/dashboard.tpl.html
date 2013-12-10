@@ -11,8 +11,49 @@
 
 <!-- APP Key -->
 <select name="appkey" required="required" data-component="AppKeyList" title="Application key" data-help="Specifies the application key for this instance" />
-<input name="query" type="text" required="required" value="" title="Query" data-help="The query to execute. May be modified by components like the filter control." />
-<input name="queryb" type="text" data-component="QueryBuilder" value="" title="Query Builder" data-help="Work in progress." />
+
+<!-- Data Source -->
+<fieldset name="datasource">
+  <legend class="icon-filter">Data Source</legend>
+
+  <select name="targetURLSource" title="Source of Target URL" data-help="Select how the target URL is determined">
+    <option value="canonical" selected="selected">Canonical URL of Host Page</option>
+    <option value="actualurl">Actual URL of Host Page</option>
+    <option value="echourl">META echo:url Value</option>
+    <option value="specific">Specify a URL</option>
+    <option value="builder">Data Source Builder</option>
+  </select>
+
+  <!-- Only one of these options will be shown at a time -->
+  <input name="specifiedURL" type="text" class="specified-url" title="Specified URL" data-help="Please specify the exact URL you wish to use." />
+<!--  <input name="builderURL" type="text" class="builder-url" data-component="Echo.Apps.MediaGallery.DataSourceGroup" />-->
+
+  <select name="targetMode" title="Target Mode" data-help="">
+    <option value="childrenof" selected="selected">childrenof (This URL and its children)</option>
+    <option value="scope">scope (All entries targeted here)</option>
+    <option value="url">Only this URL</option>
+  </select>
+
+  <input name="itemsPerPage" type="text" value="15" title="Items Per Page" data-help="How many items should be shown per page?" />
+
+  <input name="filters" type="text" value="" title="Filters" data-help="Add any marker, flag, or other filters you wish to use." />
+
+  <select name="safeHTML" title="Safe HTML" title="Safe HTML" data-help="">
+    <option value="off" selected="selected">Off (All HTML allowed)</option>
+    <option value="passive">Passive (some HTML allowed)</option>
+    <option value="aggressive">Aggressive (no HTML allowed)</option>
+  </select>
+
+  <input name="children" type="text" value="0" title="Children" data-help="How many children should be retrieved for each item?" />
+
+  <input name="childFilters" type="text" value="" title="Child Filters" data-help="Add any marker, flag, or other filters you wish to use." />
+
+  <select name="childSafeHTML" title="Child Safe HTML" data-help="">
+    <option value="off" selected="selected">Off (All HTML allowed)</option>
+    <option value="passive">Passive (some HTML allowed)</option>
+    <option value="aggressive">Aggressive (no HTML allowed)</option>
+  </select>
+</fieldset>
 
 <!-- Display -->
 <fieldset name="display">
@@ -25,6 +66,8 @@
   </select>
 
   <input name="sourcefilter" type="checkbox" checked="checked" title="Display a source filter control" data-help="A drop-down or similar control will be displayed that allows the user to choose the source of the media shown" />
+
+  <input name="mincolwidth" type="text" value="300" data-storage="number" title="Minimum Column Width" data-help="To support responsive layouts, columns will dynamically resize down to this minimum width." />
 
   <input name="replies" type="checkbox" checked="checked" title="Allow users to post replies" data-help="Check to display replies for each item and provide an ability for the users to post their replies" />
   <input name="likes" type="checkbox" checked="checked" title="Allow users to Like items" data-help="Check to enable Likes for the items" />
@@ -49,12 +92,10 @@
 </fieldset>
 
 <!-- Authorization -->
-<!--
-Disabled for now, until we're ready to put upload back in.
 <fieldset name="auth">
   <legend class="icon-user">Authorization</legend>
 
   <input name="enabled" type="checkbox" checked="checked" title="Enable user authorization" data-help="Check to enable authorization" />
+
   <select name="janrainApp" title="Janrain app" data-help="Specifies the Janrain application">
 </fieldset>
--->

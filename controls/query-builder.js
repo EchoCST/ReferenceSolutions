@@ -76,23 +76,21 @@ querybuilder.templates.main =
 			'</div>' +
 			'<div class="{inherited.class:valueContainer} {class:valueContainer} clearfix">' +
 				// TODO: It seems like we ought to need less code for every drop-down we want to render
-				'<span class="sentence">Pull data from </span>' +
-				'<div class="{inherited.class:value} {class:value} btn-group">' +
+				'<span class="sentence">Data Source:</span>' +
+				'<div class="{class:datasource} {class:value} btn-group">' +
 					'<button type="button" class="btn btn-mini dropdown-toggle {class:dropdown}" data-toggle="dropdown">' +
 						'<span class="caret pull-right"></span>' +
 						'<span class="{class:selected}"></span>' +
 					'</button>' +
-					'<ul class="dropdown-menu {class:menu}" role="menu"></ul>' +
+					'<ul class="dropdown-menu {class:menu}" role="menu">' +
+					  '<li><a class="{class:option}">Host Page Canonical URL</a></li>' +
+					  '<li><a class="{class:option}">Host Page Actual URL</a></li>' +
+					  '<li><a class="{class:option}">Enter a Target URL</a></li>' +
+					  '<li><a class="{class:option}">Build a Data Source</a></li>' +
+					'</ul>' +
 				'</div>' +
 
-				'<div class="{inherited.class:value} {class:value} btn-group">' +
-					'<button type="button" class="btn btn-mini dropdown-toggle {class:dropdown}" data-toggle="dropdown">' +
-						'<span class="caret pull-right"></span>' +
-						'<span class="{class:selected}"></span>' +
-					'</button>' +
-					'<ul class="dropdown-menu {class:menu}" role="menu"></ul>' +
-				'</div>' +
-
+				'<div class="{class:datasource}"></div>' +
 			'</div>' +
 			'<div class="{inherited.class:error} {class:error} clearfix"></div>' +
 		'</div>' +
@@ -104,6 +102,12 @@ querybuilder.templates.option =
 querybuilder.renderers.dropdown = function(element) {
 	//if (this.config.get("options").length === 0) element.addClass("disabled");
 	return element.dropdown();
+};
+
+querybuilder.renderers.datasource = function(element) {
+	console.log(element);
+	//if (this.config.get("options").length === 0) element.addClass("disabled");
+//	return element.dropdown();
 };
 
 querybuilder.renderers.menu = function(element) {
@@ -138,6 +142,8 @@ querybuilder.methods.fillMenuItems = function(element) {
 	    // TODO: What is forking actually doing behind the scenes? This isn't
 		// clear to me... If it gets called multiple times, what happens?
 	    view = this.view.fork();
+
+	return;
 
 	element.empty();
 	$.map(options, function(option) {

@@ -17,8 +17,49 @@ angular.module("/gallery/dashboard", []).run(["$templateCache", function($templa
     "\n" +
     "<!-- APP Key -->\n" +
     "<select name=\"appkey\" required=\"required\" data-component=\"AppKeyList\" title=\"Application key\" data-help=\"Specifies the application key for this instance\" />\n" +
-    "<input name=\"query\" type=\"text\" required=\"required\" value=\"\" title=\"Query\" data-help=\"The query to execute. May be modified by components like the filter control.\" />\n" +
-    "<input name=\"queryb\" type=\"text\" data-component=\"QueryBuilder\" value=\"\" title=\"Query Builder\" data-help=\"Work in progress.\" />\n" +
+    "\n" +
+    "<!-- Data Source -->\n" +
+    "<fieldset name=\"datasource\">\n" +
+    "  <legend class=\"icon-filter\">Data Source</legend>\n" +
+    "\n" +
+    "  <select name=\"targetURLSource\" title=\"Source of Target URL\" data-help=\"Select how the target URL is determined\">\n" +
+    "    <option value=\"canonical\" selected=\"selected\">Canonical URL of Host Page</option>\n" +
+    "    <option value=\"actualurl\">Actual URL of Host Page</option>\n" +
+    "    <option value=\"echourl\">META echo:url Value</option>\n" +
+    "    <option value=\"specific\">Specify a URL</option>\n" +
+    "    <option value=\"builder\">Data Source Builder</option>\n" +
+    "  </select>\n" +
+    "\n" +
+    "  <!-- Only one of these options will be shown at a time -->\n" +
+    "  <input name=\"specifiedURL\" type=\"text\" class=\"specified-url\" title=\"Specified URL\" data-help=\"Please specify the exact URL you wish to use.\" />\n" +
+    "<!--  <input name=\"builderURL\" type=\"text\" class=\"builder-url\" data-component=\"Echo.Apps.MediaGallery.DataSourceGroup\" />-->\n" +
+    "\n" +
+    "  <select name=\"targetMode\" title=\"Target Mode\" data-help=\"\">\n" +
+    "    <option value=\"childrenof\" selected=\"selected\">childrenof (This URL and its children)</option>\n" +
+    "    <option value=\"scope\">scope (All entries targeted here)</option>\n" +
+    "    <option value=\"url\">Only this URL</option>\n" +
+    "  </select>\n" +
+    "\n" +
+    "  <input name=\"itemsPerPage\" type=\"text\" value=\"15\" title=\"Items Per Page\" data-help=\"How many items should be shown per page?\" />\n" +
+    "\n" +
+    "  <input name=\"filters\" type=\"text\" value=\"\" title=\"Filters\" data-help=\"Add any marker, flag, or other filters you wish to use.\" />\n" +
+    "\n" +
+    "  <select name=\"safeHTML\" title=\"Safe HTML\" title=\"Safe HTML\" data-help=\"\">\n" +
+    "    <option value=\"off\" selected=\"selected\">Off (All HTML allowed)</option>\n" +
+    "    <option value=\"passive\">Passive (some HTML allowed)</option>\n" +
+    "    <option value=\"aggressive\">Aggressive (no HTML allowed)</option>\n" +
+    "  </select>\n" +
+    "\n" +
+    "  <input name=\"children\" type=\"text\" value=\"0\" title=\"Children\" data-help=\"How many children should be retrieved for each item?\" />\n" +
+    "\n" +
+    "  <input name=\"childFilters\" type=\"text\" value=\"\" title=\"Child Filters\" data-help=\"Add any marker, flag, or other filters you wish to use.\" />\n" +
+    "\n" +
+    "  <select name=\"childSafeHTML\" title=\"Child Safe HTML\" data-help=\"\">\n" +
+    "    <option value=\"off\" selected=\"selected\">Off (All HTML allowed)</option>\n" +
+    "    <option value=\"passive\">Passive (some HTML allowed)</option>\n" +
+    "    <option value=\"aggressive\">Aggressive (no HTML allowed)</option>\n" +
+    "  </select>\n" +
+    "</fieldset>\n" +
     "\n" +
     "<!-- Display -->\n" +
     "<fieldset name=\"display\">\n" +
@@ -31,6 +72,8 @@ angular.module("/gallery/dashboard", []).run(["$templateCache", function($templa
     "  </select>\n" +
     "\n" +
     "  <input name=\"sourcefilter\" type=\"checkbox\" checked=\"checked\" title=\"Display a source filter control\" data-help=\"A drop-down or similar control will be displayed that allows the user to choose the source of the media shown\" />\n" +
+    "\n" +
+    "  <input name=\"mincolwidth\" type=\"text\" value=\"300\" data-storage=\"number\" title=\"Minimum Column Width\" data-help=\"To support responsive layouts, columns will dynamically resize down to this minimum width.\" />\n" +
     "\n" +
     "  <input name=\"replies\" type=\"checkbox\" checked=\"checked\" title=\"Allow users to post replies\" data-help=\"Check to display replies for each item and provide an ability for the users to post their replies\" />\n" +
     "  <input name=\"likes\" type=\"checkbox\" checked=\"checked\" title=\"Allow users to Like items\" data-help=\"Check to enable Likes for the items\" />\n" +
@@ -55,15 +98,14 @@ angular.module("/gallery/dashboard", []).run(["$templateCache", function($templa
     "</fieldset>\n" +
     "\n" +
     "<!-- Authorization -->\n" +
-    "<!--\n" +
-    "Disabled for now, until we're ready to put upload back in.\n" +
     "<fieldset name=\"auth\">\n" +
     "  <legend class=\"icon-user\">Authorization</legend>\n" +
     "\n" +
     "  <input name=\"enabled\" type=\"checkbox\" checked=\"checked\" title=\"Enable user authorization\" data-help=\"Check to enable authorization\" />\n" +
+    "\n" +
     "  <select name=\"janrainApp\" title=\"Janrain app\" data-help=\"Specifies the Janrain application\">\n" +
     "</fieldset>\n" +
-    "-->");
+    "");
 }]);
 
 angular.module("/poll/dashboard", []).run(["$templateCache", function($templateCache) {

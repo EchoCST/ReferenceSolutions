@@ -73,9 +73,9 @@ plugin.events = {};
 plugin.methods._refreshView = function() {
 	var plugin = this,
         stream = this.component,
-        interval = stream.config.get('nativeAdInterval', 0);
+        interval = plugin.config.get('nativeAdInterval', 0);
 
-    // Do we even want to run?
+	// Do we even want to run?
     if (!interval) return;
 
     // Find the element we want to render into
@@ -118,4 +118,3 @@ plugin.methods._refreshView = function() {
 Echo.Plugin.create(plugin);
 
 })(Echo.jQuery);
-

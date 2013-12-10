@@ -40,9 +40,50 @@ Echo.Polyfills.ECL = {
    */
   templateECL: function(dashboard, template, callback) {
 	Echo.Polyfills.ECL.getTemplate(template, function(ecl) {
+        console.log(dashboard.config);
 		dashboard.config.set("ecl", ecl);
 		callback.call(dashboard);
     });
+  },
+
+  /**
+   * delcareInitialConfig() helper that app dashboards can reference instead of
+   * re-implementing the same behavior. Requires no params - expects the calling
+   * context to be the same as the app Dashboard, and its ecl to be a variable
+   * called 'ecl'.
+   *
+   * We couldn't make it much easier than this without violating the contract.
+   * In a perfect world apps would inherit default behavior that would do these
+   * things for them, and just be exposed to pre-process/post-process event
+   * hooks they can use for special behaviors.
+   */
+  declareInitialConfig: function(ecl) {
+    var _ecl = ecl || this.config.get('ecl', {}),
+        cfg = {};
+
+    $.map(_ecl, function(entry) {
+      if (entry['name'] && entry['default']) {
+        cfg[entry['name']] = entry['default'];
+      } else if (entry['component'] == 'Group') {
+        cfg[entry['name']] = Echo.Polyfills.ECL.declareInitialConfig(entry.items);
+      }
+
+      // TODO: Just carrying over the pre-existing hack from the other Apps
+      // This sets up the "magic" janrain App field. For the Config side it
+      // needs a name. See below for the entries.
+      if (entry['name'] == 'janrainApp') {
+        var janrainapps = this.config.get("janrainapps");
+        if (janrainapps.length > 0) {
+          cfg[entry['name']] = undefined;
+        } else {
+          cfg[entry['name']] = janrainapps[0].name;
+        }
+      }
+    });
+
+    console.log(cfg);
+
+    return cfg;
   },
 
   /**
