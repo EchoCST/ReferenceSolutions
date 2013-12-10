@@ -401,13 +401,7 @@ plugin.css =
 	'.galleria-streamitem { overflow: hidden; } ' +
 	'.galleria-streamitem .echo-streamserver-controls-stream-item-content { padding: 7px; } ' +
 	'.galleria-streamitem .echo-streamserver-controls-stream-item-header { float: left; width: 30%; } ' +
-	'.galleria-streamitem {} ' +
-	'.galleria-streamitem {} ' +
-
-
-	'';
-//	'.{plugin.class} .isotope { -webkit-transition-property: height, width; -moz-transition-property: height, width; -o-transition-property: height, width; transition-property: height, width;  -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }' +
-//	'.{plugin.class} .isotope .isotope-item { -webkit-transition-property: -webkit-transform, opacity; -moz-transition-property: -moz-transform, opacity; -o-transition-property: top, left, opacity; transition-property:transform, opacity; -webkit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -o-transition-duration: 0.8s; transition-duration: 0.8s; }';
+	'.{class:body} { color: #fff; }';
 
 Echo.Plugin.create(plugin);
 
