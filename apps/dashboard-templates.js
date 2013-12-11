@@ -124,29 +124,59 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "\n" +
     "<select name=\"appkey\" required=\"required\" data-component=\"AppKeyList\" title=\"Application key\" data-help=\"Specifies the application key for this instance\" />\n" +
     "\n" +
-    "<input name=\"parentURL\" type=\"text\" title=\"Parent URL\" data-help=\"The root item that contains the poll.\" />\n" +
+    "<!-- TODO: This is just a streamlined fieldset from the one in Media Gallery.\n" +
+    "     How can we reuse? -->\n" +
+    "<fieldset name=\"datasource\">\n" +
+    "  <legend class=\"icon-filter\">Data Source</legend>\n" +
+    "\n" +
+    "  <select name=\"targetURLSource\" title=\"Source of Target URL\" data-help=\"Select how the target URL is determined\">\n" +
+    "    <option value=\"canonical\" selected=\"selected\">Canonical URL of Host Page</option>\n" +
+    "    <option value=\"actualurl\">Actual URL of Host Page</option>\n" +
+    "    <option value=\"echourl\">META echo:url Value</option>\n" +
+    "    <option value=\"specific\">Specify a URL</option>\n" +
+    "    <option value=\"builder\">Data Source Builder</option>\n" +
+    "  </select>\n" +
+    "\n" +
+    "  <!-- Only one of these options will be shown at a time -->\n" +
+    "  <input name=\"specifiedURL\" type=\"text\" class=\"specified-url\" title=\"Specified URL\" data-help=\"Please specify the exact URL you wish to use.\" />\n" +
+    "\n" +
+    "  <input name=\"filters\" type=\"text\" value=\"\" title=\"Filters\" data-help=\"Add any marker, flag, or other filters you wish to use.\" />\n" +
+    "</fieldset>\n" +
     "\n" +
     "<fieldset name=\"display\">\n" +
     "  <legend class=\"icon-picture\">Display</legend>\n" +
     "\n" +
-    "  <select name=\"layout\" title=\"Layout\" data-help=\"How should the individual poll elements be arranged?\">\n" +
+    "  <!-- TODO: We really need full HTML templates so we can render clickable\n" +
+    "       images and put a border around the active one instead of always using\n" +
+    "       pull-downs. -->\n" +
+    "  <select name=\"visualization\" title=\"Visualization\" data-help=\"What should the poll look like?\">\n" +
     "    <option value=\"list\" selected=\"selected\">Vertical List</option>\n" +
-    "    <option value=\"sidebyside\">Side by Side</option>\n" +
+    "    <option value=\"textbuttons\">Text Buttons</option>\n" +
+    "    <option value=\"updown\">Up/Down Buttons</option>\n" +
+    "    <option value=\"sidebyside\">Side by Side Options</option>\n" +
     "    <option value=\"tugowar\">Tug Of War (Nested)</option>\n" +
+    "    <option value=\"reaction\">Reaction Boxes</option>\n" +
     "  </select>\n" +
-    "</fieldset>\n" +
     "\n" +
-    "<fieldset name=\"results\">\n" +
-    "  <legend class=\"icon-tasks\">Results</legend>\n" +
+    "  <input name=\"oneclick\" type=\"checkbox\" title=\"One-Click\" data-help=\"If checked, votes are submitted immediately when an option is selected. If not checked, a separate Submit button will be shown.\" />\n" +
     "\n" +
-    "  <select name=\"format\" title=\"Format\" data-help=\"Select the graphic display format for the results.\">\n" +
-    "    <option value=\"hbar\" selected=\"selected\">Horizontal Bar</option>\n" +
-    "    <option value=\"vbar\">Vertical Bar</option>\n" +
-    "    <option value=\"pie\">Pie Chart</option>\n" +
+    "  <select name=\"results\" title=\"Show Results\" data-help=\"When should the results be displayed?\">\n" +
+    "    <option value=\"post\" selected=\"selected\">Post-Submit</option>\n" +
+    "    <option value=\"load\">When first loaded</option>\n" +
+    "    <option value=\"never\">Never (Secret Ballot)</option>\n" +
     "  </select>\n" +
     "\n" +
     "  <input name=\"percent\" type=\"checkbox\" checked=\"checked\" title=\"Show Percentage\" data-help=\"If checked, a percentage value will be displayed in the result elements.\" />\n" +
-    "  <input name=\"count\" type=\"checkbox\" checked=\"checked\" title=\"Show Vote Count\" data-help=\"If checked, the vote count will be displayed in the result elements.\" />\n" +
+    "  <input name=\"count\" type=\"checkbox\" title=\"Show Vote Count\" data-help=\"If checked, the vote count will be displayed in the result elements.\" />\n" +
+    "</fieldset>\n" +
+    "\n" +
+    "<!-- Authorization -->\n" +
+    "<fieldset name=\"auth\">\n" +
+    "  <legend class=\"icon-user\">Authorization</legend>\n" +
+    "\n" +
+    "  <input name=\"enabled\" type=\"checkbox\" checked=\"checked\" title=\"Enable user authorization\" data-help=\"Check to enable authorization\" />\n" +
+    "\n" +
+    "  <select name=\"janrainApp\" title=\"Janrain app\" data-help=\"Specifies the Janrain application\">\n" +
     "</fieldset>\n" +
     "");
 }]);

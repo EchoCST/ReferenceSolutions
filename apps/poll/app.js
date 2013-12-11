@@ -73,35 +73,19 @@ poll.dependencies = [{
 
 poll.templates.main =
 	'<div class="{class:container} visualization-{config:display.visualization}">' +
-		'<div class="{class:auth}"></div>' +
-		'<div class="{class:tabs}"></div>' +
-		'<div class="{class:stream}"></div>' +
+	    '<div class="poll" id="poll-1">' +
+        '<div class="bar">' +
+          '<div class="left florida" style="width: 25%"><i></i>25%</div>' +
+          '<div class="right alabama">75%<i></i></div>' +
+        '</div>' +
+        '<div class="buttons clearfix">' +
+          '<a href="#" class="left florida"><i></i>Florida State</a>' +
+          '<a href="#" class="right alabama">Auburn<i></i></a>' +
+        '</div>' +
+      '</div>' +
+
+		'<div class="{class:stream}" style="display: none"></div>' +
 	'</div>';
-
-poll.renderers.tabs = function(element) {
-	var plugin = this;
-
-	if (plugin.config.get("visualization", "") === "tabbed") {
-		var html = '';
-
-		var title = plugin.config.get("title", "");
-		if (title != "") {
-			html += '<h2>' + title + '</h2>';
-		}
-
-		html += '<ul class="clearfix">' +
-		        '<li><a href="#" data-source="all" class="active">All</a></li>' +
-				'<li><a href="#" data-source="twitter"><i class="twitter"></i>Twitter</a></li>' +
-				'<li><a href="#" data-source="facebook"><i class="facebook"></i>Facebook</a></li>' +
-				'<li><a href="#" data-source="instagram"><i class="instagram"></i>Instagram</a></li>' +
-				'<li><a href="#" data-source="youtube"><i class="youtube"></i>YouTube</a></li>' +
-				'</ul>';
-
-		$(element).html(html);
-	}
-
-	return element;
-};
 
 poll.renderers.auth = function(element) {
 	if (!this._isAuthEnabled()) {
@@ -122,88 +106,8 @@ poll.renderers.auth = function(element) {
 
 poll.renderers.stream = function(element) {
 	var self = this,
-	janrainApp = this.config.get("auth.janrainApp");
-
-	var plugins = [{
-		"name": "ItemsRollingWindow",
-		"moreButton": true,
-		"url": "//cdn.echoenabled.com/apps/echo/dataserver/v3/plugins/items-rolling-window.js"
-	}];
-
-	//if (!!self.config.get("display.likes")) {
-		plugins.push({"name": "Like"});
-	//}
-
-	switch (self.config.get("display.visualization")) {
-		case "streamlined":
-			this.config.set("display.replies", false);
-
-			plugins.push({
-				"name": "StreamlinedPinboardVisualization",
-				"url": "//echocsthost.s3.amazonaws.com/apps/poll/app/plugins/visualizations/pinboard-streamlined.js",
-				"columns": [ 0, 330, 560, 900, 1100 ]
-			});
-
-			break;
-
-		case "tabbed":
-			plugins.push({
-				"name": "Poll",
-				"url": "//echocsthost.s3.amazonaws.com/apps/poll/app/plugins/media-poll.js",
-				"removeInvalidItems": true,
-			});
-			plugins.push({
-				"name": "TabbedPinboardVisualization",
-				"url": "//echocsthost.s3.amazonaws.com/apps/poll/app/plugins/visualizations/pinboard-tabbed.js"
-			});
-			break;
-
-		case "slideshow":
-			plugins.push({
-				"name": "FullScreenPollVisualization",
-				"url": "//echocsthost.s3.amazonaws.com/apps/poll/app/plugins/visualizations/poll-fullscreen.js"
-			});
-			break;
-
-		case "pinboard":
-		default:
-			plugins.push({
-				"name": "Poll",
-				"url": "//echocsthost.s3.amazonaws.com/apps/poll/app/plugins/media-poll.js",
-				"removeInvalidItems": true,
-			});
-			plugins.push({
-				"name": "PinboardVisualization",
-				"url": "//echocsthost.s3.amazonaws.com/apps/poll/app/plugins/visualizations/pinboard.js",
-				"columns": [ 0, 330, 560, 900, 1100 ]
-			});
-			break;
-	}
-
-	plugins.push({"name": "TweetDisplay"});
-
-	//if (!!self.config.get("display.replies")) {
-		var reply = {"name": "Reply"};
-		if (this._isAuthEnabled()) {
-			var auth = this._getAuthPluginDefinition({
-				"name": "JanrainAuth",
-				"labels": {"login": this.labels.get("signin")}
-			});
-			reply.nestedPlugins = [auth];
-		}
-		plugins.push(reply);
-	//}
-
-	if (!!self.config.get("display.sharing") && janrainApp) {
-		plugins.push({
-			"name": "JanrainSharing",
-			"appId": janrainApp
-		});
-	}
-
-	if (!!self.config.get("display.flags")) {
-		plugins.push({"name": "CommunityFlag"});
-	}
+	    plugins = [],
+	    janrainApp = this.config.get("auth.janrainApp");
 
 	this.initComponent({
 		"id": "Stream",
@@ -249,28 +153,40 @@ poll.css =
 	".{class:container} .echo-identityserver-controls-auth-logout { font-size: 12px; margin-top: 6px; }" +
 	".{class:container} .echo-identityserver-controls-auth-name { font-size: 16px; }" +
 
-	// Stream app CSS overrides...
-	".{class:container} .echo-streamserver-controls-stream-item-mediapoll-item img { width: 100% }" +
-	".{class:container} .echo-streamserver-controls-stream-item-mediapoll-item iframe { width: 100% }" +
-	".{class:container} .echo-streamserver-controls-stream-header { display: none; }" +
-
-	// Visualization-specific
-	".visualization-pinboard .{class:auth} { float: left; margin: 14px .5%; border: 1px solid #ddd; background: #fff; box-shadow: 1px 1px 3px #666; padding: 0.5%; margin: 0.5%; width: 98%; }" +
-    ".visualization-pinboard h2.echo-item-title { font-size: 1em; font-weight: normal; }" +
-
 	".echo-streamserver-controls-stream-item-data img { display: block; }" +
 
-	".visualization-streamlined .{class:auth} { float: left; margin: 14px .5%; border: 1px solid #ddd; background: #fff; box-shadow: 1px 1px 3px #666; padding: 0.5%; margin: 0.5%; width: 98%; }" +
+	".{class:container} .poll { margin: 0 0 40px 0; text-transform: uppercase; }" +
+	".{class:container} .poll .bar { border: 1px solid #777; height: 100px; color: #fff; text-transform: uppercase; position: relative; font-size: 30px; color: #fff; }" +
+	".{class:container} .poll .bar > div { position: absolute; top: 0; bottom: 0; left: 0; line-height: 100px; }" +
+	".{class:container} .poll .bar .left { z-index: 1; border-right: 1px solid #777; text-align: left; }" +
+	".{class:container} .poll .bar .right { z-index: 0; right: 0; text-align: right; }" +
+	".{class:container} .poll .bar i { display: block; width: 76px; height: 77px; overflow: hidden; background: url(/sites/all/themes/echocms/layouts/cse/coke_zero/badges.png) 0 0 no-repeat; margin: 12px; }" +
+	".{class:container} .poll .bar .left i { float: left; }" +
+	".{class:container} .poll .bar .right i { float: right; }" +
+	".{class:container} .poll .buttons > a { display: block; padding: 6px 20px; border-radius: 9px; background: #fff; text-decoration: none; font-weight: bold; margin-top: 10px; }" +
+	".{class:container} .poll .buttons .left { float: left; margin-left: 20px; }" +
+	".{class:container} .poll .buttons .right { float: right; margin-right: 20px; }" +
 
-	".visualization-tabbed { max-width: 960px; background: #fff; margin: 0 auto; padding: 0 20px; } " +
-	".{class:container}.visualization-tabbed h2 { text-align: center; color: #666; font-size: 1.5em; padding: 1em 0; margin: 0; } " +
-	".visualization-tabbed .{class:auth} { float: right; background: #cfa; display: none; }" +
-	".visualization-tabbed .{class:tabs} { width: 100%; border-bottom: 2px solid #ddd; }" +
-	".visualization-tabbed .{class:tabs} ul { list-style: none; margin-bottom: 0; }" +
-	".visualization-tabbed .{class:tabs} a { display: block; float: left; margin: 8px 8px -2px 8px; -moz-border-radius: 10px 10px 0 0; -webkit-border-radius: 10px 10px 0 0; border-radius: 10px 10px 0 0; border: 1px solid #ccc; padding: 9px 50px; background: #999; color: #fff; }" +
-	".visualization-tabbed .{class:tabs} a.active { background: #b90000; }" +
+	".{class:container} .poll .bar .alabama { background: #8f052d; }" +
+	".{class:container} .poll .bar .osu { background: #ca1745; }" +
+	".{class:container} .poll .bar .missouri { background: #e9ad2d; }" +
+	".{class:container} .poll .bar .florida { background: #540115; }" + // 540115  8f072b
+	".{class:container} .poll .bar .ucla { background: #137bc1; }" +
+	".{class:container} .poll .bar .miami { background: #0e4a23; }" +
 
-	".visualization-full .{class:auth} { float: left; margin: 14px .5%; border: 1px solid #ddd; background: #fff; box-shadow: 1px 1px 3px #666; padding: 0.5%; margin: 0.5%; width: 98%; }" +
+	".{class:container} .poll .bar .alabama i { background-position: 0 0; }" +
+	".{class:container} .poll .bar .osu i { background-position: 0 -77px; }" +
+	".{class:container} .poll .bar .missouri i { background-position: 0 -154px; }" +
+	".{class:container} .poll .bar .florida i { background-position: 0 -231px; }" +
+	".{class:container} .poll .bar .ucla i { background-position: 0 -308px; }" +
+	".{class:container} .poll .bar .miami i { background-position: 0 -385px; }" +
+
+	".{class:container} .buttons .alabama { color: #700808; }" +
+	".{class:container} .buttons .osu { color: #ca1745; }" +
+	".{class:container} .buttons .missouri { color: #e8ad2d; }" +
+	".{class:container} .buttons .florida { color: #8f072b; }" +
+	".{class:container} .buttons .ucla { color: #137bc1; }" +
+	".{class:container} .buttons .miami { color: #0e4a23; }" +
 
 	"";
 

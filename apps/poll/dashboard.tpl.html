@@ -11,27 +11,57 @@
 
 <select name="appkey" required="required" data-component="AppKeyList" title="Application key" data-help="Specifies the application key for this instance" />
 
-<input name="parentURL" type="text" title="Parent URL" data-help="The root item that contains the poll." />
+<!-- TODO: This is just a streamlined fieldset from the one in Media Gallery.
+     How can we reuse? -->
+<fieldset name="datasource">
+  <legend class="icon-filter">Data Source</legend>
+
+  <select name="targetURLSource" title="Source of Target URL" data-help="Select how the target URL is determined">
+    <option value="canonical" selected="selected">Canonical URL of Host Page</option>
+    <option value="actualurl">Actual URL of Host Page</option>
+    <option value="echourl">META echo:url Value</option>
+    <option value="specific">Specify a URL</option>
+    <option value="builder">Data Source Builder</option>
+  </select>
+
+  <!-- Only one of these options will be shown at a time -->
+  <input name="specifiedURL" type="text" class="specified-url" title="Specified URL" data-help="Please specify the exact URL you wish to use." />
+
+  <input name="filters" type="text" value="" title="Filters" data-help="Add any marker, flag, or other filters you wish to use." />
+</fieldset>
 
 <fieldset name="display">
   <legend class="icon-picture">Display</legend>
 
-  <select name="layout" title="Layout" data-help="How should the individual poll elements be arranged?">
+  <!-- TODO: We really need full HTML templates so we can render clickable
+       images and put a border around the active one instead of always using
+       pull-downs. -->
+  <select name="visualization" title="Visualization" data-help="What should the poll look like?">
     <option value="list" selected="selected">Vertical List</option>
-    <option value="sidebyside">Side by Side</option>
+    <option value="textbuttons">Text Buttons</option>
+    <option value="updown">Up/Down Buttons</option>
+    <option value="sidebyside">Side by Side Options</option>
     <option value="tugowar">Tug Of War (Nested)</option>
+    <option value="reaction">Reaction Boxes</option>
   </select>
-</fieldset>
 
-<fieldset name="results">
-  <legend class="icon-tasks">Results</legend>
+  <input name="oneclick" type="checkbox" title="One-Click" data-help="If checked, votes are submitted immediately when an option is selected. If not checked, a separate Submit button will be shown." />
 
-  <select name="format" title="Format" data-help="Select the graphic display format for the results.">
-    <option value="hbar" selected="selected">Horizontal Bar</option>
-    <option value="vbar">Vertical Bar</option>
-    <option value="pie">Pie Chart</option>
+  <select name="results" title="Show Results" data-help="When should the results be displayed?">
+    <option value="post" selected="selected">Post-Submit</option>
+    <option value="load">When first loaded</option>
+    <option value="never">Never (Secret Ballot)</option>
   </select>
 
   <input name="percent" type="checkbox" checked="checked" title="Show Percentage" data-help="If checked, a percentage value will be displayed in the result elements." />
-  <input name="count" type="checkbox" checked="checked" title="Show Vote Count" data-help="If checked, the vote count will be displayed in the result elements." />
+  <input name="count" type="checkbox" title="Show Vote Count" data-help="If checked, the vote count will be displayed in the result elements." />
+</fieldset>
+
+<!-- Authorization -->
+<fieldset name="auth">
+  <legend class="icon-user">Authorization</legend>
+
+  <input name="enabled" type="checkbox" checked="checked" title="Enable user authorization" data-help="Check to enable authorization" />
+
+  <select name="janrainApp" title="Janrain app" data-help="Specifies the Janrain application">
 </fieldset>
