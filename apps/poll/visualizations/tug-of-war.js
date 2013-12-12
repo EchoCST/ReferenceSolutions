@@ -23,27 +23,47 @@ var plugin = Echo.Plugin.manifest('TugOfWar',
 if (Echo.Plugin.isDefined(plugin)) return;
 
 plugin.init = function() {
-    var item = this.component;
+    var item = this.component,
+        id = item.get('data.object.id').split('/'),
+        votes = (item.depth == 1)
+                    ? item.get('data.object.accumulators.repliesCount', 0)
+                    : 0;
 
     // Add a media container for the 'front' side of the card
     this.extendTemplate('insertBefore', 'body', plugin.templates.bar);
+
+    // Add the vote count and ID-based targeting classes
+    item.config.get("target").addClass(id.pop() + ' ' + id.pop())
+                             .attr('data-votes', votes);
 };
 
-plugin.templates.bar = '<div class="{plugin.class:bar} percent-width-bar"></div>';
+/**
+ * We add a bar to the visualization as a container for our percentage.
+ * 
+ * @echo_template
+ */
+plugin.templates.bar = '<div class="{plugin.class:bar} tugofwar-bar"></div>';
 
+/**
+ * Get the vote count and expose it as an attribute that we can reuse elsewhere.
+ *
+ * @echo_renderer
+ */
 plugin.renderers.bar = function(element) {
-    var plugin = this,
-        item = this.component;
+    var item = this.component,
+        votes = (item.depth == 1)
+                    ? item.get('data.object.accumulators.repliesCount', 0)
+                    : 0;
 
-    element = this.parentRenderer('bar', element);
-
-    var votes = (item.depth == 1) ? item.data.object.accumulators.repliesCount : 0;
-    element.setAttribute('data-votes', votes);
+    // Add a class to the Stream.Item DIV with the last two path terms for the
+    // stream item. This allows styling specifically by which item is being
+    // rendered.
+    element = this.parentRenderer('bar', arguments);
+    element.attr('data-votes', votes);
 
     return element;
 };
 
-//	'.{plugin:class} .{echo-streamserver-controls-stream-body > .echo-streamserver-controls-stream-item { position: relative; height: 140px; } ' +
 plugin.css =
 	// Do not display these data elements
     '.{plugin.class} .{class:depth-0}, ' +
@@ -51,7 +71,8 @@ plugin.css =
 	'.{plugin.class} .{class:avatar-wrapper}, ' +
 	'.{plugin.class} .{class:authorName}, ' +
 	'.{plugin.class} .{class:text} > div, ' +
-	'.{plugin.class} .{class} .{class:children} { display: none; }' +
+    '.{plugin.class} .{class:modeSwitch}, ' +
+	'.{plugin.class} .{class} .{class:children} { display: none !important; }' +
 
     // General layout
 	'.{plugin.class} .{class:subwrapper} { margin: 0; }' +
@@ -60,20 +81,20 @@ plugin.css =
 	'.{plugin.class} .echo-primaryColor { color: #fff; }' +
 
 	// Bars
-	'.{plugin.class} .{class} { position: absolute; top: 0; bottom: 0; left: 0; border: 1px solid #777; }' +
-	'.{plugin.class} .{class}:first-child { background: #540115; z-index: 1; }' +
-	'.{plugin.class} .{class}:last-child { background: #8f052d; z-index: 0; right: 0; text-align: right; }' +
+	'.{plugin.class} .{class} { position: absolute; top: 0; bottom: 0; left: 0; border: 1px solid #fff; }' +
+	'.{plugin.class} .{class}:first-child { background: #55a3cc; text-align: left; z-index: 1; }' +
+	'.{plugin.class} .{class}:last-child { background: #ea9101; text-align: right; z-index: 0; right: 0; text-align: right; }' +
 
-    // Text display
+    // Text display. Note, there is an embedded <i> tag that the client may
+    // style as desired with a badge image.
     '.{plugin.class} .{plugin.class:bar} { height: 100px; color: #fff; line-height: 100px; font-size: 30px; }' +
-    '.{plugin.class} .{plugin.class:bar} i { display: block; width: 76px; height: 77px; overflow: hidden; background: url(//echosandbox.com/cse/cokezero/badges.png) 0 0 no-repeat; margin: 12px; }' +
-    '.{plugin.class} .{class}:first-child .{plugin.class:bar} i { float: left; background-position: 0 -231px; }' +
+    '.{plugin.class} .{class}:first-child .{plugin.class:bar} i { float: left; }' +
     '.{plugin.class} .{class}:last-child .{plugin.class:bar} i { float: right; }' +
 
     // Buttons and other data
     '.{plugin.class} .{class:text} a { display: block; padding: 6px 20px; border-radius: 9px; background: #fff; text-decoration: none; font-weight: bold; margin: 10px 20px 0 20px; }' +
-	'.{plugin.class} .{class}:first-child .{class:text} a { float: left; color: #540115; }' +
-	'.{plugin.class} .{class}:last-child .{class:text} a { float: right; color: #8f052d; }' +
+	'.{plugin.class} .{class}:first-child .{class:text} a { float: left; }' +
+	'.{plugin.class} .{class}:last-child .{class:text} a { float: right; }' +
 
     '';
 
@@ -111,7 +132,6 @@ plugin.events = {};
         'Echo.StreamServer.Controls.Stream.onRefresh'
     ], function(entry) {
         plugin.events[entry] = function(topic, args) {
-            console.log(topic);
             this._processData();
         };
     });
@@ -125,12 +145,12 @@ plugin.methods._processData = function() {
 
     // First count all the votes
     // TODO: Later we should cache this...
-    $body.find('.percent-width-bar').each(function(i, el) {
+    $body.find('.tugofwar-bar').each(function(i, el) {
         voteCount += $(el).data('votes');
     });
 
     // Now apply the vote counts and percentages as required
-    $body.find('.percent-width-bar').each(function(i, el) {
+    $body.find('.tugofwar-bar').each(function(i, el) {
         var votes = $(el).data('votes'),
             percentage = Math.round(100 * votes / voteCount);
 
@@ -139,7 +159,7 @@ plugin.methods._processData = function() {
 
     // Finally, animate only the LEFT bar
     $body.find('.echo-streamserver-controls-stream-item-children .echo-streamserver-controls-stream-item:first-child').each(function(i, el) {
-        var percentage = $(el).find('.percent-width-bar').data('percentage');
+        var percentage = $(el).find('.tugofwar-bar').data('percentage');
         $(el).animate({ width: percentage + '%' }, 2000);
     });
 };
