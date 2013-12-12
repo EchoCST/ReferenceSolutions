@@ -39,7 +39,7 @@ plugin.init = function() {
 
 /**
  * We add a bar to the visualization as a container for our percentage.
- * 
+ *
  * @echo_template
  */
 plugin.templates.bar = '<div class="{plugin.class:bar} tugofwar-bar"></div>';
@@ -95,6 +95,24 @@ plugin.css =
     '.{plugin.class} .{class:text} a { display: block; padding: 6px 20px; border-radius: 9px; background: #fff; text-decoration: none; font-weight: bold; margin: 10px 20px 0 20px; }' +
 	'.{plugin.class} .{class}:first-child .{class:text} a { float: left; }' +
 	'.{plugin.class} .{class}:last-child .{class:text} a { float: right; }' +
+
+    // Some responsive styling. Note that since phone resolutions are now all
+    // over the place we deliberately used widths IN BETWEEN their typical sizes
+    // to help make sure we get the edge cases.
+    '@media all and (max-width: 900px) {'+
+        '.{plugin.class} .{class:children} { height: 80px; }' +
+        '.{plugin.class} .{plugin.class:bar} { height: 80px; line-height: 80px; font-size: 24px; }' +
+    '}' +
+
+    '@media all and (max-width: 600px) {'+
+        '.{plugin.class} .{class:children} { height: 60px; }' +
+        '.{plugin.class} .{plugin.class:bar} { height: 60px; line-height: 60px; font-size: 20px; }' +
+    '}' +
+
+    '@media all and (max-width: 400px) {'+
+        '.{plugin.class} .{class:children} { height: 40px; }' +
+        '.{plugin.class} .{plugin.class:bar} { height: 40px; line-height: 40px; font-size: 16px; }' +
+    '}' +
 
     '';
 
