@@ -154,7 +154,7 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "    <option value=\"textbuttons\">Text Buttons</option>\n" +
     "    <option value=\"updown\">Up/Down Buttons</option>\n" +
     "    <option value=\"sidebyside\">Side by Side Options</option>\n" +
-    "    <option value=\"tugowar\">Tug Of War (Nested)</option>\n" +
+    "    <option value=\"tugofwar\">Tug Of War (Nested)</option>\n" +
     "    <option value=\"reaction\">Reaction Boxes</option>\n" +
     "  </select>\n" +
     "\n" +

@@ -64,96 +64,60 @@ poll.config = {
 };
 
 poll.dependencies = [{
-	"url": "{config:cdnBaseURL.sdk}/identityserver.pack.js",
-	"app": "Echo.IdentityServer.Controls.Auth"
-}, {
 	"url": "{config:cdnBaseURL.sdk}/streamserver.pack.js",
 	"app": "Echo.StreamServer.Controls.Stream"
 }];
 
 poll.templates.main =
-	'<div class="{class:container} visualization-{config:display.visualization}">' +
-	    '<div class="poll" id="poll-1">' +
-        '<div class="bar">' +
-          '<div class="left florida" style="width: 25%"><i></i>25%</div>' +
-          '<div class="right alabama">75%<i></i></div>' +
-        '</div>' +
-        '<div class="buttons clearfix">' +
-          '<a href="#" class="left florida"><i></i>Florida State</a>' +
-          '<a href="#" class="right alabama">Auburn<i></i></a>' +
-        '</div>' +
-      '</div>' +
-
-		'<div class="{class:stream}" style="display: none"></div>' +
+	'<div class="{class:container}">' +
+		'<div class="{class:stream} {config:display.visualization}"></div>' +
 	'</div>';
 
-poll.renderers.auth = function(element) {
-	if (!this._isAuthEnabled()) {
-		return element.hide();
-	}
-	this.initComponent({
-		"id": "Auth",
-		"component": "Echo.IdentityServer.Controls.Auth",
-		"config": {
-			"target": element,
-			"infoMessages": {"enabled": false},
-			"labels": {"login": this.labels.get("signin")},
-			"plugins": [this._getAuthPluginDefinition({"name": "JanrainConnector"})]
-		}
-	});
-	return element;
-};
-
 poll.renderers.stream = function(element) {
-	var self = this,
-	    plugins = [],
-	    janrainApp = this.config.get("auth.janrainApp");
+	var app = this,
+	    plugins = [];
+
+	console.log(app);
+	switch (app.config.get('display.visualization')) {
+		case "tugofwar":
+		case "tugowar":
+			plugins.push({
+				name: 'TugOfWar',
+				url: '//echocsthost.s3.amazonaws.com/apps/poll/visualizations/tug-of-war.js'
+			});
+			break;
+	}
+
+
+	var query = 'url:' +
+	            app.config.get("datasource.specifiedURL") +
+				' children:1';
 
 	this.initComponent({
-		"id": "Stream",
-		"component": "Echo.StreamServer.Controls.Stream",
-		"config": {
-			"target": element,
-			"query": self.config.get("query"),
-			"plugins": plugins,
-			"slideTimeout": 0,
-			"item": {
-				"viaLabel": {"icon": true}
+		id: 'Stream',
+		component: 'Echo.StreamServer.Controls.Stream',
+		config: {
+			target: element,
+			query: query,
+			plugins: plugins,
+			slideTimeout: 0,
+			infoMessages: { enabled: false },
+			state: {
+				label: { icon: false, text: false },
+				toggleBy: 'none'
+			},
+			item: {
+				infoMessages: { enabled: false },
+				reTag: false,
+				viaLabel: { icon: false, text: false  }
 			}
 		}
 	});
 	return element;
 };
 
-poll.methods._isAuthEnabled = function() {
-	// TODO: We deferred this to a later phase. We need to look at people using
-	// Gigya, and what FilePicker will do in remote environments.
-	return false;
-
-	return this.config.get("auth.enabled") &&
-	       !!this.config.get("auth.janrainApp");
-};
-
-poll.methods._getAuthPluginDefinition = function(config) {
-	return $.extend({
-		"buttons": ["login"],
-		"title": this.labels.get("signin"),
-		"width": 270,
-		"height": 290,
-		"appId": this.config.get("auth.janrainApp")
-	}, config);
-};
-
 poll.css =
 	".{class:stream} { clear: both; margin: 0; }" +
-
-	// Auth app CSS overrides...
-	".{class:container} .echo-identityserver-controls-auth-name { margin-right: 10px; }" +
-	".{class:container} .echo-streamserver-controls-stream-item-plugin-Reply-submitForm .echo-identityserver-controls-auth-logout { font-size: 12px; margin-top: 0px; }" +
-	".{class:container} .echo-identityserver-controls-auth-logout { font-size: 12px; margin-top: 6px; }" +
-	".{class:container} .echo-identityserver-controls-auth-name { font-size: 16px; }" +
-
-	".echo-streamserver-controls-stream-item-data img { display: block; }" +
 
 	".{class:container} .poll { margin: 0 0 40px 0; text-transform: uppercase; }" +
 	".{class:container} .poll .bar { border: 1px solid #777; height: 100px; color: #fff; text-transform: uppercase; position: relative; font-size: 30px; color: #fff; }" +
@@ -168,9 +132,9 @@ poll.css =
 	".{class:container} .poll .buttons .right { float: right; margin-right: 20px; }" +
 
 	".{class:container} .poll .bar .alabama { background: #8f052d; }" +
-	".{class:container} .poll .bar .osu { background: #ca1745; }" +
+	".{class:container} .poll .bar .osu {  }" +
 	".{class:container} .poll .bar .missouri { background: #e9ad2d; }" +
-	".{class:container} .poll .bar .florida { background: #540115; }" + // 540115  8f072b
+	".{class:container} .poll .bar .florida {  }" + // 540115  8f072b
 	".{class:container} .poll .bar .ucla { background: #137bc1; }" +
 	".{class:container} .poll .bar .miami { background: #0e4a23; }" +
 

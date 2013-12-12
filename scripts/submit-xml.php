@@ -6,14 +6,18 @@
 
 require_once('config.php');
 
+function die_usage() {
+  die('Usage: submit-xml.php <account in config.json> <xmlfile>' . PHP_EOL);
+}
+
 $accountName = $_SERVER['argv'][1];
 if (!$accountName || !$config->accounts || !$config->accounts->{$accountName}) {
-  die('Usage: submit-xml.php <account in config.json> <xmlfile>' . PHP_EOL);
+  die_usage();
 }
 
 $filename = $_SERVER['argv'][2];
 if (!$filename || !file_exists($filename)) {
-  die('Usage: submit-xml.php <account> <xmlfile>' . PHP_EOL);
+  die_usage();
 }
 
 $postfields = array(
