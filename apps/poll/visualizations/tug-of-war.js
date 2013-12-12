@@ -79,6 +79,7 @@ plugin.css =
     '.{plugin.class} .{class:children} { width: 100%; height: 100px; position: relative; }' +
 	'.{plugin.class} .{class:depth-1} { margin: 0; padding: 0; background-color: transparent; }' +
 	'.{plugin.class} .echo-primaryColor { color: #fff; }' +
+	'.{plugin.class} .percentage { margin: 0 12px; }' +
 
 	// Bars
 	'.{plugin.class} .{class} { position: absolute; top: 0; bottom: 0; left: 0; border: 1px solid #fff; }' +
@@ -92,7 +93,7 @@ plugin.css =
     '.{plugin.class} .{class}:last-child .{plugin.class:bar} i { float: right; }' +
 
     // Buttons and other data
-    '.{plugin.class} .{class:text} a { display: block; padding: 6px 20px; border-radius: 9px; background: #fff; text-decoration: none; font-weight: bold; margin: 10px 20px 0 20px; }' +
+    '.{plugin.class} .{class:text} a { display: block; padding: 6px 20px; border-radius: 9px; background: #333; text-decoration: none; font-weight: bold; margin: 10px 20px 0 20px; color: #fff; }' +
 	'.{plugin.class} .{class}:first-child .{class:text} a { float: left; }' +
 	'.{plugin.class} .{class}:last-child .{class:text} a { float: right; }' +
 
@@ -172,7 +173,8 @@ plugin.methods._processData = function() {
         var votes = $(el).data('votes'),
             percentage = Math.round(100 * votes / voteCount);
 
-        $(el).html('<i></i>' + percentage + '%').data('percentage', percentage);
+        $(el).html('<i></i><span class="percentage">' + percentage + '%</span>')
+             .data('percentage', percentage);
     });
 
     // Finally, animate only the LEFT bar
