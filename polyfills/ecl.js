@@ -136,6 +136,10 @@ Echo.Polyfills.ECL = {
           });
           break;
 
+        case 'TEXTAREA':
+          append.component = 'Textarea';
+          break;
+
         case 'FIELDSET':
           // ECL supports Fieldset and Group, but HTML only has fieldsets. Since
           // HTML fieldsets act a lot like ECL Groups, that's how we map them...

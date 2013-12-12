@@ -146,6 +146,9 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "<fieldset name=\"display\">\n" +
     "  <legend class=\"icon-picture\">Display</legend>\n" +
     "\n" +
+    "  <textarea name=\"header\" title=\"Header HTML\" data-help=\"Optional HTML to include above the poll itself.\"></textarea>\n" +
+    "  <textarea name=\"footer\" title=\"Footer HTML\" data-help=\"Optional HTML to include below the poll itself.\"></textarea>\n" +
+    "\n" +
     "  <!-- TODO: We really need full HTML templates so we can render clickable\n" +
     "       images and put a border around the active one instead of always using\n" +
     "       pull-downs. -->\n" +
