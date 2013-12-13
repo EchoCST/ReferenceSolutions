@@ -11,6 +11,8 @@
 module.exports = function(grunt) {
     "use strict";
 
+    grunt.util.linefeed = '\n';
+
     var apps = [ "gallery", "poll" ];
     var config = grunt.file.readJSON('config.json');
 
