@@ -60,6 +60,13 @@ plugin.config = {
 	},
 
 	/**
+	 * @cfg {Number} minColWidth
+	 * The smallest a column is allowed to be. This controls the responsive
+	 * resizing behavior. Column count is reduced as necessary to meet this.
+	 */
+	minColWidth: 300,
+
+	/**
 	 * @cfg {Object} gallery
 	 * Pinboard requires the MediaGallery plugin. Any settings defined here will
 	 * be passed through to it.
@@ -513,24 +520,21 @@ plugin.methods._refreshView = function() {
 		return;
 	}
 
-	var bodyWidth = $body.width();
-
-	var columns = plugin.config.get("columns", 4);
-	if ($.isArray(columns)) {
-		var length = columns.length;
-		for (var i = 0; i < length; i++) {
-			if (bodyWidth < columns[i]) {
-				break;
-			}
-		}
-
-		columns = i;
-	}
+	// Figure out how many columns we should render. We need at least one
+	// column, so we start checking for cols > 1.
+	var minColWidth = plugin.config.get('minColWidth'),
+			bodyWidth = $body.width(),
+			columns = 1;
+	for ( ; (Math.floor(bodyWidth / (columns+1)) >= minColWidth); columns++)
+			;
 
 	var config = $.extend({
-		sortBy: "original-order",
+		sortBy: 'original-order',
+		resizable: false,
+		itemPositionDataEnabled: true,
+		layoutMode: 'masonry',
 		masonry: {
-			columnWidth: Math.floor(bodyWidth / columns)
+				columnWidth: Math.floor(bodyWidth / columns)
 		}
 	}, plugin.config.get("isotope"));
 

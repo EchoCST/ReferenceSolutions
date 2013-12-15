@@ -134,13 +134,15 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "    <option value=\"actualurl\">Actual URL of Host Page</option>\n" +
     "    <option value=\"echourl\">META echo:url Value</option>\n" +
     "    <option value=\"specific\">Specify a URL</option>\n" +
-    "    <option value=\"builder\">Data Source Builder</option>\n" +
+    "    <!--<option value=\"builder\">Data Source Builder</option>-->\n" +
     "  </select>\n" +
     "\n" +
     "  <!-- Only one of these options will be shown at a time -->\n" +
     "  <input name=\"specifiedURL\" type=\"text\" class=\"specified-url\" title=\"Specified URL\" data-help=\"Please specify the exact URL you wish to use.\" />\n" +
     "\n" +
     "  <input name=\"filters\" type=\"text\" value=\"\" title=\"Filters\" data-help=\"Add any marker, flag, or other filters you wish to use.\" />\n" +
+    "\n" +
+    "  <a href=\"#\" title=\"Poll Editor\" data-help=\"Click to edit\" data-component=\"PollEditor\">Edit</a>\n" +
     "</fieldset>\n" +
     "\n" +
     "<fieldset name=\"display\">\n" +

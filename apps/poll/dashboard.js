@@ -24,6 +24,9 @@ dashboard.dependencies = [{
 	"url": "//echocsthost.s3.amazonaws.com/controls/app-key-list.js",
 	"control": "Echo.AppServer.Controls.Configurator.Items.AppKeyList"
 }, {
+	"url": "//echocsthost.s3.amazonaws.com/controls/poll-editor.js",
+	"control": "Echo.AppServer.Controls.Configurator.Items.PollEditor"
+}, {
 	"url": "//echocsthost.s3.amazonaws.com/apps/dashboard-templates.js"
 }];
 

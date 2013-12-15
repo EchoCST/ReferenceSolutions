@@ -256,7 +256,7 @@ gallery.renderers.stream = function(element) {
             query.push('children:' + datasource.children);
             query.push(datasource.childFilters);
             query.push('safeHTML:' + datasource.childSafeHTML);
-        } else if (datasource.children.length > 0) {
+        } else if (datasource.children.length > 0 && datasource.children != '0') {
             query.push(datasource.children);
             query.push(datasource.childFilters);
             query.push('safeHTML:' + datasource.childSafeHTML);

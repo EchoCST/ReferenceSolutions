@@ -40,7 +40,7 @@ Echo.Polyfills.ECL = {
    */
   templateECL: function(dashboard, template, callback) {
 	Echo.Polyfills.ECL.getTemplate(template, function(ecl) {
-        console.log(dashboard.config);
+//        console.log(dashboard.config);
 		dashboard.config.set("ecl", ecl);
 		callback.call(dashboard);
     });
@@ -81,7 +81,7 @@ Echo.Polyfills.ECL = {
       }
     });
 
-    console.log(cfg);
+//    console.log(cfg);
 
     return cfg;
   },
