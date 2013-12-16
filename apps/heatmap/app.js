@@ -143,16 +143,17 @@ heatmap.renderers.stream = function(element) {
  */
 heatmap.events = {
     'Echo.Apps.HeatMap.onRender': function(topic, args) {
-        var app = this;
+        var app = this,
+            mapView = app.view.get('map'),
+            mapCenter = [39, -96.9];
 
-        console.log(topic, args, this);
-        var map = new L.map(app.view.get('map').get(0), {
+        var map = new L.map(mapView.get(0), {
             // TODO: Base CENTER and ZOOM on visualization
-            center: [39, -96.9],
+            center: mapCenter,
             zoom: 4.4,
 
             // TODO: Consider exposing some of these config options in the Dashboard
-            minZoom: 4,
+            minZoom: 1,
             maxZoom: 10,
             dragging: false,
             touchZoom: false,
@@ -164,17 +165,19 @@ heatmap.events = {
             trackResize: true,
             attributionControl: false,
         });
+        app.set('map', map);
 
-        // TODO: Pull this title from the dashboard config option
+        var bounds = map.getBounds();
+
         var heading = app.config.get('display.heading').trim();
-        console.log(heading);
         if (heading != '') {
-            var label = new L.Label();
+            var label = new L.Label({
+                classname: 'heading',
+                direction: 'center',
+                offset: [0, 0]
+            });
             label.setContent(heading);
-            // TODO: Determine the center based on the width of the label
-            // Looks like label._labelWidth has what we want?
-            console.log(label);
-            label.setLatLng([51, -105]);
+            label.setLatLng([51.6, mapCenter[1]]);
             map.showLabel(label);
         }
 
@@ -209,9 +212,31 @@ heatmap.events = {
             iconAnchor: [24, 24]
         });
 
+        $(window).resize(function(e) {
+            // Responsive breakpoints. These had to be implemented in JS because
+            // Leaflet is touchy - it has an auto-zoom feature but it doesn't
+            // work with geoJSON, you have to be using their tile service and we
+            // didn't want the dependency. For now we just use 400, 600, 800,
+            // and 960 as our main breakpoints. These are deliberately midpoints
+            // between, not exact matches, of common numbers.
+            var width = mapView.width();
+            if (width < 400)       { mapView.height(230); map.setZoom(2.8); }
+            else if (width < 600)  { mapView.height(304); map.setZoom(3.3); }
+            else if (width < 800)  { mapView.height(378); map.setZoom(3.6); }
+            else if (width < 960)  { mapView.height(452); map.setZoom(3.9); }
+            else if (width < 1200) { mapView.height(526); map.setZoom(4.2); }
+            else                   { mapView.height(600); map.setZoom(4.4); }
+            //map.invalidateSize();
+        });
+
         // TODO: Undo this hard-coding
         var collection = Echo.Polyfills.GEO.features.usStates;
-
+/*        $(window).bind('resize', function() {
+            reset();
+            map.invalidateSize(true);
+        });
+*/
+/*
         var transform = d3.geo.transform({point: projectPoint}),
             path = d3.geo.path().projection(transform),
             bounds = path.bounds(collection);
@@ -220,6 +245,10 @@ heatmap.events = {
                        .data(collection.features)
                        .enter().append("path");
 
+        $(window).bind('resize', function() {
+            reset();
+            map.invalidateSize(true);
+        });
         map.on("viewreset", reset);
         reset();
 
@@ -228,6 +257,7 @@ heatmap.events = {
             var topLeft = bounds[0],
             bottomRight = bounds[1];
 
+            console.log(bounds);
             svg.attr("width", bottomRight[0] - topLeft[0])
                .attr("height", bottomRight[1] - topLeft[1])
                .style("left", topLeft[0] + "px")
@@ -241,6 +271,21 @@ heatmap.events = {
             var point = map.latLngToLayerPoint(new L.LatLng(y, x));
             this.stream.point(point.x, point.y);
         }
+
+*/
+        L.geoJson(Echo.Polyfills.GEO.features.usStates, {
+            style: {
+                fillColor: '#ff4344',
+                fillOpacity: 1,
+                stroke: true,
+                color: '#ffffff',
+                weight: 2,
+                opacity: 1
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup(feature.properties.description);
+            }
+        }).addTo(map);
     /*
         var mapmarkers = [];
         var stateNumber = 0;
@@ -274,12 +319,32 @@ heatmap.events = {
 };
 
 heatmap.css =
-    '.{class} .{class:map} { width: 100%; height: 600px; background: #fff; }' +
+    '.{class} .{class:map} { width: 100%; height: 600px; max-height: 600px; background: #fff; }' +
     '.{class} .{class:map} .states path { fill: #ff4344; stroke: #fff; stroke-width: 1.5px; }' +
     '.{class} .{class:map} .states path:hover { fill: #ff4344; fill-opacity: .7; }' +
     '.{class} .{class:map} .leaflet-label { white-space: nowrap; font-size: 22px; text-align: center; }' +
 
     '.{class} .{class:map} .radar-marker { background: url(img/beacon32.png) 0 0 no-repeat; }' +
+
+    '@media all and (max-width: 1200px) {' +
+    '}' +
+
+    '@media all and (max-width: 960px) {' +
+        '.{class} .{class:map} .leaflet-label { font-size: 20px; }' +
+    '}' +
+
+    '@media all and (max-width: 800px) {' +
+        '.{class} .{class:map} .leaflet-label { font-size: 18px; }' +
+    '}' +
+
+    '@media all and (max-width: 600px) {' +
+        '.{class} .{class:map} .leaflet-label { font-size: 15px; }' +
+    '}' +
+
+    '@media all and (max-width: 400px) {' +
+        '.{class} .{class:map} .leaflet-label { font-size: 13px; }' +
+    '}' +
+
     '';
 
 Echo.App.create(heatmap);
