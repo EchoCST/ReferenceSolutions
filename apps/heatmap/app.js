@@ -69,8 +69,6 @@ heatmap.dependencies = [{
     url: '//echocsthost.s3.amazonaws.com/apps/heatmap/plugins/leaflet.label.js'
 }, {
     url: '//echocsthost.s3.amazonaws.com/apps/heatmap/plugins/leaflet.polylineDecorator.min.js'
-}, {
-    url: '//echocsthost.s3.amazonaws.com/apps/heatmap/plugins/d3.v3.min.js'
 }];
 
 /**
@@ -152,9 +150,9 @@ heatmap.events = {
             center: mapCenter,
             zoom: 4.4,
 
-            // TODO: Consider exposing some of these config options in the Dashboard
-            minZoom: 1,
-            maxZoom: 10,
+            // TODO: Consider exposing some of these options in the Dashboard
+            minZoom: 2,
+            maxZoom: 5,
             dragging: false,
             touchZoom: false,
             scrollWheelZoom: false,
@@ -162,7 +160,7 @@ heatmap.events = {
             boxZoom: false,
             keyboard: false,
             zoomControl: false,
-            trackResize: true,
+            trackResize: false,
             attributionControl: false,
         });
         app.set('map', map);
@@ -181,8 +179,8 @@ heatmap.events = {
             map.showLabel(label);
         }
 
-        // TODO: Move style/color options to the dashboard? Or can we do this with
-        // CSS?
+        // TODO: Move style/color options to the dashboard? Or can we do this
+        // with CSS?
         var lineOptions = {
             color: '#b8b8b8',
             opacity: 1.0,
@@ -231,48 +229,7 @@ heatmap.events = {
 
         // TODO: Undo this hard-coding
         var collection = Echo.Polyfills.GEO.features.usStates;
-/*        $(window).bind('resize', function() {
-            reset();
-            map.invalidateSize(true);
-        });
-*/
-/*
-        var transform = d3.geo.transform({point: projectPoint}),
-            path = d3.geo.path().projection(transform),
-            bounds = path.bounds(collection);
 
-        var feature = g.selectAll("path")
-                       .data(collection.features)
-                       .enter().append("path");
-
-        $(window).bind('resize', function() {
-            reset();
-            map.invalidateSize(true);
-        });
-        map.on("viewreset", reset);
-        reset();
-
-        // Reposition the SVG to cover the features.
-        function reset() {
-            var topLeft = bounds[0],
-            bottomRight = bounds[1];
-
-            console.log(bounds);
-            svg.attr("width", bottomRight[0] - topLeft[0])
-               .attr("height", bottomRight[1] - topLeft[1])
-               .style("left", topLeft[0] + "px")
-               .style("top", topLeft[1] + "px");
-            g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-            feature.attr("d", path);
-        }
-
-        // Use Leaflet to implement a D3 geometric transformation.
-        function projectPoint(x, y) {
-            var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-            this.stream.point(point.x, point.y);
-        }
-
-*/
         L.geoJson(Echo.Polyfills.GEO.features.usStates, {
             style: {
                 fillColor: '#ff4344',
