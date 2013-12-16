@@ -33,38 +33,24 @@ heatmap.labels = {
  */
 heatmap.config = {
 	appkey: "",
-	query: "",
+
+	datasource: {
+		targetURLSource: 'specific',
+		specifiedURL: '',
+	},
 
 	display: {
-		header: "",
-		footer: "",
-		visualization: "pinboard",
-		sourcefilter: true,
-		replies: true,
-		likes: true,
-		sharing: false,
-		flags: true,
-	},
-
-	integration: {
-		nativeinterval: 0
-	},
-
-	upload: {
-		enabled: false,
-		fpkey: ""
+		visualization: 'world',
+		pingDelay: '1000',
+		fadeSpeed: '3000',
+		fakeInterval: '6000',
+		showStream: false,
 	},
 
 	auth: {
 		enabled: false,
 		janrainApp: undefined
-	},
-
-	// We don't use this but StreamServer dies if we don't have it
-	children: {
-		maxDepth: 0,
-		itemsPerPage: 15
-	},
+	}
 };
 
 heatmap.dependencies = [{
