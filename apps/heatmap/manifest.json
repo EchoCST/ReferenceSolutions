@@ -2,7 +2,7 @@
     "id": "echo-heatmap-cst",
     "name": "Social Heat Map",
     "description": "Displays a map visualization with sonar-style 'ping' element for geo-tagged Stream Items.",
-    "app_version": "2.0.0",
+    "app_version": "1.0.0",
     "icon": "//cdn.echoenabled.com/apps/echo/media-gallery/icon.png",
     "developer": {
         "id": "echo",
@@ -15,7 +15,7 @@
         "id": "instances",
         "type": "instances",
         "title": "Instances",
-        "script": "//echocsthost.s3.amazonaws.com/apps/gallery/dashboard.js",
+        "script": "//echocsthost.s3.amazonaws.com/apps/heatmap/dashboard.js",
         "component": "Echo.Apps.HeatMap.Dashboard",
         "config": {
             "instanceManager": {
@@ -31,9 +31,9 @@
         }
     }],
     "client_widget": {
-        "component": "Echo.Apps.MediaGallery",
-        "scriptX": "//echocsthost.s3.amazonaws.com/apps/gallery/app.js",
-        "script": "//d3owx0qmt32wcw.cloudfront.net/apps/gallery/app.js"
+        "component": "Echo.Apps.HeatMap",
+        "scriptX": "//echocsthost.s3.amazonaws.com/apps/heatmap/app.js",
+        "script": "//d3owx0qmt32wcw.cloudfront.net/apps/heatmap/app.js"
     },
     "cloudapp_protocol_version": "1.0.0"
 }

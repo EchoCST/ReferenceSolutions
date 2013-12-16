@@ -1,0 +1,59 @@
+<!-- NOTES:
+
+1. You must make your app.config{} block defaults match these defaults _exactly_
+   or you will get unexpected behaviors when your app loads. If the user leaves
+   a field set to its default value, the field is _removed_ from the config
+   block. So if the default is true, it will not be sent at all if the checkbox
+   is checked. That means if you go to use it in app.js it can evaluate to false
+   unexpectedly. See the related comment there for details.
+
+-->
+
+<select name="appkey" required="required" data-component="AppKeyList" title="Application key" data-help="Specifies the application key for this instance" />
+
+<!-- TODO: This is just a streamlined fieldset from the one in Media Gallery.
+     How can we reuse? -->
+<fieldset name="datasource">
+  <legend class="icon-filter">Data Source</legend>
+
+  <select name="targetURLSource" title="Source of Target URL" data-help="Select how the target URL is determined">
+    <option value="canonical" selected="selected">Canonical URL of Host Page</option>
+    <option value="actualurl">Actual URL of Host Page</option>
+    <option value="echourl">META echo:url Value</option>
+    <option value="specific">Specify a URL</option>
+    <!--<option value="builder">Data Source Builder</option>-->
+  </select>
+
+  <!-- Only one of these options will be shown at a time -->
+  <input name="specifiedURL" type="text" title="Specified URL" data-help="Please specify the exact URL you wish to use." />
+</fieldset>
+
+<fieldset name="display">
+  <legend class="icon-picture">Display</legend>
+
+  <!-- TODO: We really need full HTML templates so we can render clickable
+       images and put a border around the active one instead of always using
+       pull-downs. -->
+  <select name="visualization" title="Visualization" data-help="What should the map look like?">
+    <option value="world" selected="selected">World</option>
+    <option value="usalbiers">USA (Albiers)</option>
+    <option value="usflat">USA (Flat)</option>
+  </select>
+
+  <input name="pingDelay" type="text" value="1000" title="Ping Delay (ms)" data-help="Minimum time before a new ping will be displayed." />
+
+  <input name="fadeSpeed" type="text" value="3000" title="Fade Out Speed (ms)" data-help="How quickly pings will fade." />
+
+  <input name="fakeInterval" type="text" value="6000" title="Fake Ping Interval (ms)" data-help="For slow moving feeds, will simulate a fake ping from past data randomly between Ping Delay and Fake Ping Interval." />
+
+  <input name="showStream" type="checkbox" title="Show Stream" data-help="The input stream is normally hidden, but may be displayed below the map by checking this box. Use plugins through Echo.Loader.Overrides to style it." />
+</fieldset>
+
+<!-- Authorization -->
+<fieldset name="auth">
+  <legend class="icon-user">Authorization</legend>
+
+  <input name="enabled" type="checkbox" checked="checked" title="Enable user authorization" data-help="Check to enable authorization" />
+
+  <select name="janrainApp" title="Janrain app" data-help="Specifies the Janrain application">
+</fieldset>
