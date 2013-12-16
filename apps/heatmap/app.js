@@ -135,139 +135,142 @@ heatmap.renderers.stream = function(element) {
 };
 
 /**
- * Map Component of the app. This is the real meat of the visualization. We
- * didn't do it with a plugin because it's not separable - the plugin would not
- * be re-usable anywhere else, and this App is useless without it.
- *
- * @echo_renderer
+ * We have to wait until the stream and map are rendered - waiting on the Stream
+ * just saves us some code since it already has and async event being published
+ * for it. We can't do this setup in the renderer itself because in there, the
+ * element has not yet been placed in the DOM and laid out by the browser. That
+ * means it doesn't have a width/height yet and Leaflet does NOT like that.
  */
-heatmap.renderers.map = function(element) {
-    var app = this;
+heatmap.events = {
+    'Echo.Apps.HeatMap.onRender': function(topic, args) {
+        var app = this;
 
-    var map = new L.map(element.get(0), {
-        // TODO: Base CENTER and ZOOM on visualization
-        center: [39, -96.9],
-        zoom: 4.4,
+        console.log(topic, args, this);
+        var map = new L.map(app.view.get('map').get(0), {
+            // TODO: Base CENTER and ZOOM on visualization
+            center: [39, -96.9],
+            zoom: 4.4,
 
-        // TODO: Consider exposing some of these config options in the Dashboard
-        minZoom: 4,
-        maxZoom: 10,
-        dragging: false,
-        touchZoom: false,
-        scrollWheelZoom: false,
-        doubleClickZoom: false,
-        boxZoom: false,
-        keyboard: false,
-        zoomControl: false,
-        trackResize: true,
-        attributionControl: false,
-    });
+            // TODO: Consider exposing some of these config options in the Dashboard
+            minZoom: 4,
+            maxZoom: 10,
+            dragging: false,
+            touchZoom: false,
+            scrollWheelZoom: false,
+            doubleClickZoom: false,
+            boxZoom: false,
+            keyboard: false,
+            zoomControl: false,
+            trackResize: true,
+            attributionControl: false,
+        });
 
-    // TODO: Pull this title from the dashboard config option
-    var heading = app.config.get('display.heading').trim();
-    if (heading != '') {
-        var label = new L.Label();
-        label.setContent(heading);
-        // TODO: Determine the center based on the width of the label
-        // Looks like label._labelWidth has what we want?
-        console.log(label);
-        label.setLatLng([51, -105]);
-        map.showLabel(label);
-    }
+        // TODO: Pull this title from the dashboard config option
+        var heading = app.config.get('display.heading').trim();
+        console.log(heading);
+        if (heading != '') {
+            var label = new L.Label();
+            label.setContent(heading);
+            // TODO: Determine the center based on the width of the label
+            // Looks like label._labelWidth has what we want?
+            console.log(label);
+            label.setLatLng([51, -105]);
+            map.showLabel(label);
+        }
 
-    // TODO: Move style/color options to the dashboard? Or can we do this with
-    // CSS?
-    var lineOptions = {
-        color: '#b8b8b8',
-        opacity: 1.0,
-        clickable: false,
-        dashArray: [2, 2],
-        weight: 2
-    };
+        // TODO: Move style/color options to the dashboard? Or can we do this with
+        // CSS?
+        var lineOptions = {
+            color: '#b8b8b8',
+            opacity: 1.0,
+            clickable: false,
+            dashArray: [2, 2],
+            weight: 2
+        };
 
-    var pl1 = L.polyline([
-        [50.9, -125],
-        [50.9, -105]
-    ], lineOptions).addTo(map);
-    pl1._path.style["stroke-linecap"] = "butt";
+        var pl1 = L.polyline([
+            [50.9, -125],
+            [50.9, -105]
+        ], lineOptions).addTo(map);
+        pl1._path.style["stroke-linecap"] = "butt";
 
-    var pl2 = L.polyline([
-        [50.9, -88],
-        [50.9, -68]
-    ], lineOptions).addTo(map);
-    pl2._path.style["stroke-linecap"] = "butt";
+        var pl2 = L.polyline([
+            [50.9, -88],
+            [50.9, -68]
+        ], lineOptions).addTo(map);
+        pl2._path.style["stroke-linecap"] = "butt";
 
-    var svg = d3.select(map.getPanes().overlayPane).append("svg"),
-    g = svg.append("g").attr("class", "leaflet-zoom-hide states");
+        var svg = d3.select(map.getPanes().overlayPane).append("svg"),
+        g = svg.append("g").attr("class", "leaflet-zoom-hide states");
 
-    var divIcon = L.divIcon({
-        className: 'radar-marker',
-        iconSize: [32, 32],
-        iconAnchor: [24, 24]
-    });
+        var divIcon = L.divIcon({
+            className: 'radar-marker',
+            iconSize: [32, 32],
+            iconAnchor: [24, 24]
+        });
 
-    // TODO: Undo this hard-coding
-    var collection = Echo.Polyfills.GEO.features.usStates;
+        // TODO: Undo this hard-coding
+        var collection = Echo.Polyfills.GEO.features.usStates;
 
-    var transform = d3.geo.transform({point: projectPoint}),
-        path = d3.geo.path().projection(transform),
-        bounds = path.bounds(collection);
+        var transform = d3.geo.transform({point: projectPoint}),
+            path = d3.geo.path().projection(transform),
+            bounds = path.bounds(collection);
 
-    var feature = g.selectAll("path")
-                   .data(collection.features)
-                   .enter().append("path");
+        var feature = g.selectAll("path")
+                       .data(collection.features)
+                       .enter().append("path");
 
-    map.on("viewreset", reset);
-    reset();
+        map.on("viewreset", reset);
+        reset();
 
-    // Reposition the SVG to cover the features.
-    function reset() {
-        var topLeft = bounds[0],
-        bottomRight = bounds[1];
+        // Reposition the SVG to cover the features.
+        function reset() {
+            var topLeft = bounds[0],
+            bottomRight = bounds[1];
 
-        svg.attr("width", bottomRight[0] - topLeft[0])
-           .attr("height", bottomRight[1] - topLeft[1])
-           .style("left", topLeft[0] + "px")
-           .style("top", topLeft[1] + "px");
-        g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-        feature.attr("d", path);
-    }
+            svg.attr("width", bottomRight[0] - topLeft[0])
+               .attr("height", bottomRight[1] - topLeft[1])
+               .style("left", topLeft[0] + "px")
+               .style("top", topLeft[1] + "px");
+            g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+            feature.attr("d", path);
+        }
 
-    // Use Leaflet to implement a D3 geometric transformation.
-    function projectPoint(x, y) {
-        var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-        this.stream.point(point.x, point.y);
-    }
-/*
-    var mapmarkers = [];
-    var stateNumber = 0;
-    Echo.Loader.initEnvironment(function() {
-        var e = Echo.Events.subscribe({
-            topic: 'Echo.StreamServer.Controls.Stream.onDataReceive',
-            handler: function(topic, params) {
-                if (params.query == geoquery) {
-                    //console && console.log && console.log(params.entries);
-                    $.map(params.entries, function(entry) {
-                        var latlng = stateCenters[states[stateNumber % states.length]];
-                        stateNumber++;
-                        var marker = L.marker(latlng, {icon: divIcon, opacity: 0}).addTo(map);
-                        mapmarkers.push(marker);
+        // Use Leaflet to implement a D3 geometric transformation.
+        function projectPoint(x, y) {
+            var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+            this.stream.point(point.x, point.y);
+        }
+    /*
+        var mapmarkers = [];
+        var stateNumber = 0;
+        Echo.Loader.initEnvironment(function() {
+            var e = Echo.Events.subscribe({
+                topic: 'Echo.StreamServer.Controls.Stream.onDataReceive',
+                handler: function(topic, params) {
+                    if (params.query == geoquery) {
+                        //console && console.log && console.log(params.entries);
+                        $.map(params.entries, function(entry) {
+                            var latlng = stateCenters[states[stateNumber % states.length]];
+                            stateNumber++;
+                            var marker = L.marker(latlng, {icon: divIcon, opacity: 0}).addTo(map);
+                            mapmarkers.push(marker);
 
-                        $(marker._icon).animate({ opacity: 1 }, 3000);
-                    });
-
-                    while (mapmarkers.length > 5) {
-                        var marker = mapmarkers.shift();
-                        $(marker._icon).animate({ opacity: 0 }, 3000, function() {
-                            map.removeLayer(marker);
+                            $(marker._icon).animate({ opacity: 1 }, 3000);
                         });
+
+                        while (mapmarkers.length > 5) {
+                            var marker = mapmarkers.shift();
+                            $(marker._icon).animate({ opacity: 0 }, 3000, function() {
+                                map.removeLayer(marker);
+                            });
+                        }
                     }
                 }
-            }
+            });
         });
-    });
-*/
-    return element;
+    */
+    }
 };
 
 heatmap.css =

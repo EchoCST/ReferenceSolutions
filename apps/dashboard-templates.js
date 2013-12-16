@@ -153,6 +153,8 @@ angular.module("/heatmap/dashboard", []).run(["$templateCache", function($templa
     "    <option value=\"usflat\">USA (Flat)</option>\n" +
     "  </select>\n" +
     "\n" +
+    "  <input name=\"heading\" type=\"text\" title=\"Heading\" data-help=\"If specified, will be displayed as a heading at the top of the map.\" />\n" +
+    "\n" +
     "  <input name=\"pingDelay\" type=\"text\" value=\"1000\" title=\"Ping Delay (ms)\" data-help=\"Minimum time before a new ping will be displayed.\" />\n" +
     "\n" +
     "  <input name=\"fadeSpeed\" type=\"text\" value=\"3000\" title=\"Fade Out Speed (ms)\" data-help=\"How quickly pings will fade.\" />\n" +
