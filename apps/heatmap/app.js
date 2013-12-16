@@ -54,22 +54,17 @@ heatmap.config = {
     }
 };
 
-heatmap.dependencies = [{
-    url: "{config:cdnBaseURL.sdk}/streamserver.pack.js",
-    app: "Echo.StreamServer.Controls.Stream"
-}, {
-    // TODO: Copy to Echo CDN?
-    url: '//cdn.leafletjs.com/leaflet-0.6.4/leaflet.css'
-}, {
-    // TODO: Copy to Echo CDN?
-    url: '//cdn.leafletjs.com/leaflet-0.6.4/leaflet.js'
-}, {
-    url: '//echocsthost.s3.amazonaws.com/polyfills/geo.js'
-}, {
-    url: '//echocsthost.s3.amazonaws.com/apps/heatmap/plugins/leaflet.label.js'
-}, {
-    url: '//echocsthost.s3.amazonaws.com/apps/heatmap/plugins/leaflet.polylineDecorator.min.js'
-}];
+heatmap.dependencies = [
+    {
+        url: "{config:cdnBaseURL.sdk}/streamserver.pack.js",
+        app: "Echo.StreamServer.Controls.Stream"
+    },
+    { url: '//echocsthost.s3.amazonaws.com/apps/heatmap/plugins/leaflet-0.7.1.css' },
+    { url: '//echocsthost.s3.amazonaws.com/apps/heatmap/plugins/leaflet-0.7.1.js' },
+    { url: '//echocsthost.s3.amazonaws.com/polyfills/geo.js' },
+    { url: '//echocsthost.s3.amazonaws.com/apps/heatmap/plugins/leaflet.label.js' },
+    { url: '//echocsthost.s3.amazonaws.com/apps/heatmap/plugins/leaflet.polylineDecorator.min.js' }
+];
 
 /**
  * Main template for the App.
@@ -201,9 +196,6 @@ heatmap.events = {
         ], lineOptions).addTo(map);
         pl2._path.style["stroke-linecap"] = "butt";
 
-        var svg = d3.select(map.getPanes().overlayPane).append("svg"),
-        g = svg.append("g").attr("class", "leaflet-zoom-hide states");
-
         var divIcon = L.divIcon({
             className: 'radar-marker',
             iconSize: [32, 32],
@@ -225,7 +217,7 @@ heatmap.events = {
             else if (width < 1200) { mapView.height(526); map.setZoom(4.2); }
             else                   { mapView.height(600); map.setZoom(4.4); }
             //map.invalidateSize();
-        });
+        }).trigger('resize');
 
         // TODO: Undo this hard-coding
         var collection = Echo.Polyfills.GEO.features.usStates;
