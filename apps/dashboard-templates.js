@@ -155,11 +155,9 @@ angular.module("/heatmap/dashboard", []).run(["$templateCache", function($templa
     "\n" +
     "  <input name=\"heading\" type=\"text\" title=\"Heading\" data-help=\"If specified, will be displayed as a heading at the top of the map.\" />\n" +
     "\n" +
-    "  <input name=\"pingDelay\" type=\"text\" value=\"1000\" title=\"Ping Delay (ms)\" data-help=\"Minimum time before a new ping will be displayed.\" />\n" +
-    "\n" +
-    "  <input name=\"fadeSpeed\" type=\"text\" value=\"3000\" title=\"Fade Out Speed (ms)\" data-help=\"How quickly pings will fade.\" />\n" +
-    "\n" +
-    "  <input name=\"fakeInterval\" type=\"text\" value=\"6000\" title=\"Fake Ping Interval (ms)\" data-help=\"For slow moving feeds, will simulate a fake ping from past data randomly between Ping Delay and Fake Ping Interval.\" />\n" +
+    "  <input name=\"showSpeed\" type=\"text\" value=\"500\" title=\"Ping Show Speed (ms)\" data-help=\"How quickly pings will animate in.\" />\n" +
+    "  <input name=\"fadeSpeed\" type=\"text\" value=\"5000\" title=\"Ping Fade Speed (ms)\" data-help=\"How quickly pings will animate out.\" />\n" +
+    "  <input name=\"pingInterval\" type=\"text\" value=\"12000\" title=\"Ping Interval (ms)\" data-help=\"How often pings will be displayed. They are drawn randomly from 1ms to this value, which compensates for data feed polling rates and slow moving feeds.\" />\n" +
     "\n" +
     "  <input name=\"showStream\" type=\"checkbox\" title=\"Show Stream\" data-help=\"The input stream is normally hidden, but may be displayed below the map by checking this box. Use plugins through Echo.Loader.Overrides to style it.\" />\n" +
     "</fieldset>\n" +

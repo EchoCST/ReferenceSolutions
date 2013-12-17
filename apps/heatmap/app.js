@@ -42,9 +42,9 @@ heatmap.config = {
     display: {
         visualization: 'world',
         heading: '',
-        pingDelay: '1000',
-        fadeSpeed: '3000',
-        fakeInterval: '6000',
+        pingInterval: '12000',
+        showSpeed: '500',
+        fadeSpeed: '5000',
         showStream: false,
     },
 
@@ -59,6 +59,7 @@ heatmap.dependencies = [
         url: "{config:cdnBaseURL.sdk}/streamserver.pack.js",
         app: "Echo.StreamServer.Controls.Stream"
     },
+    { url: '//echocsthost.s3.amazonaws.com/plugins/jquery.ba-dotimeout.min.js' },
     { url: '//echocsthost.s3.amazonaws.com/apps/heatmap/plugins/leaflet-0.7.1.css' },
     { url: '//echocsthost.s3.amazonaws.com/apps/heatmap/plugins/leaflet-0.7.1.js' },
     { url: '//echocsthost.s3.amazonaws.com/polyfills/geo.js' },
@@ -102,12 +103,11 @@ heatmap.renderers.streamWrapper = function(element) {
  * @echo_renderer
  */
 heatmap.renderers.stream = function(element) {
-    var app = this;
-
-    var query = 'childrenof:' + app.config.get("datasource.specifiedURL") +
+    var app = this,
+        query = 'childrenof:' + app.config.get("datasource.specifiedURL") +
                 ' markers:geo.marker itemsPerPage:45';
 
-    var stream = this.initComponent({
+    app.set('stream', this.initComponent({
         id: 'Stream',
         component: 'Echo.StreamServer.Controls.Stream',
         config: {
@@ -116,16 +116,124 @@ heatmap.renderers.stream = function(element) {
             plugins: [{
                 name: "HeatMapDataHandler",
                 url: "//echocsthost.s3.amazonaws.com/apps/heatmap/plugins/heatmap-data.js"
-            }],
+            }]
         }
-    });
-
-    app.set('stream', stream);
-
-    console.log(this);
+    }));
 
     return element;
 };
+
+/**
+ * We don't actually render the map here - see below for why. Instead we set up
+ * a timeout interval for the "ping" effect.
+ *
+ * Note that we don't actually draw "pings" as they arrive on the wire, because
+ * we're almost always polling the server right now, usually every 60s or so,
+ * which would make it look like the map was dead, and suddenly a bunch of pings
+ * would arrive. Not very attractive. Instead, we always show a ping selected at
+ * random from the Items in our hidden Stream, and we do this on a random
+ * interval - configurable in the Dashboard. This makes the map "feel" active
+ * no matter how active the feed actually is, as long as it is pre-populated
+ * with at least SOME data.
+ *
+ * NOTE: Timers are set to only be accurate to within 500ms so we don't hurt
+ * slower machines.
+ * TODO: Make this configurable?
+ *
+ * @echo_renderer
+ */
+heatmap.renderers.map = function(element) {
+    var app = this,
+        nextPingTime = 0,
+        pingInterval = parseInt(app.config.get('display.pingInterval')),
+        showSpeed = parseInt(app.config.get('display.showSpeed')),
+        fadeSpeed = parseInt(app.config.get('display.fadeSpeed'));
+
+    var divIcon = L.divIcon({
+        className: 'radar-marker',
+        iconSize: [32, 32],
+        iconAnchor: [24, 24]
+    });
+
+    setInterval(function() {
+        // Standard policy is actually NOT to try/catch because a) exceptions
+        // should be fixed, and b) most apps can't function if they're getting
+        // them anyway (they're all pure JS). But we want the map to truck on
+        // even if something in this routine fails so we do it here.
+        try {
+            var stream = app.get('stream'),
+                map = app.get('map'),
+                curTime = new Date().getTime();
+
+            // We need a Stream, or we're kind of useless...
+            if (!stream || !stream.threads || stream.threads.length < 1) {
+                return;
+            }
+
+            // Go-time?
+            //
+            // TODO: We wrote this with a different goal in mind with multiple
+            // timeouts running, and now we're realizing that as simple as it
+            // is, we could probably just call setTimeout instead from within
+            // ourselves and save the trouble of figuring out when to trigger
+            // next...
+            if (curTime < nextPingTime) {
+                return;
+            }
+            nextPingTime = curTime + Math.floor(Math.random() * pingInterval + 1);
+
+            // Get a random Item to display.
+            var index = Math.floor(Math.random() * stream.threads.length),
+                Item = stream.threads[index],
+                latlng = null;
+
+            // A geo-location marker looks like this, using the standard rule in
+            // DataServer:
+            //    geo.location:-117.57980013;33.46756302
+            $.map(Item.data.object.markers, function(marker) {
+                if (marker.substring(0, 13) === 'geo.location:') {
+                    var major = marker.split(':');
+                    var minor = major[1].split(';');
+                    latlng = [parseFloat(minor[1]), parseFloat(minor[0])];
+                }
+            });
+
+            // This one's a dud...
+            if (!latlng) {
+                return;
+            }
+
+            // TODO: Check for memory leaks here because of the decoupled
+            // timing.
+            console.log(latlng);
+            var marker = L.marker(latlng, {
+                icon: divIcon,
+                opacity: 0
+            }).addTo(map);
+
+            // TODO: It would be nice to have a radial expansion with a bounce
+            // effect instead of just fading in. We kept it simple for now.
+            $(marker._icon).animate({
+                opacity: 1
+            }, showSpeed, function() {
+                $(marker._icon).animate({
+                    opacity: 0
+                }, fadeSpeed, function() {
+                    map.removeLayer(marker);
+                });
+            });
+        } catch (e) {
+            Echo.Utils.log({
+                component: 'SocialHeatMap',
+                type: 'Exception',
+                message: e.message,
+                args: e
+            });
+        }
+    }, 500);
+
+    return element;
+}
 
 /**
  * We have to wait until the stream and map are rendered - waiting on the Stream
@@ -155,7 +263,7 @@ heatmap.events = {
             boxZoom: false,
             keyboard: false,
             zoomControl: false,
-            trackResize: false,
+            trackResize: true,
             attributionControl: false,
         });
         app.set('map', map);
@@ -196,27 +304,25 @@ heatmap.events = {
         ], lineOptions).addTo(map);
         pl2._path.style["stroke-linecap"] = "butt";
 
-        var divIcon = L.divIcon({
-            className: 'radar-marker',
-            iconSize: [32, 32],
-            iconAnchor: [24, 24]
-        });
-
         $(window).resize(function(e) {
-            // Responsive breakpoints. These had to be implemented in JS because
-            // Leaflet is touchy - it has an auto-zoom feature but it doesn't
-            // work with geoJSON, you have to be using their tile service and we
-            // didn't want the dependency. For now we just use 400, 600, 800,
-            // and 960 as our main breakpoints. These are deliberately midpoints
-            // between, not exact matches, of common numbers.
-            var width = mapView.width();
-            if (width < 400)       { mapView.height(230); map.setZoom(2.8); }
-            else if (width < 600)  { mapView.height(304); map.setZoom(3.3); }
-            else if (width < 800)  { mapView.height(378); map.setZoom(3.6); }
-            else if (width < 960)  { mapView.height(452); map.setZoom(3.9); }
-            else if (width < 1200) { mapView.height(526); map.setZoom(4.2); }
-            else                   { mapView.height(600); map.setZoom(4.4); }
-            //map.invalidateSize();
+            // TODO: Debounce at some point, but Leaflet doesn't seem to like it
+            //$.doTimeout('social-heatmap-resize', 100, function() {
+                // Responsive breakpoints. These had to be implemented in JS because
+                // Leaflet is touchy - it has an auto-zoom feature but it doesn't
+                // work with geoJSON, you have to be using their tile service and we
+                // didn't want the dependency. For now we just use 400, 600, 800,
+                // and 960 as our main breakpoints. These are deliberately midpoints
+                // between, not exact matches, of common numbers.
+                var width = mapView.width(),
+                    zoom = 4.4;
+
+                if (width < 400)       { mapView.height(230); map.setZoom(2.8); }
+                else if (width < 600)  { mapView.height(304); map.setZoom(3.3); }
+                else if (width < 800)  { mapView.height(378); map.setZoom(3.6); }
+                else if (width < 960)  { mapView.height(452); map.setZoom(3.9); }
+                else if (width < 1200) { mapView.height(526); map.setZoom(4.2); }
+                else                   { mapView.height(600); map.setView(mapCenter, 4.4); }
+            //});
         }).trigger('resize');
 
         // TODO: Undo this hard-coding
