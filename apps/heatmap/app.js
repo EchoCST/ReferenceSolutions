@@ -205,7 +205,6 @@ heatmap.renderers.map = function(element) {
 
             // TODO: Check for memory leaks here because of the decoupled
             // timing.
-            console.log(latlng);
             var marker = L.marker(latlng, {
                 icon: divIcon,
                 opacity: 0
@@ -341,35 +340,6 @@ heatmap.events = {
                 layer.bindPopup(feature.properties.description);
             }
         }).addTo(map);
-    /*
-        var mapmarkers = [];
-        var stateNumber = 0;
-        Echo.Loader.initEnvironment(function() {
-            var e = Echo.Events.subscribe({
-                topic: 'Echo.StreamServer.Controls.Stream.onDataReceive',
-                handler: function(topic, params) {
-                    if (params.query == geoquery) {
-                        //console && console.log && console.log(params.entries);
-                        $.map(params.entries, function(entry) {
-                            var latlng = stateCenters[states[stateNumber % states.length]];
-                            stateNumber++;
-                            var marker = L.marker(latlng, {icon: divIcon, opacity: 0}).addTo(map);
-                            mapmarkers.push(marker);
-
-                            $(marker._icon).animate({ opacity: 1 }, 3000);
-                        });
-
-                        while (mapmarkers.length > 5) {
-                            var marker = mapmarkers.shift();
-                            $(marker._icon).animate({ opacity: 0 }, 3000, function() {
-                                map.removeLayer(marker);
-                            });
-                        }
-                    }
-                }
-            });
-        });
-    */
     }
 };
 
