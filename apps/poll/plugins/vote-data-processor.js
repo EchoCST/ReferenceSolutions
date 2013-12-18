@@ -56,6 +56,8 @@ plugin.init = function() {
         stream = this.component;
 
     setInterval(function() {
+        if (!stream.threads[0]) return;
+
         var request = Echo.StreamServer.API.request({
             endpoint: 'search',
             data: {
@@ -117,9 +119,9 @@ plugin.methods.processData = function() {
         stream = this.component,
         voteCount = 0;
 
-    console.log('Processing...');
-
     // First count all the votes.
+    if (!stream.threads[0]) return;
+
     $.map(stream.threads[0].children, function(item) {
         var votes = item.get('data.object.accumulators.repliesCount', 0);
         item.set('votes', votes);

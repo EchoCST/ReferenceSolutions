@@ -32,7 +32,7 @@
     }],
     "client_widget": {
         "component": "Echo.Apps.Poll",
-        "script": "//echocsthost.s3.amazonaws.com/dev/apps/poll/app.js",
+        "script": "//echocsthost.s3.amazonaws.com/dev/apps/poll/app.js"
     },
     "cloudapp_protocol_version": "1.0.0"
 }

@@ -28,34 +28,13 @@ plugin.init = function() {
  */
 plugin.templates.bar = '<div class="{plugin.class:bar} tugofwar-bar"></div>';
 
-/**
- * Get the vote count and expose it as an attribute that we can reuse elsewhere.
- *
- * @echo_renderer
- */
-plugin.renderers.bar = function(element) {
-    var item = this.component,
-        votes = (item.depth == 1)
-                    ? item.get('data.object.accumulators.repliesCount', 0)
-                    : 0;
-
-    // Add a class to the Stream.Item DIV with the last two path terms for the
-    // stream item. This allows styling specifically by which item is being
-    // rendered.
-    return element;
-    element = this.parentRenderer('bar', arguments);
-    element.attr('data-votes', votes);
-
-    return element;
-};
-
 plugin.css =
 	// Do not display these data elements
     '.{plugin.class} .{class:depth-0}, ' +
 	'.{plugin.class} .{class:footer}, ' +
 	'.{plugin.class} .{class:avatar-wrapper}, ' +
 	'.{plugin.class} .{class:authorName}, ' +
-	'.{plugin.class} .{class:text} > div, ' +
+	'.{plugin.class} .{class:text} .header, ' +
     '.{plugin.class} .{class:modeSwitch}, ' +
 	'.{plugin.class} .{class} .{class:children} { display: none !important; }' +
 
@@ -137,7 +116,7 @@ plugin.methods.processData = function() {
     $.map(stream.threads[0].children, function(item, i) {
         var $wrapper = item.config.get('target'),
             $bar = item.plugins.TugOfWar.view.get('bar'),
-            percentage = item.get('percentage');
+            percentage = item.get('percentage') || 50;
 
         // TODO: Don't hard-code the <i>. We will be moving this element out to
         // the admin interface and thus into the stream itself. Then, here, we
@@ -145,7 +124,7 @@ plugin.methods.processData = function() {
         // ourselves.
         // Set up the percentage text display, and convert 0% to 50%.
         $bar.html('<i></i><span class="percentage">' +
-                     Math.round(percentage || 50) + '%' +
+                     Math.round(percentage) + '%' +
                      // For debugging
                      // ' ' + item.get('votes') +
                      '</span>');

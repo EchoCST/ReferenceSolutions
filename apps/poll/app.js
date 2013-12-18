@@ -97,7 +97,7 @@ poll.renderers.stream = function(element) {
 
 	var query = 'url:' +
 	            app.config.get("datasource.specifiedURL") +
-				' children:1';
+				' safeHTML:off children:1';
 
 	var stream = this.initComponent({
 		id: 'Stream',
