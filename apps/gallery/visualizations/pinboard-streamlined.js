@@ -124,6 +124,10 @@ plugin.css =
     '.{plugin.class} div { box-sizing: border-box; } ' +
     '.{plugin.class} .{class:data} { padding: 7px; }' +
 
+    // For some reason Echo is putting Instagram item text into an H2 title tag
+    // so we need to override its font or it looks awful.
+    '.{plugin.class} h2.echo-item-title { font-size: 1em; line-height: 1.25em; }' +
+
     // Transitions for card flipping.
     '.{plugin.class} .{class:content} { -webkit-transition: 0.6s; -moz-transition: 0.6s; -ms-transition: 0.6s; -webkit-transform-style: preserve-3d; -moz-transform-style: preserve-3d; -ms-transform-style: preserve-3d; position: relative; -webkit-perspective: 800; -moz-perspective: 800; -ms-perspective: 800; padding-bottom: 0px; margin: 5px; }' +
     '.{plugin.class} .{class:content} .{class:container}, ' +

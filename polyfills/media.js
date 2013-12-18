@@ -22,7 +22,7 @@ Echo.Polyfills.Media = {
 
 		// Update the item so our classes 'stick'
 		item.set("data.object.content", $dom.html());
-		
+
 		return $media;
 	},
 
@@ -41,8 +41,21 @@ Echo.Polyfills.Media = {
 
         return $.map(_sel(item), function(e) {
             // Remove hard-coded sizes to support responsive layouts
-            e.setAttribute('width', '100%');
-            e.removeAttribute('height');
+			var w = e.getAttribute('width'),
+			    h = e.getAttribute('height');
+
+			// TODO: This is a hack to deal with embed.ly and Twitter Vine
+			// videos looking so fugly. Since they're IFRAME elements they can't
+			// resize responsively, and their thumb sizes are all over the
+			// place. But they're square, so we force them to a specific size
+			// that's at least tolerable.
+			if (w && h && w == h && w > 300) {
+				e.setAttribute('width', '300');
+				e.setAttribute('height', '300');
+			} else {
+				e.setAttribute('width', '100%');
+				e.removeAttribute('height');
+			}
 
             // Type-specific transforms
             switch (e.nodeName) {

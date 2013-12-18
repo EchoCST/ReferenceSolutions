@@ -15,9 +15,10 @@
             <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
             <content type="html"><![CDATA[<img src="https://pbs.twimg.com/media/BYvzKb3CQAAlUCi.jpg:large" class="header" /><div class="question">How often do you watch the Conan O'Brien Show?</div>]]></content>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien</id>
+            <published>2013-12-11T14:00:00Z</published>
         </activity:object>
-        <activity:target>
-            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien</id>
+       <activity:target>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls</id>
         </activity:target>
     </entry>
     <!-- Option 1. Note: default sort order is TIME based (reverseChrono!) -->
@@ -35,6 +36,7 @@
             <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
             <content type="html"><![CDATA[<img src="https://pbs.twimg.com/media/BX8Oyq6CMAA2MC4.jpg:large" class="header"><a href="https://twitter.com/intent/tweet?text=I%20watch%20Conan%20in%20marathons!" class="answer">In marathons!</a>]]></content>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien/marathons</id>
+            <published>2013-12-11T18:00:00Z</published>
         </activity:object>
         <activity:target>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien</id>
@@ -55,6 +57,7 @@
             <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
             <content type="html"><![CDATA[<img src="https://pbs.twimg.com/media/BYQ0pcVCYAA8BHV.jpg:large" class="header"><a href="https://twitter.com/intent/tweet?text=I%20watch%20Conan%20as%20soon%20as%20it%20is%20on!" class="answer">As soon as it's on!</a>]]></content>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien/rightaway</id>
+            <published>2013-12-11T17:00:00Z</published>
         </activity:object>
         <activity:target>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien</id>
@@ -75,6 +78,7 @@
             <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
             <content type="html"><![CDATA[<div class="answer">Daily</div>]]></content>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien/daily</id>
+            <published>2013-12-11T16:00:00Z</published>
         </activity:object>
         <activity:target>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien</id>
@@ -95,6 +99,7 @@
             <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
             <content type="html"><![CDATA[<div class="answer">Weekly</div>]]></content>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien/weekly</id>
+            <published>2013-12-11T15:00:00Z</published>
         </activity:object>
         <activity:target>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien</id>
@@ -115,6 +120,7 @@
             <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
             <content type="html"><![CDATA[<div class="answer">Monthly</div>]]></content>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien/monthly</id>
+            <published>2013-12-11T14:00:00Z</published>
         </activity:object>
         <activity:target>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien</id>
@@ -135,6 +141,7 @@
             <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
             <content type="html"><![CDATA[<div class="answer">Yearly</div>]]></content>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien/yearly</id>
+            <published>2013-12-11T13:00:00Z</published>
         </activity:object>
         <activity:target>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanobrien</id>
