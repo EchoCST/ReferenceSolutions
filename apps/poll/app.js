@@ -9,7 +9,7 @@ poll.init = function() {
 	if (!this.checkAppKey()) return;
 
 	// Set up the appropriate CDN URL based on our channel.
-	console.log(this);
+	// console.log(this);
 
 	this.render();
 	this.ready();
@@ -39,7 +39,7 @@ poll.config = {
 	display: {
 		header: '',
 		footer: '',
-		visualization: 'pinboard',
+		visualization: 'list',
 		percent: true,
 		count: false
 	},
@@ -84,6 +84,13 @@ poll.renderers.stream = function(element) {
 				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/tug-of-war.js'
 			});
 			break;
+
+		case "list":
+			plugins.push({
+				name: 'VerticalList',
+				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/vertical-list.js'
+			});
+			break;
 	}
 
 	var query = 'url:' +
@@ -116,11 +123,6 @@ poll.renderers.stream = function(element) {
 		}
 	});
 
-/*	setInterval(function() {
-		console.log('Refreshing stream');
-		stream.refresh();
-	}, 60000);
-*/
 	return element;
 };
 
