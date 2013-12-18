@@ -97,7 +97,7 @@ poll.renderers.stream = function(element) {
 
 	var query = 'url:' +
 	            app.config.get("datasource.specifiedURL") +
-				' sortOrder:repliesDescending children:1';
+				' children:1';
 
 	var stream = this.initComponent({
 		id: 'Stream',

@@ -145,8 +145,10 @@ plugin.methods.processData = function() {
         // ourselves.
         // Set up the percentage text display, and convert 0% to 50%.
         $bar.html('<i></i><span class="percentage">' +
-                     Math.round(percentage || 50) +
-                     '%</span>');
+                     Math.round(percentage || 50) + '%' +
+                     // For debugging
+                     // ' ' + item.get('votes') +
+                     '</span>');
 
         // Animate only the LEFT bar
         if (i == 0) {

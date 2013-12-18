@@ -49,10 +49,51 @@ var plugin = Echo.Plugin.manifest('VoteDataProcessor',
 if (Echo.Plugin.isDefined(plugin)) return;
 
 /**
- * TODO: setInterval();
+ * Periodically get updated vote counts.
  */
 plugin.init = function() {
+    var plugin = this,
+        stream = this.component;
 
+    setInterval(function() {
+        var request = Echo.StreamServer.API.request({
+            endpoint: 'search',
+            data: {
+                q: stream.config.get('query').replace(
+                    ' children:',
+                    ' sortOrder:repliesDescending children:'
+                ),
+                appkey: stream.config.get('appkey')
+            },
+            onData: function(data, extra) {
+                var voteCounts = {};
+
+                $.map(data.entries, function(entry) {
+                    var id = entry.object.id,
+                        votes = entry.object.accumulators &&
+                                entry.object.accumulators.repliesCount ?
+                                entry.object.accumulators.repliesCount : 0;
+                    voteCounts[id] = parseInt(votes);
+                });
+
+                $.map(stream.threads[0].children, function(item) {
+                    var object = item.data.object;
+                    if (voteCounts[object.id]) {
+                        object.accumulators.repliesCount = voteCounts[object.id];
+                    }
+                });
+
+                plugin.processData();
+            },
+            onError: function(data, extra) {
+                // TODO: What kinds of errors can we get?
+                console.log(data, extra);
+            }
+        });
+
+        request.send();
+        // TODO: Make this interval configurable.
+    }, 30000);
 };
 
 /**
@@ -76,11 +117,14 @@ plugin.methods.processData = function() {
         stream = this.component,
         voteCount = 0;
 
+    console.log('Processing...');
+
     // First count all the votes.
     $.map(stream.threads[0].children, function(item) {
         var votes = item.get('data.object.accumulators.repliesCount', 0);
         item.set('votes', votes);
         voteCount += votes;
+        console.log(votes, voteCount);
     });
 
     // Now set percentages to support other plugins like visualizations.
@@ -90,6 +134,7 @@ plugin.methods.processData = function() {
                          ? (100 * item.get('votes') / voteCount)
                          : 0;
         item.set('percentage', percentage);
+        console.log(percentage);
     });
 
     // Post an event so others can update themselves.
