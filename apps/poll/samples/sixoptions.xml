@@ -76,7 +76,7 @@
         </activity:actor>
         <activity:object>
             <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
-            <content type="html"><![CDATA[<div class="answer">Daily</div>]]></content>
+            <content type="html"><![CDATA[<a href="https://twitter.com/intent/tweet?text=I%20watch%20Conan%20in%20marathons!" class="answer">Daily</a>]]></content>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch/daily</id>
             <published>2013-12-11T16:00:00Z</published>
         </activity:object>
@@ -97,7 +97,7 @@
         </activity:actor>
         <activity:object>
             <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
-            <content type="html"><![CDATA[<div class="answer">Weekly</div>]]></content>
+            <content type="html"><![CDATA[<a href="https://twitter.com/intent/tweet?text=I%20watch%20Conan%20in%20marathons!" class="answer">Weekly</a>]]></content>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch/weekly</id>
             <published>2013-12-11T15:00:00Z</published>
         </activity:object>
@@ -118,7 +118,7 @@
         </activity:actor>
         <activity:object>
             <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
-            <content type="html"><![CDATA[<div class="answer">Monthly</div>]]></content>
+            <content type="html"><![CDATA[<a href="https://twitter.com/intent/tweet?text=I%20watch%20Conan%20in%20marathons!" class="answer">Monthly</a>]]></content>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch/monthly</id>
             <published>2013-12-11T14:00:00Z</published>
         </activity:object>
@@ -139,7 +139,7 @@
         </activity:actor>
         <activity:object>
             <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
-            <content type="html"><![CDATA[<div class="answer">Yearly</div>]]></content>
+            <content type="html"><![CDATA[<a href="https://twitter.com/intent/tweet?text=I%20watch%20Conan%20in%20marathons!" class="answer">Yearly</a>]]></content>
             <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch/yearly</id>
             <published>2013-12-11T13:00:00Z</published>
         </activity:object>

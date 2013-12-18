@@ -1,7 +1,7 @@
 (function($) {
-"use strict";
+'use strict';
 
-var poll = Echo.App.manifest("Echo.Apps.Poll");
+var poll = Echo.App.manifest('Echo.Apps.Poll');
 
 if (Echo.App.isDefined(poll)) return;
 
@@ -16,7 +16,7 @@ poll.init = function() {
 };
 
 poll.labels = {
-	"signin": "Please sign in..."
+	'signin': 'Please sign in...'
 };
 
 /**
@@ -57,8 +57,8 @@ poll.config = {
 };
 
 poll.dependencies = [{
-	"url": "{config:cdnBaseURL.sdk}/streamserver.pack.js",
-	"app": "Echo.StreamServer.Controls.Stream"
+	url: '{config:cdnBaseURL.sdk}/streamserver.pack.js',
+	app: 'Echo.StreamServer.Controls.Stream'
 }];
 
 poll.templates.main =
@@ -77,25 +77,33 @@ poll.renderers.stream = function(element) {
 		url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/vote-data-processor.js'
 	});
 
+	var children = 'children:1 childrenItemsPerPage:2 childrenSortOrder:reverseChronological';
 	switch (app.config.get('display.visualization')) {
-		case "tugofwar":
+		case 'tugofwar':
 			plugins.push({
 				name: 'TugOfWar',
 				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/tug-of-war.js'
 			});
 			break;
 
-		case "list":
+		case 'list':
 			plugins.push({
 				name: 'VerticalList',
 				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/vertical-list.js'
 			});
+			children = 'children:1 childrenItemsPerPage:10 childrenSortOrder:reverseChronological';
+			break;
+
+		case 'sidebyside':
+			plugins.push({
+				name: 'SideBySide',
+				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/side-by-side.js'
+			});
 			break;
 	}
 
-	var query = 'url:' +
-	            app.config.get("datasource.specifiedURL") +
-				' safeHTML:off children:1';
+	var query = 'url:' + app.config.get('datasource.specifiedURL') +
+				' safeHTML:off ' + children;
 
 	var stream = this.initComponent({
 		id: 'Stream',

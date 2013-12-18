@@ -4,12 +4,12 @@
 var $ = jQuery;
 
 /**
- * @class Echo.StreamServer.Controls.Stream.Item.Plugins.VerticalList
+ * @class Echo.StreamServer.Controls.Stream.Item.Plugins.SideBySide
  * Displays a two-bar-overlaid tug-of-war visualization.
  *
  * @extends Echo.Plugin
  */
-var plugin = Echo.Plugin.manifest('VerticalList',
+var plugin = Echo.Plugin.manifest('SideBySide',
                                   'Echo.StreamServer.Controls.Stream.Item');
 
 if (Echo.Plugin.isDefined(plugin)) return;
@@ -91,12 +91,12 @@ Echo.Plugin.create(plugin);
 var $ = jQuery;
 
 /**
- * @class Echo.StreamServer.Controls.Stream.Plugins.VerticalList
+ * @class Echo.StreamServer.Controls.Stream.Plugins.SideBySide
  * Same functionalty but for the Stream itself, collating data from all Items.
  *
  * @extends Echo.Plugin
  */
-var plugin = Echo.Plugin.manifest('VerticalList',
+var plugin = Echo.Plugin.manifest('SideBySide',
                                   'Echo.StreamServer.Controls.Stream');
 
 if (Echo.Plugin.isDefined(plugin)) return;
@@ -115,8 +115,8 @@ plugin.methods.processData = function() {
 
     $.map(stream.threads[0].children, function(item, i) {
         var $wrapper = item.config.get('target'),
-            $bar = item.plugins.VerticalList.view.get('bar'),
-            percentage = item.get('percentage') || (100 / stream.threads[0].children.length),
+            $bar = item.plugins.SideBySide.view.get('bar'),
+            percentage = item.get('percentage') || 50,
             html = '';
 
         // Also see if we have an inset image
