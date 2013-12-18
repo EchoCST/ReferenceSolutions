@@ -100,6 +100,28 @@ poll.renderers.stream = function(element) {
 				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/side-by-side.js'
 			});
 			break;
+
+		case 'reaction':
+			plugins.push({
+				name: 'Reaction',
+				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/reaction.js'
+			});
+			children = 'children:1 childrenItemsPerPage:10 childrenSortOrder:reverseChronological';
+			break;
+
+		case 'textbuttons':
+			plugins.push({
+				name: 'TextButtons',
+				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/textbuttons.js'
+			});
+			break;
+
+		case 'updownbuttons':
+			plugins.push({
+				name: 'UpDownButtons',
+				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/updownbuttons.js'
+			});
+			break;
 	}
 
 	var query = 'url:' + app.config.get('datasource.specifiedURL') +
