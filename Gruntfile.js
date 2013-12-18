@@ -39,7 +39,33 @@ module.exports = function(grunt) {
                 uploadConcurrency: 5,
                 downloadConcurrency: 5,
             },
-            production: {
+            dev: {
+                options: {
+                    bucket: '<%= config.aws.bucket %>',
+                    differential: true
+                },
+                files: [
+                    {expand: true, cwd: 'apps/', src: ['**'], dest: 'dev/apps/'},
+                    {expand: true, cwd: 'plugins/', src: ['**'], dest: 'dev/plugins/'},
+                    {expand: true, cwd: 'polyfills/', src: ['**'], dest: 'dev/polyfills/'},
+                    {expand: true, cwd: 'controls/', src: ['**'], dest: 'dev/controls/'},
+                   //{dest: 'src/app', action: 'delete'},
+                ]
+            },
+            beta: {
+                options: {
+                    bucket: '<%= config.aws.bucket %>',
+                    differential: true
+                },
+                files: [
+                    {expand: true, cwd: 'apps/', src: ['**'], dest: 'beta/apps/'},
+                    {expand: true, cwd: 'plugins/', src: ['**'], dest: 'beta/plugins/'},
+                    {expand: true, cwd: 'polyfills/', src: ['**'], dest: 'beta/polyfills/'},
+                    {expand: true, cwd: 'controls/', src: ['**'], dest: 'beta/controls/'},
+                   //{dest: 'src/app', action: 'delete'},
+                ]
+            },
+            prod: {
                 options: {
                     bucket: '<%= config.aws.bucket %>',
                     differential: true
@@ -122,9 +148,8 @@ module.exports = function(grunt) {
     // we don't handle these like unclosed-SELECT elements very well.
     grunt.registerTask('cc', [ 'html2js' ]);
 
-    // Dev deployments
-    grunt.registerTask('deploy-dev', [ 'cc', 'aws_s3' ]);
-
-    // Prod deployments
-    grunt.registerTask('deploy-prod', [ 'cc', 'aws_s3', 'invalidate_cloudfront' ]);
+    // Deployment tasks
+    grunt.registerTask('deploy-dev', [ 'cc', 'aws_s3:dev' ]);
+    grunt.registerTask('deploy-beta', [ 'cc', 'aws_s3:beta' ]);
+    grunt.registerTask('deploy-prod', [ 'cc', 'aws_s3:prod', 'invalidate_cloudfront' ]);
 };

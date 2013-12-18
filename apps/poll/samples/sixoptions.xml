@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns:activity="http://activitystrea.ms/spec/1.0/">
+    <!-- Poll parent -->
+    <entry>
+        <published>2013-12-11T14:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content type="html"><![CDATA[
+<img src="https://pbs.twimg.com/media/BYvzKb3CQAAlUCi.jpg:large" class="header" />
+<div class="question">How often do you watch the Conan O'Brien Show?</div>
+]]></content>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien</id>
+        </activity:object>
+        <activity:target>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien</id>
+        </activity:target>
+    </entry>
+    <!-- Option 1 -->
+    <entry>
+        <published>2013-12-11T14:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content><![CDATA[
+<img src="https://pbs.twimg.com/media/BX8Oyq6CMAA2MC4.jpg:large" class="header">
+<div class="answer">In marathons!</div>
+]]></content>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien/marathons</id>
+        </activity:object>
+        <activity:target>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien</id>
+        </activity:target>
+    </entry>
+    <!-- Option 2 -->
+    <entry>
+        <published>2013-12-11T14:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content><![CDATA[
+<img src="https://pbs.twimg.com/media/BYQ0pcVCYAA8BHV.jpg:large" class="header">
+<div class="answer">As soon as it's on!</div>
+]]></content>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien/rightaway</id>
+        </activity:object>
+        <activity:target>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien</id>
+        </activity:target>
+    </entry>
+    <!-- Option 3 -->
+    <entry>
+        <published>2013-12-11T14:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content><![CDATA[
+<div class="answer">Daily</div>
+]]></content>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien/daily</id>
+        </activity:object>
+        <activity:target>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien</id>
+        </activity:target>
+    </entry>
+    <!-- Option 4 -->
+    <entry>
+        <published>2013-12-11T14:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content><![CDATA[
+<div class="answer">Weekly</div>
+]]></content>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien/weekly</id>
+        </activity:object>
+        <activity:target>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien</id>
+        </activity:target>
+    </entry>
+    <!-- Option 5 -->
+    <entry>
+        <published>2013-12-11T14:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content><![CDATA[
+<div class="answer">Monthly</div>
+]]></content>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien/monthly</id>
+        </activity:object>
+        <activity:target>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien</id>
+        </activity:target>
+    </entry>
+    <!-- Option 6 -->
+    <entry>
+        <published>2013-12-11T14:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content><![CDATA[
+<div class="answer">Yearly</div>
+]]></content>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien/yearly</id>
+        </activity:object>
+        <activity:target>
+            <id>http://echoplatform.com/sample-data/polls/conanobrien</id>
+        </activity:target>
+    </entry>
+</feed>
