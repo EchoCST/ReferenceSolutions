@@ -22,7 +22,7 @@ if (!$filename || !file_exists($filename)) {
 
 $postfields = array(
   'content=' . urlencode(file_get_contents($filename)),
-  'mode=replace',
+  'mode=update',
 );
 
 $url       = 'https://api.echoenabled.com/v1/submit';

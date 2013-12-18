@@ -228,14 +228,6 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "    <option value=\"reaction\">Reaction Boxes</option>\n" +
     "  </select>\n" +
     "\n" +
-    "  <input name=\"oneclick\" type=\"checkbox\" title=\"One-Click\" data-help=\"If checked, votes are submitted immediately when an option is selected. If not checked, a separate Submit button will be shown.\" />\n" +
-    "\n" +
-    "  <select name=\"results\" title=\"Show Results\" data-help=\"When should the results be displayed?\">\n" +
-    "    <option value=\"post\" selected=\"selected\">Post-Submit</option>\n" +
-    "    <option value=\"load\">When first loaded</option>\n" +
-    "    <option value=\"never\">Never (Secret Ballot)</option>\n" +
-    "  </select>\n" +
-    "\n" +
     "  <input name=\"percent\" type=\"checkbox\" checked=\"checked\" title=\"Show Percentage\" data-help=\"If checked, a percentage value will be displayed in the result elements.\" />\n" +
     "  <input name=\"count\" type=\"checkbox\" title=\"Show Vote Count\" data-help=\"If checked, the vote count will be displayed in the result elements.\" />\n" +
     "</fieldset>\n" +

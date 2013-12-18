@@ -22,7 +22,8 @@ plugin.init = function() {
 };
 
 /**
- * We add a bar to the visualization as a container for our percentage.
+ * We add a bar to the visualization as a container for our percentage. Note
+ * that we don't use a renderer because we fill the bar later using an event.
  *
  * @echo_template
  */
@@ -34,6 +35,7 @@ plugin.css =
 	'.{plugin.class} .{class:footer}, ' +
 	'.{plugin.class} .{class:avatar-wrapper}, ' +
 	'.{plugin.class} .{class:authorName}, ' +
+	'.{plugin.class} .{class:expandChildren}, ' +
 	'.{plugin.class} .{class:text} .header, ' +
     '.{plugin.class} .{class:modeSwitch}, ' +
 	'.{plugin.class} .{class} .{class:children} { display: none !important; }' +
@@ -50,11 +52,17 @@ plugin.css =
 	'.{plugin.class} .{class}:first-child { background: #55a3cc; text-align: left; z-index: 1; }' +
 	'.{plugin.class} .{class}:last-child { background: #ea9101; text-align: right; z-index: 0; right: 0; text-align: right; }' +
 
-    // Text display. Note, there is an embedded <i> tag that the client may
-    // style as desired with a badge image.
+    // Text display. Note that tug of war polls may include an IMG with a class
+    // of "inset" that acts as a graphic badge on the bar.
     '.{plugin.class} .{plugin.class:bar} { height: 100px; color: #fff; line-height: 100px; font-size: 30px; }' +
-    '.{plugin.class} .{class}:first-child .{plugin.class:bar} i { float: left; }' +
-    '.{plugin.class} .{class}:last-child .{plugin.class:bar} i { float: right; }' +
+    '.{plugin.class} .{plugin.class:bar} .inset { display: block; height: 77px; overflow: hidden; margin: 12px; }' +
+    '.{plugin.class} .{class}:first-child .{plugin.class:bar} .inset { float: left; }' +
+    '.{plugin.class} .{class}:last-child .{plugin.class:bar} .inset { float: right; }' +
+
+    // Inset images are hidden in the original locations and copied into the
+    // bars. Headers aren't shown at all.
+    '.{plugin.class} .inset,' +
+    '.{plugin.class} .header { display: none; }' +
 
     // Buttons and other data
     '.{plugin.class} .{class:text} a { display: block; padding: 6px 20px; border-radius: 9px; background: #333; text-decoration: none; font-weight: bold; margin: 10px 20px 0 20px; color: #fff; }' +
@@ -67,16 +75,22 @@ plugin.css =
     '@media all and (max-width: 900px) {'+
         '.{plugin.class} .{class:children} { height: 80px; }' +
         '.{plugin.class} .{plugin.class:bar} { height: 80px; line-height: 80px; font-size: 24px; }' +
+        '.{plugin.class} .{plugin.class:bar} .inset { margin: 10px; height: 60px; }' +
+        '.{plugin.class} .{class:text} a { margin: 8px 16px 0 16px; }' +
     '}' +
 
     '@media all and (max-width: 600px) {'+
         '.{plugin.class} .{class:children} { height: 60px; }' +
         '.{plugin.class} .{plugin.class:bar} { height: 60px; line-height: 60px; font-size: 20px; }' +
+        '.{plugin.class} .{plugin.class:bar} .inset { margin: 8px; height: 46px; }' +
+        '.{plugin.class} .{class:text} a { margin: 7px 12px 0 12px; }' +
     '}' +
 
     '@media all and (max-width: 400px) {'+
         '.{plugin.class} .{class:children} { height: 40px; }' +
         '.{plugin.class} .{plugin.class:bar} { height: 40px; line-height: 40px; font-size: 16px; }' +
+        '.{plugin.class} .{plugin.class:bar} .inset { margin: 6px; height: 28px; }' +
+        '.{plugin.class} .{class:text} a { margin: 6px 10px 0 10px; }' +
     '}' +
 
     '';
@@ -116,18 +130,25 @@ plugin.methods.processData = function() {
     $.map(stream.threads[0].children, function(item, i) {
         var $wrapper = item.config.get('target'),
             $bar = item.plugins.TugOfWar.view.get('bar'),
-            percentage = item.get('percentage') || 50;
+            percentage = item.get('percentage') || 50,
+            html = '';
 
-        // TODO: Don't hard-code the <i>. We will be moving this element out to
-        // the admin interface and thus into the stream itself. Then, here, we
-        // want to only fill in a class=percentage SPAN rather than adding it
-        // ourselves.
-        // Set up the percentage text display, and convert 0% to 50%.
-        $bar.html('<i></i><span class="percentage">' +
-                     Math.round(percentage) + '%' +
-                     // For debugging
-                     // ' ' + item.get('votes') +
-                     '</span>');
+        // Also see if we have an inset image
+		var $img = $('<div>' + item.get('data.object.content') + '</div>').find('.inset');
+        if ($img.length > 0) {
+            html += $img.wrapAll('<div></div>').parent().html();
+            console.log(html);
+        }
+
+        if (item.config.get('showPercent')) {
+            html += '<span class="percentage">' + Math.round(percentage) + '%</span>';
+        }
+
+        if (item.config.get('showCount')) {
+            html += '<span class="count">' + item.get('votes') + '</span>';
+        }
+
+        $bar.html(html);
 
         // Animate only the LEFT bar
         if (i == 0) {

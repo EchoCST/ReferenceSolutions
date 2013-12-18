@@ -8,6 +8,9 @@ if (Echo.App.isDefined(poll)) return;
 poll.init = function() {
 	if (!this.checkAppKey()) return;
 
+	// Set up the appropriate CDN URL based on our channel.
+	console.log(this);
+
 	this.render();
 	this.ready();
 };
@@ -30,27 +33,15 @@ poll.labels = {
  * false here or simply not defined it will always evaluate to false!
  */
 poll.config = {
-	appkey: "",
-	query: "",
+	appkey: '',
+	query: '',
 
 	display: {
-		header: "",
-		footer: "",
-		visualization: "pinboard",
-		sourcefilter: true,
-		replies: true,
-		likes: true,
-		sharing: false,
-		flags: true,
-	},
-
-	integration: {
-		nativeinterval: 0
-	},
-
-	upload: {
-		enabled: false,
-		fpkey: ""
+		header: '',
+		footer: '',
+		visualization: 'pinboard',
+		percent: true,
+		count: false
 	},
 
 	auth: {
@@ -118,7 +109,9 @@ poll.renderers.stream = function(element) {
 			item: {
 				infoMessages: { enabled: false },
 				reTag: false,
-				viaLabel: { icon: false, text: false  }
+				viaLabel: { icon: false, text: false  },
+				showCount: app.config.get('display.count'),
+				showPercent: app.config.get('display.percent')
 			}
 		}
 	});

@@ -126,7 +126,6 @@ plugin.methods.processData = function() {
         var votes = item.get('data.object.accumulators.repliesCount', 0);
         item.set('votes', votes);
         voteCount += votes;
-        console.log(votes, voteCount);
     });
 
     // Now set percentages to support other plugins like visualizations.
@@ -136,7 +135,6 @@ plugin.methods.processData = function() {
                          ? (100 * item.get('votes') / voteCount)
                          : 0;
         item.set('percentage', percentage);
-        console.log(percentage);
     });
 
     // Post an event so others can update themselves.
