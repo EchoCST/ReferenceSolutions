@@ -81,20 +81,25 @@ poll.renderers.stream = function(element) {
 	var app = this,
 	    plugins = [];
 
+	plugins.push({
+		name: 'VoteDataProcessor',
+		url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/vote-data-processor.js'
+	});
+
 	switch (app.config.get('display.visualization')) {
 		case "tugofwar":
 			plugins.push({
 				name: 'TugOfWar',
-				url: '//echocsthost.s3.amazonaws.com/apps/poll/visualizations/tug-of-war.js'
+				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/tug-of-war.js'
 			});
 			break;
 	}
 
 	var query = 'url:' +
 	            app.config.get("datasource.specifiedURL") +
-				' children:1';
+				' sortOrder:repliesDescending children:1';
 
-	this.initComponent({
+	var stream = this.initComponent({
 		id: 'Stream',
 		component: 'Echo.StreamServer.Controls.Stream',
 		config: {
@@ -103,6 +108,9 @@ poll.renderers.stream = function(element) {
 			plugins: plugins,
 			slideTimeout: 0,
 			infoMessages: { enabled: false },
+			liveUpdates: {
+				enabled: false
+			},
 			state: {
 				label: { icon: false, text: false },
 				toggleBy: 'none'
@@ -114,6 +122,12 @@ poll.renderers.stream = function(element) {
 			}
 		}
 	});
+
+/*	setInterval(function() {
+		console.log('Refreshing stream');
+		stream.refresh();
+	}, 60000);
+*/
 	return element;
 };
 

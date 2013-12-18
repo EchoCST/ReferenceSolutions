@@ -5,15 +5,7 @@ var $ = jQuery;
 
 /**
  * @class Echo.StreamServer.Controls.Stream.Item.Plugins.TugOfWar
- * Extracts accumulator data from arriving poll items and manages a set
- * of data structures that are used to render substitutions. Also provides
- * some basic substitution instructions for the View API to use.
- *
- * TODO: This does not actually use the View Substitutions renderer. Plugins
- * don't have a way to add new instructions, and that renderer doesn't know
- * how to deal with arrays or nested structures like we have when we have
- * Items that contain both bars and buttons, but they're rendered in different
- * spots in the Stream.
+ * Displays a two-bar-overlaid tug-of-war visualization.
  *
  * @extends Echo.Plugin
  */
@@ -22,19 +14,11 @@ var plugin = Echo.Plugin.manifest('TugOfWar',
 
 if (Echo.Plugin.isDefined(plugin)) return;
 
+/**
+ * Add a media container for the 'front' side of the card
+ */
 plugin.init = function() {
-    var item = this.component,
-        id = item.get('data.object.id').split('/'),
-        votes = (item.depth == 1)
-                    ? item.get('data.object.accumulators.repliesCount', 0)
-                    : 0;
-
-    // Add a media container for the 'front' side of the card
     this.extendTemplate('insertBefore', 'body', plugin.templates.bar);
-
-    // Add the vote count and ID-based targeting classes
-    item.config.get("target").addClass(id.pop() + ' ' + id.pop())
-                             .attr('data-votes', votes);
 };
 
 /**
@@ -58,6 +42,7 @@ plugin.renderers.bar = function(element) {
     // Add a class to the Stream.Item DIV with the last two path terms for the
     // stream item. This allows styling specifically by which item is being
     // rendered.
+    return element;
     element = this.parentRenderer('bar', arguments);
     element.attr('data-votes', votes);
 
@@ -137,50 +122,49 @@ var plugin = Echo.Plugin.manifest('TugOfWar',
 
 if (Echo.Plugin.isDefined(plugin)) return;
 
-plugin.init = function() {
-    var plugin = this,
-        stream = this.component;
-
-    //console.log(stream);
+plugin.events = {
+    'Echo.StreamServer.Controls.Stream.Plugins.VoteDataProcessor.onProcessed': function(topic, args) {
+        this.processData();
+    }
 };
 
-plugin.events = {};
-(function() {
-    $.map([
-        'Echo.StreamServer.Controls.Stream.onRender',
-        'Echo.StreamServer.Controls.Stream.onRefresh'
-    ], function(entry) {
-        plugin.events[entry] = function(topic, args) {
-            this._processData();
-        };
-    });
-})();
-
-plugin.methods._processData = function() {
+plugin.methods.processData = function() {
     var plugin = this,
         stream = this.component,
         $body = stream.view.get('body'),
         voteCount = 0;
 
-    // First count all the votes
-    // TODO: Later we should cache this...
-    $body.find('.tugofwar-bar').each(function(i, el) {
-        voteCount += $(el).data('votes');
-    });
+    $.map(stream.threads[0].children, function(item, i) {
+        var $wrapper = item.config.get('target'),
+            $bar = item.plugins.TugOfWar.view.get('bar'),
+            percentage = item.get('percentage');
 
-    // Now apply the vote counts and percentages as required
-    $body.find('.tugofwar-bar').each(function(i, el) {
-        var votes = $(el).data('votes'),
-            percentage = Math.round(100 * votes / voteCount);
+        // TODO: Don't hard-code the <i>. We will be moving this element out to
+        // the admin interface and thus into the stream itself. Then, here, we
+        // want to only fill in a class=percentage SPAN rather than adding it
+        // ourselves.
+        // Set up the percentage text display, and convert 0% to 50%.
+        $bar.html('<i></i><span class="percentage">' +
+                     Math.round(percentage || 50) +
+                     '%</span>');
 
-        $(el).html('<i></i><span class="percentage">' + percentage + '%</span>')
-             .data('percentage', percentage);
-    });
-
-    // Finally, animate only the LEFT bar
-    $body.find('.echo-streamserver-controls-stream-item-children .echo-streamserver-controls-stream-item:first-child').each(function(i, el) {
-        var percentage = $(el).find('.tugofwar-bar').data('percentage');
-        $(el).animate({ width: percentage + '%' }, 2000);
+        // Animate only the LEFT bar
+        if (i == 0) {
+            // jQuery sets overflow:hidden during animations, and we're using
+            // overflow to position the buttons.
+            $wrapper.animate({
+                width: percentage + '%'
+            }, {
+                duration: 2000,
+                queue: false,
+                step: function() {
+                    $wrapper.css({ overflow: 'visible' });
+                },
+                complete: function() {
+                    $wrapper.css({ overflow: 'visible' });
+                }
+            });
+        }
     });
 };
 
