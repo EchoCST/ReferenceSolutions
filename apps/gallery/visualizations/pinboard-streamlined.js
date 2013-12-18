@@ -106,6 +106,12 @@ plugin.renderers.mediafull = function(element) {
 };
 
 plugin.css =
+    // Note: This line is not here to set the actual width of the Items. That
+    // will be done above when Isotope is triggered. It's here to manage the
+    // styling of the items when they first arrive before that effect starts.
+    // Otherwise, the first item is HUGE.
+    '.{plugin.class} { max-width: 30%; float: left; }' +
+
     // Override some incompatible default styles
     '.{plugin.class} .{class:container} { padding: 0px; }' +
     '.{plugin.class} .{class:subwrapper} { margin-left: 0px; }' +
@@ -260,8 +266,12 @@ plugin.methods._refreshView = function() {
             columnWidth: Math.floor(bodyWidth / columns)
         }
     };
+    //throw Exception;
 
-    $body.children().css({ 'max-width': config.masonry.columnWidth + 'px' });
+    $body.children().css({
+        'max-width': config.masonry.columnWidth + 'px',
+        'float': null
+    });
     $body.data('isotope')
         ? (hasEntries
             ? $body.isotope('reloadItems').isotope(config)
