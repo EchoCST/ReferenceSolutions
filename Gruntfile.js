@@ -107,7 +107,7 @@ module.exports = function(grunt) {
                 }, {
                     expand: true,
                     cwd: './polyfills/',
-                    src: ['**/*.js', '**/*.json'],
+                    src: ['**/*.js', '**/*.json', '**/*.png', '**/*.css'],
                     filter: 'isFile',
                     dest: 'polyfills/'
                 }]

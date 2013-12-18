@@ -116,7 +116,7 @@ poll.renderers.stream = function(element) {
 			});
 			break;
 
-		case 'updownbuttons':
+		case 'updown':
 			plugins.push({
 				name: 'UpDownButtons',
 				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/updownbuttons.js'

@@ -18,10 +18,14 @@ if (Echo.Plugin.isDefined(plugin)) return;
  * Add a media container for the 'front' side of the card
  */
 plugin.init = function() {
-    this.extendTemplate('insertBefore', 'container', plugin.templates.head);
+    this.extendTemplate('insertAfter', 'text', plugin.templates.thumb);
     this.extendTemplate('insertAfter', 'body', plugin.templates.bar);
     this.extendTemplate('insertAfter', 'children', plugin.templates.clear);
 };
+
+plugin.dependencies = [{
+	url: '//echocsthost.s3.amazonaws.com/polyfills/glyphicons.css'
+}];
 
 /**
  * We add a bar to the visualization as a container for our percentage. Note
@@ -32,6 +36,7 @@ plugin.init = function() {
 plugin.templates.head = '<div class="{plugin.class:head}"></div>';
 plugin.templates.bar = '<div class="{plugin.class:bar} result-bar"></div><div class="percentage"></div><div class="count"></div>';
 plugin.templates.clear = '<div style="clear: both"></div>';
+plugin.templates.thumb = '<div class="{plugin.class:thumb}"></div>';
 
 plugin.renderers.head = function(element) {
     var plugin = this,
@@ -43,6 +48,11 @@ plugin.renderers.head = function(element) {
     }
 
     return element;
+}
+
+plugin.renderers.thumb = function(element) {
+    // There's seriously no way to tell what index we are in the thread?
+    // Have to set this in the stream.
 }
 
 plugin.css =
@@ -58,18 +68,19 @@ plugin.css =
 	'.{plugin.class} .{class:subwrapper} { margin: 0; }' +
     '.{plugin.class} .{class:container-root-thread} { padding: 0; }' +
 	'.{plugin.class} .{class:depth-1} { margin: 0; padding: 0; background-color: transparent; }' +
-	'.{plugin.class} .{class:children} .{class} { margin: 7px 0; background: #444; color: #fff; font-size: 13px; width: 49%; float: left; }' +
-	'.{plugin.class} .{class:children} .{class}:first-child { margin-right: 2%; }' +
+	'.{plugin.class} .{class:children} .{class} { margin: 0 0 14px 0; background: #444; color: #fff; font-size: 13px; width: 50%; float: left; }' +
 
-    // We move the header, and we don't show the inset even if it's there.
-	'.{plugin.class} .{class:children} .{class:text} .header,' +
-	'.{plugin.class} .{class:children} .{class:text} .inset { display: none; }' +
+    // No text here
+	'.{plugin.class} .{class:children} .{class:text} { display: none; }' +
+
+    // Work in progress
+    '.{plugin.class} .{plugin.class:thumb} .glyphicons.icon-large { margin: 3px auto 0 auto; display: block; }' +
 
     // Visual styles
     '.{plugin.class} .{class:text} .question { width: 100%; padding: 7px 10px; line-height: 18px; font-size: 14px; text-transform: uppercase; background: #111; color: #fff; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }' +
 
 	'.{plugin.class} .{class:children} .{class} { font-size: 16px; line-height: 40px; }' +
-	'.{plugin.class} .{class:children} .{class:text} a { color: #fff; text-decoration: none; text-transform: uppercase; font-weight: bold; display: block; padding: 0 10px; }' +
+	'.{plugin.class} .{class:children} .{class:text} a { color: #fff; text-decoration: none; text-transform: uppercase; font-weight: bold; display: block; padding: 0 10px; text-align: center; }' +
     '.{plugin.class} .{class:data} .percentage { float: right; margin: 0 7px; }' +
     '.{plugin.class} .{class:data} .count { float: right; margin: 0 7px; }' +
 
@@ -77,6 +88,7 @@ plugin.css =
     '.{plugin.class} .{class:children} .{class:data} { position: relative; height: 40px; width: 100%; }' +
 	'.{plugin.class} .{class:children} .{class:body} { position: absolute; z-index: 2; top: 0; left: 0; bottom: 0; right: 0; padding: 0; }' +
     '.{plugin.class} .{class:children} .{plugin.class:bar} { position: absolute; z-index: 1; top: 0; left: 0; bottom: 0; color: #fff; line-height: 40px; font-size: 18px; background: #417DC1; border-right: 1px solid #ccc; }' +
+    '.{plugin.class} .{class:children} .{class}:last-child .{plugin.class:bar} { background: #ea9101; }' +
 
     // Some responsive styling. Note that since phone resolutions are now all
     // over the place we deliberately used widths IN BETWEEN their typical sizes
@@ -133,8 +145,11 @@ plugin.methods.processData = function() {
     $.map(stream.threads[0].children, function(item, i) {
         var $wrapper = item.config.get('target'),
             $bar = item.plugins.UpDownButtons.view.get('bar'),
+            $thumb = item.plugins.UpDownButtons.view.get('thumb'),
             percentage = item.get('percentage') || 50,
             html = '';
+
+        $thumb.html('<span class="glyphicons icon-large icon-thumbs-' + ['up','down'][i] + '"></span>');
 
         // Also see if we have an inset image
 //		var $img = $('<div>' + item.get('data.object.content') + '</div>').find('.inset');
