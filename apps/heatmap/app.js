@@ -266,7 +266,9 @@ heatmap.events = {
             }
         }
         handleResize();
-        $(window).bind('resize', handleResize);
+        $(window).bind('resize', function() {
+            $.doTimeout('social-heatmap-resize', 100, handleResize());
+        });
 
         var map = new L.map(mapView.get(0), {
             // TODO: Base CENTER and ZOOM on visualization
