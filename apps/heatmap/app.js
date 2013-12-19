@@ -113,10 +113,10 @@ heatmap.renderers.stream = function(element) {
         config: {
             target: element,
             query: query,
-            plugins: [{
+            plugins: [/*{
                 name: "HeatMapDataHandler",
                 url: "//echocsthost.s3.amazonaws.com/apps/heatmap/plugins/heatmap-data.js"
-            }]
+            }*/]
         }
     }));
 

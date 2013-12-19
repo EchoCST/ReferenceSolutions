@@ -171,7 +171,19 @@ plugin.methods.processData = function() {
 };
 
 plugin.css =
-    '.{plugin.class} { width: 100%; height: 100px; padding: 20px 0 60px 0; }';
+    '.{plugin.class} { width: 100%; height: 185px; padding: 20px 0 60px 0; }' +
+
+    '@media all and (max-width: 900px) {'+
+        '.{plugin.class} { height: 160px; }' +
+    '}' +
+
+    '@media all and (max-width: 600px) {'+
+        '.{plugin.class} { height: 140px; }' +
+    '}' +
+
+    '@media all and (max-width: 400px) {'+
+        '.{plugin.class} { height: 120px; }' +
+    '}' +
 
 Echo.Plugin.create(plugin);
 
