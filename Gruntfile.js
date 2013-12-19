@@ -151,5 +151,5 @@ module.exports = function(grunt) {
     // Deployment tasks
     grunt.registerTask('deploy-dev', [ 'cc', 'aws_s3:dev' ]);
     grunt.registerTask('deploy-beta', [ 'cc', 'aws_s3:beta' ]);
-    grunt.registerTask('deploy-prod', [ 'cc', 'aws_s3:prod', 'invalidate_cloudfront' ]);
+    grunt.registerTask('deploy-prod', [ 'cc', 'aws_s3:prod'/*, 'invalidate_cloudfront'*/ ]);
 };

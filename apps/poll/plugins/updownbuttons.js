@@ -23,9 +23,7 @@ plugin.init = function() {
     this.extendTemplate('insertAfter', 'children', plugin.templates.clear);
 };
 
-plugin.dependencies = [{
-	url: '//echocsthost.s3.amazonaws.com/polyfills/glyphicons.css'
-}];
+plugin.dependencies = [];
 
 /**
  * We add a bar to the visualization as a container for our percentage. Note
@@ -37,7 +35,7 @@ plugin.templates.head = '<div class="{plugin.class:head}"></div>';
 plugin.templates.bar = '<div class="{plugin.class:bar} result-bar"></div><div class="percentage"></div><div class="count"></div>';
 plugin.templates.clear = '<div style="clear: both"></div>';
 plugin.templates.thumb = '<div class="{plugin.class:thumb}"></div>';
-
+/*
 plugin.renderers.head = function(element) {
     var plugin = this,
         item = this.component,
@@ -48,7 +46,7 @@ plugin.renderers.head = function(element) {
     }
 
     return element;
-}
+}*/
 
 plugin.renderers.thumb = function(element) {
     // There's seriously no way to tell what index we are in the thread?
@@ -74,7 +72,8 @@ plugin.css =
 	'.{plugin.class} .{class:children} .{class:text} { display: none; }' +
 
     // Work in progress
-    '.{plugin.class} .{plugin.class:thumb} .glyphicons.icon-large { margin: 3px auto 0 auto; display: block; }' +
+    '.{plugin.class} .{plugin.class:thumb} .icon-thumbs-up { display: block; width: 32px; height: 32px; background: url(//echocsthost.s3.amazonaws.com/polyfills/thumbs-up-32.png) 0 0 no-repeat; margin: 4px auto; }' +
+    '.{plugin.class} .{plugin.class:thumb} .icon-thumbs-down { display: block; width: 32px; height: 32px; background: url(//echocsthost.s3.amazonaws.com/polyfills/thumbs-down-32.png) 0 0 no-repeat; margin: 4px auto; }' +
 
     // Visual styles
     '.{plugin.class} .{class:text} .question { width: 100%; padding: 7px 10px; line-height: 18px; font-size: 14px; text-transform: uppercase; background: #111; color: #fff; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }' +
@@ -149,7 +148,7 @@ plugin.methods.processData = function() {
             percentage = item.get('percentage') || 50,
             html = '';
 
-        $thumb.html('<span class="glyphicons icon-large icon-thumbs-' + ['up','down'][i] + '"></span>');
+        $thumb.html('<span class="icon-thumbs-' + ['up','down'][i] + '"></span>');
 
         // Also see if we have an inset image
 //		var $img = $('<div>' + item.get('data.object.content') + '</div>').find('.inset');

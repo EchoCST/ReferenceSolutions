@@ -18,7 +18,7 @@ if (Echo.Plugin.isDefined(plugin)) return;
  * Add a media container for the 'front' side of the card
  */
 plugin.init = function() {
-    this.extendTemplate('insertBefore', 'container', plugin.templates.head);
+//    this.extendTemplate('insertBefore', 'container', plugin.templates.head);
     this.extendTemplate('insertAfter', 'body', plugin.templates.bar);
     this.extendTemplate('insertAfter', 'children', plugin.templates.clear);
 };
@@ -38,7 +38,7 @@ plugin.renderers.head = function(element) {
         item = this.component,
         $img = $('<div>' + item.get('data.object.content') + '</div>').find('.header');
 
-    if (item.depth > 0 && $img.length > 0) {
+    if (item.depth < 1 && $img.length > 0) {
         element.html($img.wrapAll('<div></div>').parent().html());
     }
 
@@ -59,7 +59,7 @@ plugin.css =
     '.{plugin.class} .{class:container-root-thread} { padding: 0; }' +
 	'.{plugin.class} .{class:depth-1} { margin: 0; padding: 0; background-color: transparent; }' +
 	'.{plugin.class} .{class:children} .{class} { margin: 7px 0; background: #444; color: #fff; font-size: 13px; width: 49%; float: left; }' +
-	'.{plugin.class} .{class:children} .{class}:first-child { margin-right: 2%; }' +
+	'.{plugin.class} .{class:children} .{class}:nth-child(odd) { margin-right: 2%; }' +
 
     // We move the header, and we don't show the inset even if it's there.
 	'.{plugin.class} .{class:children} .{class:text} .header,' +
