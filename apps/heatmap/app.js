@@ -245,12 +245,33 @@ heatmap.events = {
     'Echo.Apps.HeatMap.onRender': function(topic, args) {
         var app = this,
             mapView = app.view.get('map'),
-            mapCenter = [39, -96.9];
+            mapCenter = [39, -96.9],
+            map = null,
+            zoom = 4.4;
+
+        var handleResize = function() {
+            var width = mapView.width();
+
+            console.log('resizing');
+
+            if (width < 400)       { mapView.height(230); zoom = 2.8; }
+            else if (width < 600)  { mapView.height(304); zoom = 3.3; }
+            else if (width < 800)  { mapView.height(378); zoom = 3.6; }
+            else if (width < 960)  { mapView.height(452); zoom = 3.9; }
+            else if (width < 1200) { mapView.height(526); zoom = 4.2; }
+            else                   { mapView.height(600); zoom = 4.4; }
+
+            if (map) {
+                map.setView(mapCenter, zoom);
+            }
+        }
+        handleResize();
+        $(window).bind('resize', handleResize);
 
         var map = new L.map(mapView.get(0), {
             // TODO: Base CENTER and ZOOM on visualization
             center: mapCenter,
-            zoom: 4.4,
+            zoom: zoom,
 
             // TODO: Consider exposing some of these options in the Dashboard
             minZoom: 2,
@@ -303,27 +324,6 @@ heatmap.events = {
         ], lineOptions).addTo(map);
         pl2._path.style["stroke-linecap"] = "butt";
 
-        $(window).resize(function(e) {
-            // TODO: Debounce at some point, but Leaflet doesn't seem to like it
-            //$.doTimeout('social-heatmap-resize', 100, function() {
-                // Responsive breakpoints. These had to be implemented in JS because
-                // Leaflet is touchy - it has an auto-zoom feature but it doesn't
-                // work with geoJSON, you have to be using their tile service and we
-                // didn't want the dependency. For now we just use 400, 600, 800,
-                // and 960 as our main breakpoints. These are deliberately midpoints
-                // between, not exact matches, of common numbers.
-                var width = mapView.width(),
-                    zoom = 4.4;
-
-                if (width < 400)       { mapView.height(230); map.setZoom(2.8); }
-                else if (width < 600)  { mapView.height(304); map.setZoom(3.3); }
-                else if (width < 800)  { mapView.height(378); map.setZoom(3.6); }
-                else if (width < 960)  { mapView.height(452); map.setZoom(3.9); }
-                else if (width < 1200) { mapView.height(526); map.setZoom(4.2); }
-                else                   { mapView.height(600); map.setView(mapCenter, 4.4); }
-            //});
-        }).trigger('resize');
-
         // TODO: Undo this hard-coding
         var collection = Echo.Polyfills.GEO.features.usStates;
 
@@ -340,6 +340,16 @@ heatmap.events = {
                 layer.bindPopup(feature.properties.description);
             }
         }).addTo(map);
+
+            // TODO: Debounce at some point, but Leaflet doesn't seem to like it
+            //$.doTimeout('social-heatmap-resize', 100, function() {
+                // Responsive breakpoints. These had to be implemented in JS because
+                // Leaflet is touchy - it has an auto-zoom feature but it doesn't
+                // work with geoJSON, you have to be using their tile service and we
+                // didn't want the dependency. For now we just use 400, 600, 800,
+                // and 960 as our main breakpoints. These are deliberately midpoints
+                // between, not exact matches, of common numbers.
+            //});
     }
 };
 

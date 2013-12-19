@@ -147,7 +147,7 @@ gallery.renderers.stream = function(element) {
     }];
 
     //if (!!self.config.get('display.likes')) {
-        plugins.push({'name': 'Like'});
+        //plugins.push({'name': 'Like'});
     //}
 
     switch (self.config.get('display.visualization')) {
@@ -191,7 +191,7 @@ gallery.renderers.stream = function(element) {
     }
 
     plugins.push({ name: 'TweetDisplay' });
-    plugins.push({ name: 'Moderation' });
+//    plugins.push({ name: 'Moderation' });
 
     //if (!!self.config.get('display.replies')) {
         var reply = { name: 'Reply' };
@@ -263,10 +263,7 @@ gallery.renderers.stream = function(element) {
         } else {
             query.push('children:0');
         }
-
-        query.push()
-
-    }
+  }
 
     query = query.join(' ');
 
