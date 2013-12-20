@@ -5,7 +5,8 @@ var $ = jQuery;
 
 /**
  * @class Echo.StreamServer.Controls.Stream.Item.Plugins.VoteDataProcessor
- * Post-process arriving poll items to add useful elements to them.
+ * Post-process arriving poll items to add useful elements to them. These are
+ * shared by all poll visualizations.
  *
  * @extends Echo.Plugin
  */
@@ -13,6 +14,11 @@ var plugin = Echo.Plugin.manifest('VoteDataProcessor',
                                   'Echo.StreamServer.Controls.Stream.Item');
 
 if (Echo.Plugin.isDefined(plugin)) return;
+
+plugin.dependencies = [{
+    loaded: function() { return !!window.twttr; },
+    url: "//platform.twitter.com/widgets.js"
+}];
 
 /**
  * Add support classes to allow targeting of specific polls and options. Note
@@ -22,9 +28,24 @@ if (Echo.Plugin.isDefined(plugin)) return;
  */
 plugin.init = function() {
     var item = this.component,
-        id = item.get('data.object.id').split('/');
+        id = item.get('data.object.id'),
+        elements = id.split('/');
 
-    item.config.get("target").addClass(id.pop() + ' ' + id.pop());
+    // The classes are for CSS targeting for specific polls. The ID is so we
+    // can find ourselves again if a Tweet is posted.
+    item.config.get("target").addClass(elements.pop() + ' ' + elements.pop())
+                             .attr('data-echo-id', id);
+
+    if (!!window.twttr) {
+        twttr.events.bind('tweet', function (event) {
+            console.log(event);
+            if (event.type == 'tweet' && event.region == 'intent') {
+                var $el = $(event.target);
+                console.log($el);
+                console.log($el.data('echo-id'));
+            }
+        });
+    }
 };
 
 Echo.Plugin.create(plugin);
@@ -131,10 +152,28 @@ plugin.methods.processData = function() {
     // Now set percentages to support other plugins like visualizations.
     stream.set('voteCount', voteCount);
     $.map(stream.threads[0].children, function(item) {
+        var showPercent = item.config.get('parent.display.percent'),
+            showCount = item.config.get('parent.display.count'),
+            resultText = '',
+            votes = item.get('votes');
+
+        // Actual percentage value
         var percentage = (voteCount > 0)
-                         ? (100 * item.get('votes') / voteCount)
-                         : 0;
+                            ? (100 * votes / voteCount)
+                            : 100 / stream.threads[0].children.length;
         item.set('percentage', percentage);
+
+        // Displayable text label
+        if (showPercent && showCount) {
+            resultText = Math.round(percentage) + '% (' +
+                         plugin._formatCount(votes) + ')';
+        } else if (showPercent) {
+            resultText = Math.round(percentage) + '%';
+        } else {
+            resultText = plugin._formatCount(votes);
+        }
+
+        item.set('resultText', resultText);
     });
 
     // Post an event so others can update themselves.
@@ -145,6 +184,13 @@ plugin.methods.processData = function() {
         }
     });
 };
+
+/**
+ * Provides a comma-separated-thousands format display.
+ */
+plugin.methods._formatCount = function(count) {
+    return count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 Echo.Plugin.create(plugin);
 

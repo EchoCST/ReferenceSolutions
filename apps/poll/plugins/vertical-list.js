@@ -27,7 +27,7 @@ plugin.init = function() {
  *
  * @echo_template
  */
-plugin.templates.bar = '<div class="{plugin.class:bar} result-bar"></div><div class="percentage"></div><div class="count"></div>';
+plugin.templates.bar = '<div class="{plugin.class:bar} results"></div><div class="resultText results"></div>';
 
 plugin.css =
 	// Do not display these data elements
@@ -41,7 +41,6 @@ plugin.css =
 	'.{plugin.class} .{class:subwrapper} { margin: 0; }' +
     '.{plugin.class} .{class:container-root-thread} { padding: 0; }' +
 	'.{plugin.class} .{class:depth-1} { margin: 0; padding: 0; background-color: transparent; }' +
-	'.{plugin.class} .{class:children} .{class} { margin: 7px 0; background: #444; color: #fff; font-size: 13px; }' +
 
     // We don't show header or inset images in this visual even if they're there
 	'.{plugin.class} .{class:children} .{class:text} img.header { display: none; }' +
@@ -50,16 +49,16 @@ plugin.css =
     // Visual styles
     '.{plugin.class} .{class:text} .question { width: 100%; padding: 7px 10px; line-height: 18px; font-size: 14px; text-transform: uppercase; background: #111; color: #fff; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }' +
 
-	'.{plugin.class} .{class:children} .{class} { font-size: 16px; line-height: 40px; }' +
+	'.{plugin.class} .{class:children} .{class} { margin: 7px 0; background: #444; color: #fff; font-size: 16px; line-height: 40px; border: 2px solid #444; }' +
+	'.{plugin.class} .{class:children} .{class}:hover { background: #666; border: 2px solid DarkOrange; }' +
 	'.{plugin.class} .{class:children} .{class:text} a { color: #fff; text-decoration: none; text-transform: uppercase; font-weight: bold; display: block; padding: 0 10px; }' +
     '.{plugin.class} .{class:text} img.header { max-width: 100%; display: block; }' +
-    '.{plugin.class} .{class:data} .percentage { float: right; margin: 0 7px; }' +
-    '.{plugin.class} .{class:data} .count { float: right; margin: 0 7px; }' +
+    '.{plugin.class} .{class:data} .resultText { float: right; margin: 0 7px; }' +
 
     // Body/Result bar layering
     '.{plugin.class} .{class:children} .{class:data} { position: relative; height: 40px; width: 100%; }' +
 	'.{plugin.class} .{class:children} .{class:body} { position: absolute; z-index: 2; top: 0; left: 0; bottom: 0; right: 0; padding: 0; }' +
-    '.{plugin.class} .{class:children} .{plugin.class:bar} { position: absolute; z-index: 1; top: 0; left: 0; bottom: 0; color: #fff; line-height: 40px; font-size: 18px; background: #417DC1; border-right: 1px solid #ccc; }' +
+    '.{plugin.class} .{class:children} .{plugin.class:bar} { position: absolute; z-index: 1; top: 0; left: 0; bottom: 0; color: #fff; line-height: 40px; font-size: 18px; background: #417DC1; border: 1px solid #ccc; }' +
 
     // Some responsive styling. Note that since phone resolutions are now all
     // over the place we deliberately used widths IN BETWEEN their typical sizes
@@ -119,21 +118,7 @@ plugin.methods.processData = function() {
             percentage = item.get('percentage') || (100 / stream.threads[0].children.length),
             html = '';
 
-        // Also see if we have an inset image
-//		var $img = $('<div>' + item.get('data.object.content') + '</div>').find('.inset');
-//        if ($img.length > 0) {
-//            html += $img.wrapAll('<div></div>').parent().html();
-//            console.log(html);
-//        }
-
-        if (item.config.get('showPercent')) {
-            $wrapper.find('.percentage').html(Math.round(percentage) + '%');
-        }
-
-        if (item.config.get('showCount')) {
-            $wrapper.find('.count').html(item.get('votes'));
-        }
-
+        $wrapper.find('.resultText').html(item.get('resultText'));
         $bar.html(html);
 
         // jQuery sets overflow:hidden during animations, and we're using
@@ -153,7 +138,9 @@ plugin.methods.processData = function() {
     });
 };
 
-plugin.css = '';
+plugin.css =
+    '.{plugin.class} .results { display: none; }' +
+    '.{plugin.class}.show-results-before .results { display: block; }';
 
 Echo.Plugin.create(plugin);
 

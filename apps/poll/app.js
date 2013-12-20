@@ -40,6 +40,7 @@ poll.config = {
 		header: '',
 		footer: '',
 		visualization: 'list',
+		showResults: 'after',
 		percent: true,
 		count: false
 	},
@@ -71,6 +72,8 @@ poll.templates.main =
 poll.renderers.stream = function(element) {
 	var app = this,
 	    plugins = [];
+
+	element.addClass('show-results-' + app.config.get('display.showResults'));
 
 	plugins.push({
 		name: 'VoteDataProcessor',

@@ -213,8 +213,8 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "<fieldset name=\"display\">\n" +
     "  <legend class=\"icon-picture\">Display</legend>\n" +
     "\n" +
-    "  <textarea name=\"header\" title=\"Header HTML\" data-help=\"Optional HTML to include above the poll itself.\"></textarea>\n" +
-    "  <textarea name=\"footer\" title=\"Footer HTML\" data-help=\"Optional HTML to include below the poll itself.\"></textarea>\n" +
+    "  <textarea name=\"header\" title=\"Header HTML\" data-help=\"Optional HTML to include above the poll itself. Note that this option is DEPRECATED in favor of including this in the poll itself.\"></textarea>\n" +
+    "  <textarea name=\"footer\" title=\"Footer HTML\" data-help=\"Optional HTML to include below the poll itself. Note that this option is DEPRECATED in favor of including this in the poll itself.\"></textarea>\n" +
     "\n" +
     "  <!-- TODO: We really need full HTML templates so we can render clickable\n" +
     "       images and put a border around the active one instead of always using\n" +
@@ -226,6 +226,12 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "    <option value=\"sidebyside\">Side by Side Options</option>\n" +
     "    <option value=\"tugofwar\">Tug Of War (Nested)</option>\n" +
     "    <option value=\"reaction\">Reaction Boxes</option>\n" +
+    "  </select>\n" +
+    "\n" +
+    "  <select name=\"showResults\" title=\"Show Results\" data-help=\"When should results be shown? Note that some visualizations like Tug of War look best if pre-loaded.\">\n" +
+    "    <option value=\"after\" selected=\"selected\">After Selection</option>\n" +
+    "    <option value=\"before\">Before Selection (on page load)</option>\n" +
+    "    <option value=\"never\">Never (Hide Results)</option>\n" +
     "  </select>\n" +
     "\n" +
     "  <input name=\"percent\" type=\"checkbox\" checked=\"checked\" title=\"Show Percentage\" data-help=\"If checked, a percentage value will be displayed in the result elements.\" />\n" +

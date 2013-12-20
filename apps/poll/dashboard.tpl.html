@@ -35,8 +35,8 @@
 <fieldset name="display">
   <legend class="icon-picture">Display</legend>
 
-  <textarea name="header" title="Header HTML" data-help="Optional HTML to include above the poll itself."></textarea>
-  <textarea name="footer" title="Footer HTML" data-help="Optional HTML to include below the poll itself."></textarea>
+  <textarea name="header" title="Header HTML" data-help="Optional HTML to include above the poll itself. Note that this option is DEPRECATED in favor of including this in the poll itself."></textarea>
+  <textarea name="footer" title="Footer HTML" data-help="Optional HTML to include below the poll itself. Note that this option is DEPRECATED in favor of including this in the poll itself."></textarea>
 
   <!-- TODO: We really need full HTML templates so we can render clickable
        images and put a border around the active one instead of always using
@@ -48,6 +48,12 @@
     <option value="sidebyside">Side by Side Options</option>
     <option value="tugofwar">Tug Of War (Nested)</option>
     <option value="reaction">Reaction Boxes</option>
+  </select>
+
+  <select name="showResults" title="Show Results" data-help="When should results be shown? Note that some visualizations like Tug of War look best if pre-loaded.">
+    <option value="after" selected="selected">After Selection</option>
+    <option value="before">Before Selection (on page load)</option>
+    <option value="never">Never (Hide Results)</option>
   </select>
 
   <input name="percent" type="checkbox" checked="checked" title="Show Percentage" data-help="If checked, a percentage value will be displayed in the result elements." />
