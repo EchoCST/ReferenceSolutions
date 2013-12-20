@@ -101,7 +101,16 @@ var plugin = Echo.Plugin.manifest('VerticalList',
 if (Echo.Plugin.isDefined(plugin)) return;
 
 plugin.events = {
-    'Echo.StreamServer.Controls.Stream.Plugins.VoteDataProcessor.onProcessed': function(topic, args) {
+    'Echo.StreamServer.Controls.Stream.Plugins.VoteDataProcessor.onProcessed':
+    function(topic, args) {
+        console.log('Processed');
+        this.processData();
+    },
+    'Echo.StreamServer.Controls.Stream.Plugins.VoteDataProcessor.onVoted':
+    function(topic, args) {
+        // TODO: re-animate one time from zero.
+        console.log('Voted');
+        console.log(args);
         this.processData();
     }
 };
@@ -111,6 +120,11 @@ plugin.methods.processData = function() {
         stream = this.component,
         $body = stream.view.get('body'),
         voteCount = 0;
+
+    // There's nothing here for us to do until we're ready to show the results
+    if (!stream.get('showResults')) {
+        return;
+    }
 
     $.map(stream.threads[0].children, function(item, i) {
         var $wrapper = item.config.get('target'),
@@ -139,8 +153,12 @@ plugin.methods.processData = function() {
 };
 
 plugin.css =
+    // Show/hide the results elements. This is done separately from animation.
+    // TODO: Move the animation to CSS3 and just have the JS trigger it.
     '.{plugin.class} .results { display: none; }' +
-    '.{plugin.class}.show-results-before .results { display: block; }';
+
+    '.{plugin.class}.show-results-before .results { display: block; }' +
+    '.{plugin.class}.show-results-after.voted .results { display: block; }';
 
 Echo.Plugin.create(plugin);
 

@@ -15,11 +15,6 @@ var plugin = Echo.Plugin.manifest('VoteDataProcessor',
 
 if (Echo.Plugin.isDefined(plugin)) return;
 
-plugin.dependencies = [{
-    loaded: function() { return !!window.twttr; },
-    url: "//platform.twitter.com/widgets.js"
-}];
-
 /**
  * Add support classes to allow targeting of specific polls and options. Note
  * that we don't do anything else here because some Item fields haven't even
@@ -35,17 +30,6 @@ plugin.init = function() {
     // can find ourselves again if a Tweet is posted.
     item.config.get("target").addClass(elements.pop() + ' ' + elements.pop())
                              .attr('data-echo-id', id);
-
-    if (!!window.twttr) {
-        twttr.events.bind('tweet', function (event) {
-            console.log(event);
-            if (event.type == 'tweet' && event.region == 'intent') {
-                var $el = $(event.target);
-                console.log($el);
-                console.log($el.data('echo-id'));
-            }
-        });
-    }
 };
 
 Echo.Plugin.create(plugin);
@@ -69,12 +53,68 @@ var plugin = Echo.Plugin.manifest('VoteDataProcessor',
 
 if (Echo.Plugin.isDefined(plugin)) return;
 
+plugin.dependencies = [{
+    loaded: function() { return !!window.twttr; },
+    url: "//platform.twitter.com/widgets.js"
+}];
+
 /**
  * Periodically get updated vote counts.
  */
 plugin.init = function() {
     var plugin = this,
-        stream = this.component;
+        stream = this.component,
+        voted = false,
+        showResults = false;
+
+    // TODO: Determine whether the user has already voted. Cookie?
+    voted = false;
+
+    // Should we show the results?
+    if (stream.config.get('display.showResults') == 'before' ||
+        (stream.config.get('display.showResults') == 'after' && voted)) {
+        showResults = true;
+    }
+
+    // Cache these values for later use
+    stream.set('voted', voted);
+    stream.set('showResults', showResults);
+
+    if (!!window.twttr) {
+        twttr.events.bind('tweet', function (event) {
+            if (event.type == 'tweet' && event.region == 'intent') {
+                var $el = $(event.target);
+
+                if (!$el.hasClass('answer')) return;
+
+                var $item = $el.closest('.echo-streamserver-controls-stream-item'),
+                    id = $item.data('echo-id');
+
+                var item = null;
+                $.map(stream.threads[0].children, function(_item) {
+                    if (_item.data.object.id == id) {
+                        item = _item;
+                    }
+                });
+
+                stream.config.get('target').addClass('voted');
+                stream.set('voted', true);
+                if (stream.config.get('display.showResults') == 'after') {
+                    stream.set('showResults', true);
+                }
+
+                // Post an event so others can update themselves.
+                plugin.events.publish({
+                    topic: 'onVoted',
+                    data: {
+                        stream: stream,
+                        id: id,
+                        item: item
+                    }
+                });
+            }
+        });
+    }
 
     setInterval(function() {
         if (!stream.threads[0]) return;

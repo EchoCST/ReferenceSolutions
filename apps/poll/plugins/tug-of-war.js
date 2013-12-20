@@ -116,7 +116,12 @@ var plugin = Echo.Plugin.manifest('TugOfWar',
 if (Echo.Plugin.isDefined(plugin)) return;
 
 plugin.events = {
-    'Echo.StreamServer.Controls.Stream.Plugins.VoteDataProcessor.onProcessed': function(topic, args) {
+    'Echo.StreamServer.Controls.Stream.Plugins.VoteDataProcessor.onProcessed':
+    function(topic, args) {
+        this.processData();
+    },
+    'Echo.StreamServer.Controls.Stream.Plugins.VoteDataProcessor.onVoted':
+    function(topic, args) {
         this.processData();
     }
 };
