@@ -126,11 +126,9 @@ plugin.methods.processData = function() {
     $.map(stream.threads[0].children, function(item, i) {
         var $wrapper = item.config.get('target'),
             $bar = item.plugins.VerticalList.view.get('bar'),
-            percentage = item.get('percentage') || (100 / stream.threads[0].children.length),
-            html = '';
+            percentage = item.get('percentage') || (100 / stream.threads[0].children.length);
 
         $wrapper.find('.resultText').html(item.get('resultText'));
-        $bar.html(html);
 
         // jQuery sets overflow:hidden during animations, and we're using
         // overflow to position the buttons.
