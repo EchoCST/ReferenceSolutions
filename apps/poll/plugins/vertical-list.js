@@ -59,6 +59,7 @@ plugin.css =
     '.{plugin.class} .{class:children} .{class:data} { position: relative; height: 40px; width: 100%; }' +
 	'.{plugin.class} .{class:children} .{class:body} { position: absolute; z-index: 2; top: 0; left: 0; bottom: 0; right: 0; padding: 0; }' +
     '.{plugin.class} .{class:children} .{plugin.class:bar} { position: absolute; z-index: 1; top: 0; left: 0; bottom: 0; color: #fff; line-height: 40px; font-size: 18px; background: #417DC1; border: 1px solid #ccc; }' +
+    '.{plugin.class} .{class:children} .selected .{plugin.class:bar} { background: DarkOrange; border: 1px solid #ccc; }' +
 
     // Some responsive styling. Note that since phone resolutions are now all
     // over the place we deliberately used widths IN BETWEEN their typical sizes

@@ -250,6 +250,16 @@ plugin.methods.processData = function() {
     // TODO: Determine whether the user has already voted. Cookie?
     var vote = this._getVote(poll.data.object.id);
 
+    // Set a 'selected' flag on that item
+    $.map(poll.children, function(item) {
+        if (item.data.object.id == vote) {
+            item.config.get('target').addClass('selected');
+            item.set('selected', true);
+        } else {
+            item.set('selected', false);
+        }
+    });
+
     // Should we show the results?
     if (stream.config.get('display.showResults') == 'before' ||
         (stream.config.get('display.showResults') == 'after' && vote)) {
