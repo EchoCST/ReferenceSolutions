@@ -103,14 +103,10 @@ if (Echo.Plugin.isDefined(plugin)) return;
 plugin.events = {
     'Echo.StreamServer.Controls.Stream.Plugins.VoteDataProcessor.onProcessed':
     function(topic, args) {
-        console.log('Processed');
         this.processData();
     },
     'Echo.StreamServer.Controls.Stream.Plugins.VoteDataProcessor.onVoted':
     function(topic, args) {
-        // TODO: re-animate one time from zero.
-        console.log('Voted');
-        console.log(args);
         this.processData();
     }
 };

@@ -146,6 +146,11 @@ plugin.methods.processData = function() {
         $body = stream.view.get('body'),
         voteCount = 0;
 
+    // There's nothing here for us to do until we're ready to show the results
+    if (!stream.get('showResults')) {
+        return;
+    }
+
     $.map(stream.threads[0].children, function(item, i) {
         var $wrapper = item.config.get('target'),
             $bar = item.plugins.UpDownButtons.view.get('bar'),
