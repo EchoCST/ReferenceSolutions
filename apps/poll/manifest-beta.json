@@ -1,7 +1,7 @@
 {
     "id": "echo-poll-beta",
-    "name": "Poll (Beta)",
-    "description": "A Poll is a vote collection and display App with a variety of visualizations.",
+    "name": "Opinions (Beta)",
+    "description": "Vote collection and display App with a variety of visualizations.",
     "app_version": "1.0.0",
     "icon": "//cdn.echoenabled.com/apps/echo/media-gallery/icon.png",
     "developer": {

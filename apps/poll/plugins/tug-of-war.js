@@ -137,7 +137,6 @@ plugin.methods.processData = function() {
 		var $img = $('<div>' + item.get('data.object.content') + '</div>').find('.inset');
         if ($img.length > 0) {
             html += $img.wrapAll('<div></div>').parent().html();
-            console.log(html);
         }
 
         if (item.config.get('showPercent')) {

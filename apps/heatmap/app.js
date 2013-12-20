@@ -215,11 +215,13 @@ heatmap.renderers.map = function(element) {
             $(marker._icon).animate({
                 opacity: 1
             }, showSpeed, function() {
-                $(marker._icon).animate({
-                    opacity: 0
-                }, fadeSpeed, function() {
-                    map.removeLayer(marker);
-                });
+                setTimeout(function() {
+                    $(marker._icon).animate({
+                        opacity: 0
+                    }, showSpeed, function() {
+                        map.removeLayer(marker);
+                    });
+                }, fadeSpeed);
             });
         } catch (e) {
             Echo.Utils.log({
@@ -251,8 +253,6 @@ heatmap.events = {
 
         var handleResize = function() {
             var width = mapView.width();
-
-            console.log('resizing');
 
             if (width < 400)       { mapView.height(230); zoom = 2.8; }
             else if (width < 600)  { mapView.height(304); zoom = 3.3; }
