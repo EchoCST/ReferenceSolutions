@@ -63,6 +63,7 @@ dashboard.init = function() {
 dashboard.methods.declareInitialConfig = function() {
 	//var appkeys = this.config.get("appkeys");
 	var janrainapps = this.config.get("janrainapps");
+	console.log(this);
 	return {
 //		targetURL: this._assembleTargetURL(),
 		//appkey: appkeys.length ? appkeys[0].key : undefined,

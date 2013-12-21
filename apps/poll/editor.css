@@ -1,0 +1,38 @@
+#header { padding: 10px; }
+#header .echo-logo { float: left; }
+#header h1 { text-align: center; font-size: 20px; font-weight: bold; margin-left: -100px; }
+
+#editor { width: 100%; max-width: 960px; margin: 20px auto; font: 14px sans-serif; padding: 20px; }
+
+#auth { background: #f3f3f3; padding: 6px; margin: 0 0 14px 0; border: 1px solid #ddd; }
+
+#no-poll,
+#echo-poll-editor { display: none; }
+
+#no-poll { border-radius: 10px; border: 3px dashed #999; background: #eee; padding: 30px; text-align: center; }
+
+/* jQuery sortable support */
+body.dragging,
+body.dragging * { cursor: move !important; }
+.dragged { position: absolute; opacity: 0.5; z-index: 2000; }
+ol li.placeholder { position: relative; }
+ol li.placeholder:before { position: absolute; }
+
+#echo-poll-editor h4 { text-align: left; }
+
+#echo-poll-editor ol li { background: #eee; border: 1px solid #ccc; margin-bottom: 15px; line-height: 10px; }
+#echo-poll-editor ol li .field { padding: 0 0 2px 0; }
+
+#echo-poll-editor ol li .images,
+#echo-poll-editor ol li .inputs { float: left; }
+
+#echo-poll-editor ol li h6 { margin: 0 0 3px 0; line-height: 1em; }
+
+#echo-poll-editor ol li .inset,
+#echo-poll-editor ol li .header { float: left; margin: 0 10px; font: bold 12px/64px sans-serif; position: relative; }
+
+#echo-poll-editor ol li .btn { position: absolute; top: 15px; left: 5px; z-index: 1; font-size: 12px; }
+#echo-poll-editor ol li .preview { max-width: 100%; max-height: 100%; width: 64px; height: 64px; border: 1px dashed #999; text-align: center; border-radius: 6px; background: #fff url(../../plugins/upload.png) 50% 50% no-repeat; }
+#echo-poll-editor ol li img { max-width: 100%; max-height: 100%; }
+
+#echo-poll-editor ol li input { margin: 0 10px 6px 10px; display: block; width: 400px; }

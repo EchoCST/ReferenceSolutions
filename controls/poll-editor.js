@@ -23,7 +23,7 @@ polleditor.templates.main =
 		'<div class="subcontainer clearfix">' +
 			'<div class="{inherited.class:titleContainer} {class:titleContainer} pull-left">' +
 				'<div class="{inherited.class:titleSubcontainer} {class:titleSubcontainer}">' +
-          '<a href="#" class="{class:link} btn">Edit Poll</a>' +
+                    '<a href="http://echocsthost.s3.amazonaws.com/apps/poll/editor.html?appKey=echo.echo.streamserver.echo-cst-dev.prod&busName=echo-cst-dev&pollURL=http://cst-dev.echoplatform.com/sample-data/polls/poll1#" class="{class:link} btn" target="_blank">Poll Editor</a>' +
 				'</div>' +
 			'</div>' +
 		'</div>' +
@@ -35,6 +35,28 @@ polleditor.renderers.link = function(element) {
 
   return element.click(function(e) {
     e.preventDefault();
+
+      var myModal = new Echo.GUI.Modal({
+    "show": true,
+    "backdrop": true,
+    "keyboard": true,
+    "closeButton": false,
+    "remote": false,
+    "extraClass": "",
+    href: 'http://echocsthost.s3.amazonaws.com/apps/poll/editor.html?appKey=echo.echo.streamserver.echo-cst-dev.prod&busName=echo-cst-dev&pollURL=http://cst-dev.echoplatform.com/sample-data/polls/poll1',
+    "width": "1000",
+    "height": "700",
+    "padding": "0",
+    "footer": false,
+    "header": false,
+    "fade": true,
+    "onShow": function() {
+        return;
+    },
+    "onHide": function() {
+        return;
+    },
+  });
 
 
     console.log(self);
