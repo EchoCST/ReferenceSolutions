@@ -1,3 +1,28 @@
+/*
+ *        $('.inset .preview').click(function(e) {
+            var $inset = $(this).closest('.inset');
+
+            filepickercontrol.pickAndStore({
+                multiple: false,
+                maxFiles: 1,
+                folders: false,
+                extensions: ['.png', '.jpg', '.jpeg', '.gif'],
+                maxSize: 50*1024*1024
+            }, {
+                location: 'S3',
+                path: 'polls',
+                access: 'public'
+            }, function(InkBlobs) {
+                console.log('Success', InkBlobs);
+                $.map(InkBlobs, function(blob) {
+                    //blob.url = 'https://pbs.twimg.com/media/BYvzKb3CQAAlUCi.jpg:large';
+                    $inset.find('img').attr('src', blob.url);
+                });
+            }, function(FPError) {
+                console.log('Error', FPError);
+            });
+        });
+ */
 /**
  * Adds an app-key select list control. This is a near 1:1 clone of .Select just
  * modified to obtain its values from an API call.
@@ -13,23 +38,34 @@
 
 var $ = jQuery;
 
-if (Echo.AppServer.App.isDefined("Echo.Apps.AppServer.Controls.Configurator.Items.AppKeyList")) return;
+if (Echo.AppServer.App.isDefined("Echo.Apps.AppServer.Controls.Configurator.Items.FilePicker")) return;
 
-var appkeylist = Echo.AppServer.App.manifest("Echo.AppServer.Controls.Configurator.Items.AppKeyList");
+var filepickercontrol = Echo.AppServer.App.manifest("Echo.AppServer.Controls.Configurator.Items.FilePicker");
 
-appkeylist.inherits = Echo.Utils.getComponent("Echo.AppServer.Controls.Configurator.Item");
+filepickercontrol.inherits = Echo.Utils.getComponent("Echo.AppServer.Controls.Configurator.Item");
 
-appkeylist.config = {
+filepickercontrol.config = {
 	"defaultTitle": ""
 };
 
-appkeylist.init = function() {
+filepickercontrol.dependencies = [{ url: '//api.filepicker.io/v1/filepicker.js' }];
+
+filepickercontrol.init = function() {
 	// TODO: SURELY there is a better way to get this...?
 	var self = this,
 	    customerId = Echo.AppServer.User.data.customer.id,     // 312
 		customerName = Echo.AppServer.User.data.customer.name, // echo-apps-chad
 		apiBaseURL = this.config.get('apiBaseURL', 'http://api.appserver.aboutecho.com');
 
+    // TODO: Could not figure out a better way to do this
+    if (!window.filePickerInitialized) {
+        window.filePickerInitialized = true;
+        console.log('Initializing filePicker');
+        filepicker.setKey('AVxxvNJUtRQOjN6ugyWavz');
+    }
+
+    console.log('FilePicker', self);
+/*
 	// TODO: The SDK is not yet Open Source and there are no docs. I found
 	// Echo.AppServer.API.request but couldn't quite get it to work right, so I
 	// just used this.
@@ -56,11 +92,11 @@ appkeylist.init = function() {
 			alert('Error loading appkey list');
 		}
 	});
-
+*/
 	this.parent();
 }
 
-appkeylist.templates.main =
+filepickercontrol.templates.main =
 	'<div class="{inherited.class:container} {class:container} clearfix">' +
 		'<div class="{inherited.class:subcontainer} {class:subcontainer} clearfix">' +
 			'<div class="{inherited.class:titleContainer} {class:titleContainer}">' +
@@ -78,124 +114,71 @@ appkeylist.templates.main =
 			'</div>' +
 			'<div class="{inherited.class:valueContainer} {class:valueContainer} clearfix">' +
 				'<div class="{inherited.class:value} {class:value} btn-group">' +
-					'<button type="button" class="btn btn-mini dropdown-toggle {class:dropdown}" data-toggle="dropdown">' +
-						'<span class="caret pull-right"></span>' +
-						'<span class="{class:selected}"></span>' +
-					'</button>' +
-					'<ul class="dropdown-menu {class:menu}" role="menu"></ul>' +
+                    '<div class="{class:preview}"><img src="//echocsthost.s3.amazonaws.com/plugins/blank.gif" class="{class:previewImage}"/></div>' +
 				'</div>' +
 			'</div>' +
 			'<div class="{inherited.class:error} {class:error} clearfix"></div>' +
 		'</div>' +
 	'</div>';
 
-appkeylist.templates.option =
-	'<li><a class="{class:option}">{data:value}</a></li>';
-
-appkeylist.renderers.dropdown = function(element) {
-	if (this.config.get("options").length === 0) element.addClass("disabled");
-	return element.dropdown();
-};
-
-appkeylist.renderers.menu = function(element) {
-	var self = this, view = this.view.fork();
-
-	self.fillMenuItems(element);
-
-	return element;
-};
-
-appkeylist.renderers.option = function(element) {
+filepickercontrol.renderers.preview = function(element) {
 	var self = this;
-	return element.click(function() {
-		var value = self.getValue($(this).html());
-		var prevValue = self.get("data.value");
-		self.set("data.value", value);
-		if (prevValue !== value) self.changed(self.get("data.value"), prevValue);
-		self.view.render({"name": "selected"});
-	});
-};
-
-appkeylist.renderers.selected = function(element) {
-	var title = this.getTitle(this.get("data.value"))
-		|| this.config.get("defaultTitle");
-
-	return element.empty().append(title);
-};
-
-appkeylist.methods.fillMenuItems = function(element) {
-	var self = this,
-	    options = this.config.get("options") || [],
-	    // TODO: What is forking actually doing behind the scenes? This isn't
-		// clear to me... If it gets called multiple times, what happens?
-	    view = this.view.fork();
-
-	element.empty();
-	$.map(options, function(option) {
-		element.append(view.render({
-			"template": self.templates.option,
-			"data": {"value": option.value}
-		}));
-
-		// If we don't have an appkey yet for our application, default it to a
-		// StreamServer key.
-		//
-		// Work out some external way to trigger this default behavior. We want
-		// this behavior like 70% of the time - most apps don't need keys of
-		// their own, they just use AppKey to access Streams. But some apps will
-		// probably legitimately want their own key...
-		if (option.value.indexOf('streamserver') != -1 &&
-			!self.get("data.value")) {
-			self.set('data.value', option.value);
-		}
-	});
-
-	var dropdown = self.view.get('dropdown');
-	if (dropdown) {
-		if (options.length > 0) {
-			dropdown.removeClass('disabled');
-		} else {
-			dropdown.addClass('disabled');
-		}
-	}
-
-	var selected = self.view.get('selected');
-	if (selected) {
-		var title = this.getTitle(this.get("data.value"))
-		            || this.config.get("defaultTitle");
-		selected.empty().append(title);
-	}
 
 	return element;
 };
 
-appkeylist.methods.getTitle = function(value) {
-	var title;
-	$.each(this.config.get("options", []), function(key, option) {
-		if (option.value === value) {
-			title = option.title;
-			return false;
-		}
-	});
-	return title;
+filepickercontrol.renderers.previewImage = function(element) {
+	var self = this,
+        value = self.get('data.value'),
+        $el = $(element);
+
+    console.log(self);
+    if (value != '') {
+        console.log('setting', value);
+        $el.attr('src', value);
+    }
+
+    $el.click(function(e) {
+        filepicker.pickAndStore({
+            multiple: false,
+            maxFiles: 1,
+            folders: false,
+            extensions: ['.png', '.jpg', '.jpeg', '.gif'],
+            maxSize: 50*1024*1024
+        }, {
+            location: 'S3',
+            path: 'dashboard',
+            access: 'public'
+        }, function(InkBlobs) {
+            console.log('Successful Upload', InkBlobs);
+            $.map(InkBlobs, function(blob) {
+                //blob.url = 'https://pbs.twimg.com/media/BYvzKb3CQAAlUCi.jpg:large';
+                var prevValue = $el.attr('src');
+                $el.attr('src', blob.url);
+
+                // TODO: Why do other components both self.set and self.changed?
+                self.set('data.value', blob.url);
+                if (prevValue !== blob.url) {
+                    self.changed(blob.url, prevValue);
+                }
+            });
+        }, function(FPError) {
+            console.log('Error', FPError);
+        });
+    });
+
+	return element;
 };
 
-appkeylist.methods.getValue = function(title) {
-	var value;
-	$.each(this.config.get("options", []), function(key, option) {
-		if (option.title === title) {
-			value = option.value;
-			return false;
-		}
-	});
-	return value;
-};
-
-appkeylist.methods.value = function() {
+filepickercontrol.methods.value = function() {
+    console.log('Value called', this);
 	return this.get("data.value");
 };
 
-appkeylist.css =
+filepickercontrol.css =
+	'.{class:previewImage} { background: #666; }' +
+	'.{class:previewImage} { width: 64px; height: 64px; }' +
+
 	'.{class:titleContainer} { padding-top: 2px; display: inline-block; }' +
 	'.{class:container} .{class:valueSubcontainer} { max-width: 100%; }' +
 	'.{class:container} .{class:valueContainer} .{class:value} { display: block; }' +
@@ -207,6 +190,6 @@ appkeylist.css =
 	'.{class:container} .{class:dropdown} span.{class:selected} { min-height: 20px; min-width: 50px; display: block; margin-left: 6px; margin-right: 18px; overflow: hidden; text-overflow: ellipsis; }' +
 	'.{class:container} .{class:dropdown} span.caret { margin-top: 8px; margin-right: 6px; }';
 
-Echo.AppServer.App.create(appkeylist);
+Echo.AppServer.App.create(filepickercontrol);
 
 })(Echo.jQuery);
