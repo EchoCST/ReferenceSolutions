@@ -154,13 +154,15 @@ plugin.css =
     '.{plugin.class:media} { margin: 4px 7px 0 0; width: 25%; float: left; }' +
     '.{plugin.class:mediafull} { background: #000; }' +
     '.{plugin.class:mediafull} img { max-width: 100%; display: block; margin: 0 auto; }' +
-    '.{plugin.class:mediafull} .rotate { position: absolute; top: 4px; right: 4px; }' +
+    '.{plugin.class:mediafull} .rotate { position: absolute; top: 4px; right: 4px; opacity: 0.5; }' +
+    '.{plugin.class:mediafull} .rotate:hover { opacity: 1; }' +
 
     // Separate the header visually, and color-code it
     '.{plugin.class} .{plugin.class:header} { padding: 5px; background: #f0f0f0; border-bottom: 1px solid #ccc; position: relative; }' +
     '.{plugin.class} .item-source-twitter .{plugin.class:header} { background: #E5F5FF; border-bottom: 1px solid #A1C7DF; }' +
     '.{plugin.class} .item-source-instagram .{plugin.class:header} { background: #E4CAB1; border-bottom: 1px solid #B49F8B; }' +
-    '.{plugin.class} .{plugin.class:header} .rotate { position: absolute; bottom: 3px; right: 4px; }' +
+    '.{plugin.class} .{plugin.class:header} .rotate { position: absolute; bottom: 3px; right: 4px; opacity: 0.5; }' +
+    '.{plugin.class} .{plugin.class:header} .rotate:hover { opacity: 1; }' +
 
     // Separate the footer visually, and color-code it
     '.{plugin.class} .{class:footer} { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; background: #f0f0f0; border-top: 1px solid #ccc; padding: 4px 8px; }' +
