@@ -1,5 +1,13 @@
 (function($) {
 
+// NOTE: When previewing this app you will get two errors in your console log:
+// [Echo SDK] error : Unexpected token _  | args:  undefined environment.pack.js:205
+// [Echo SDK] error : Unexpected token _  | args:  undefined environment.pack.js:205
+//
+// These can be safely ignored. They're actually postMessages from Twitter, and
+// Echo is intercepting but not processing them correctly. They don't affect the
+// functionality of the app.
+
 if (Echo.Control.isDefined("Echo.Apps.Poll.Dashboard")) return;
 
 var dashboard = Echo.Control.manifest("Echo.Apps.Poll.Dashboard");
@@ -54,7 +62,7 @@ dashboard.init = function() {
 	// access this data themselves.
 	Echo.Polyfills.DashboardSupport.configData = self.config.data.data;
 
-	console.log('init', self);
+//	console.log('init', self);
 	var deferreds = [$.Deferred()];
 	$.when.apply($, deferreds).done(function() {
 		// We hold off on calling our parent until everything else has loaded
@@ -77,7 +85,7 @@ dashboard.init = function() {
 dashboard.methods.declareInitialConfig = function() {
 	//var appkeys = this.config.get("appkeys");
 	var janrainapps = this.config.get("janrainapps");
-	console.log('declare', this);
+//	console.log('declare', this);
 	return {
 		datasource: {
 			// This is a hidden config setting added to all polls. If the data
@@ -124,21 +132,60 @@ dashboard.events = {
 			// TODO: The SDK provides an API.Request tool, but this isn't one of
 			// its pre-defined endpoints and it doesn't seem to add much value
 			// for what we're doing here. Reconsider using it later?
-			$.ajax({
-				url: 'https://api.echoenabled.com/v1/search',
-				data: {
-					q: 'url:' + url + ' safeHTML:off children:1',
-					appkey: config.datasource.appkey,
-				},
-				timeout: 5000,
-				dataType: 'jsonp',
-				success: function(data) {
-					console.log(data);
-				},
-				error: function(data) {
-					console.log(data);
-				}
+
+			var updates = [];
+			updates.push({
+				url: url,
+				content: '<div class="header">' + (config.display.header) ? config.display.header : '' + '</div>',
 			});
+
+			// TODO: So... objvar.property and objvar[property] are supposed to
+			// be functionally identical. But something weird is happening in
+			// Echo-land, so Echo.Utils.get(config, 'pollbuilder.option' + i)
+			// and config.pollbuilder['option' + i] both evaluate to {}, while
+			// config.pollbulder.option1, config.pollbuilder.option2, etc do
+			// evaluate correctly. For now since there are only 8 options we
+			// just rolled with it and eliminated the for() loop simplification,
+			// but it would be very nice to know what is going on here!
+
+			// config.pollbuilder.option1:
+			//     Object {image: "https://www.filepicker.io/api/file/Wg6iTZdsSYKqS8rVsyej", answer: "Answer"} dashboard.js:138
+			// config.pollbuilder['option1']:
+			//     Object {}
+			// Echo.Utils.get(config, 'pollbuilder.option1'):
+			//     Object {}
+			// Uhhhhhhh......?
+
+			// TODO: TITLE tags or other 'A' tag sweetness?
+			var registerUpdateRequest = function(subpath, option) {
+				updates.push({
+					url: url + '/' + subpath,
+					content: ((option.image) ? '<img src="' + option.image + '" />' : '') +
+							 ((option.answer) ? '<a href="#" class="submit-vote">' + option.answer + '</a>' : ''),
+				});
+			}
+			registerUpdateRequest('option1', config.pollbuilder.option1);
+			registerUpdateRequest('option2', config.pollbuilder.option2);
+			registerUpdateRequest('option3', config.pollbuilder.option3);
+			registerUpdateRequest('option4', config.pollbuilder.option4);
+			registerUpdateRequest('option5', config.pollbuilder.option5);
+			registerUpdateRequest('option6', config.pollbuilder.option6);
+			registerUpdateRequest('option7', config.pollbuilder.option7);
+			registerUpdateRequest('option8', config.pollbuilder.option8);
+
+			(function handleUpdates() {
+				if (updates.length < 1) return;
+				var update = updates.shift();
+
+				Echo.Polyfills.DashboardSupport.createOrUpdateItem({
+					url: update.url,
+					content: update.content,
+					appkey: config.datasource.appkey,
+					callback: function() {
+						handleUpdates();
+					}
+				});
+			})();
 		}
 	}
 };

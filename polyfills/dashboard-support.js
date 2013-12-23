@@ -9,6 +9,56 @@ Echo.Polyfills.DashboardSupport = {
     configData: null,
 
     /**
+     * Create or update a StreamServer Item.
+     * TODO: Error handling
+     * TODO: Clean up params
+     */
+    createOrUpdateItem: function(params) {
+        // First see if the item exists.
+        $.ajax({
+            url: 'https://api.echoenabled.com/v1/search',
+            data: {
+                q: 'url:' + params.url + ' safeHTML:off children:0',
+                appkey: params.appkey,
+            },
+            timeout: 5000,
+            dataType: 'jsonp',
+            success: function(data) {
+                if (data.entries.length > 0) {
+                    console.log('Entry ' + params.url + ' exists, updating...');
+                    params.callback(data);
+                } else {
+                    console.log('Entry ' + params.url + ' does not exist, creating...');
+                    params.callback(data);
+                }
+            }
+        });
+    },
+            /*
+
+					        var url = 'https://apps.echoenabled.com/v2/esp/activity';
+
+        if (!exists) {
+            // Post a new item and its children
+            exists = true;
+
+            var data = {
+                appkey: $_GET['appKey'],
+                sessionID: Backplane.getChannelID(),
+                content: {
+                    avatar: '',
+                    name: Echo.UserSession._getName(),
+                    content: '',
+                    source: {},
+                    target: "http://cst-dev.echoplatform.com/sample-data/polls/poll1",
+                    verb: "post",
+                    type: "http://activitystrea.ms/schema/1.0/article"
+                },
+            };
+        }*/
+
+
+    /**
      * Standard initialization routine used by most Dashboards:
      *
      *   - Load the appropriate template for this dashboard as set by the
