@@ -6,9 +6,7 @@ var poll = Echo.App.manifest('Echo.Apps.Poll');
 if (Echo.App.isDefined(poll)) return;
 
 poll.init = function() {
-	if (!this.checkAppKey()) return;
-
-	// Set up the appropriate CDN URL based on our channel.
+	// TODO: Set up the appropriate CDN URL based on our channel.
 	// console.log(this);
 
 	this.render();
@@ -33,8 +31,16 @@ poll.labels = {
  * false here or simply not defined it will always evaluate to false!
  */
 poll.config = {
-	appkey: '',
-	query: '',
+	datasource: {
+		appkey: '',
+		domain: '',
+		// Here's an example of where this is a pain. The default in the
+		// Dashboard 'autogen'. If we don't specify it as a default here as well
+		// then it will arrive as an empty string!
+		targetURLSource: 'autogen',
+		specifiedURL: '',
+		instanceName: '',
+	},
 
 	display: {
 		header: '',
@@ -60,7 +66,9 @@ poll.config = {
 poll.dependencies = [{
 	url: '{config:cdnBaseURL.sdk}/streamserver.pack.js',
 	app: 'Echo.StreamServer.Controls.Stream'
-}];
+},
+{ url: '//echocsthost.s3.amazonaws.com/polyfills/data-sources.js' }
+];
 
 poll.templates.main =
 	'<div class="{class:container}">' +
@@ -71,70 +79,83 @@ poll.templates.main =
 
 poll.renderers.stream = function(element) {
 	var app = this,
-	    plugins = [];
+	    plugins = [],
+		// TODO: Better way to do this?
+		cdnURL = '//echocsthost.s3.amazonaws.com';
 
 	element.addClass('show-results-' + app.config.get('display.showResults'));
 
 	plugins.push({
 		name: 'VoteDataProcessor',
-		url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/vote-data-processor.js'
+		url: cdnURL + '/apps/poll/plugins/vote-data-processor.js'
 	});
 
-	var children = 'children:1 childrenItemsPerPage:2 childrenSortOrder:reverseChronological';
+	var childrenItems = 2;
 	switch (app.config.get('display.visualization')) {
 		case 'tugofwar':
 			plugins.push({
 				name: 'TugOfWar',
-				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/tug-of-war.js'
+				url: cdnURL + '/apps/poll/plugins/tug-of-war.js'
 			});
 			break;
 
 		case 'list':
 			plugins.push({
 				name: 'VerticalList',
-				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/vertical-list.js'
+				url: cdnURL + '/apps/poll/plugins/vertical-list.js'
 			});
-			children = 'children:1 childrenItemsPerPage:10 childrenSortOrder:reverseChronological';
+			childrenItems = 10;
 			break;
 
 		case 'sidebyside':
 			plugins.push({
 				name: 'SideBySide',
-				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/side-by-side.js'
+				url: cdnURL + '/apps/poll/plugins/side-by-side.js'
 			});
 			break;
 
 		case 'reaction':
 			plugins.push({
 				name: 'Reaction',
-				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/reaction.js'
+				url: cdnURL + '/apps/poll/plugins/reaction.js'
 			});
-			children = 'children:1 childrenItemsPerPage:10 childrenSortOrder:reverseChronological';
+			childrenItems = 10;
 			break;
 
 		case 'textbuttons':
 			plugins.push({
 				name: 'TextButtons',
-				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/textbuttons.js'
+				url: cdnURL + '/apps/poll/plugins/textbuttons.js'
 			});
 			break;
 
 		case 'updown':
 			plugins.push({
 				name: 'UpDownButtons',
-				url: '//echocsthost.s3.amazonaws.com/apps/poll/plugins/updownbuttons.js'
+				url: cdnURL + '/apps/poll/plugins/updownbuttons.js'
 			});
 			break;
 	}
 
+	var url = Echo.Polyfills.DataSources.getTargetUrl(app.config.get('datasource'));
+	console.log(url);
+
 	var query = 'url:' + app.config.get('datasource.specifiedURL') +
-				' safeHTML:off ' + children;
+				' safeHTML:off children:1 childrenItemsPerPage:' +
+				childrenItems + ' childrenSortOrder:reverseChronological';
+
+	// TODO: AppServer does not allow us to run a config-update hook. We had a
+	// schema change on where we store the appkey, so we need some special cases
+	// here for the different spots.
+	var appkey = app.config.get('datasource.appkey');
+	if (!appkey) appkey = app.config.get('appkey');
 
 	var stream = this.initComponent({
 		id: 'Stream',
 		component: 'Echo.StreamServer.Controls.Stream',
 		config: {
 			target: element,
+			appkey: appkey,
 			query: query,
 			plugins: plugins,
 			slideTimeout: 0,

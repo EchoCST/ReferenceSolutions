@@ -53,7 +53,7 @@ dashboard.init = function() {
 	// access this data themselves.
 	Echo.Polyfills.DashboardSupport.configData = self.config.data.data;
 
-	console.log(self);
+	console.log('init', self);
 	var deferreds = [$.Deferred()];
 	$.when.apply($, deferreds).done(function() {
 		// We hold off on calling our parent until everything else has loaded
@@ -76,10 +76,17 @@ dashboard.init = function() {
 dashboard.methods.declareInitialConfig = function() {
 	//var appkeys = this.config.get("appkeys");
 	var janrainapps = this.config.get("janrainapps");
-	console.log(this);
+	console.log('declare', this);
 	return {
-//		targetURL: this._assembleTargetURL(),
-		//appkey: appkeys.length ? appkeys[0].key : undefined,
+		datasource: {
+			// This is a hidden config setting added to all polls. If the data
+			// source URL is set to 'automatic', and a property is selected, we
+			// will auto-generate and use a targetURL of the pattern:
+			//
+			//    http://DOMAIN/polls/{instanceName}/{option1..N}
+			//
+			instanceName: this.data.instance.name
+		},
 		auth: {
 			janrainApp: janrainapps.length ? janrainapps[0].name : undefined
 		}
