@@ -65,6 +65,11 @@ plugin.component.renderers.frame = function(element) {
     $(item.view.get('data').prevAll().get().reverse())
             .wrapAll('<div class="' + this.cssPrefix + 'header"></div>');
 
+    element.find('.' + headerClass).append('<img src="//echocsthost.s3.amazonaws.com/polyfills/rotate.png" class="rotate" />');
+    element.find('.rotate').click(function() {
+       item.config.get('target').removeClass('rotated');
+    });
+
     // Now move the avatar into the header we just made
     var avatar = item.view.get('avatar-wrapper');
     $('.' + headerClass, element).prepend(avatar);
@@ -88,17 +93,22 @@ plugin.renderers.mediafull = function(element) {
 
         element.append(mediaItems);
         element.find('img, iframe').one('error', function() {
-            item.view.get('content').parent().addClass('load-error');
+            item.config.get('target').addClass('load-error');
             plugin.events.publish({
                 topic: 'onMediaError',
                 data: eventData
             });
         }).one('load', function() {
-            item.view.get('content').parent().addClass('loaded');
+            item.config.get('target').addClass('loaded');
             plugin.events.publish({
                 topic: 'onMediaLoaded',
                 data: eventData
             });
+        });
+
+        element.append('<img src="//echocsthost.s3.amazonaws.com/polyfills/rotate.png" class="rotate" />');
+        element.find('.rotate').click(function() {
+            item.config.get('target').addClass('rotated');
         });
     }
 
@@ -120,7 +130,8 @@ plugin.css =
 
     // General layout
     '.{plugin.class} { perspective: 1000; -webkit-transition-property: transform, opacity; -moz-transition-property: transform, opacity; -ms-transition-property: transform, opacity; -wekit-transition-duration: 0.8s; -moz-transition-duration: 0.8s; -ms-transition-duration: 0.8s; }' +
-    '.{plugin.class} img, .{plugin.class} iframe { display: block; }' +
+    '.{plugin.class} img,' +
+    '.{plugin.class} iframe { display: block; }' +
     '.{plugin.class} div { box-sizing: border-box; } ' +
     '.{plugin.class} .{class:data} { padding: 7px; }' +
 
@@ -133,19 +144,23 @@ plugin.css =
     '.{plugin.class} .{class:content} .{class:container}, ' +
     '.{plugin.class} .{class:content} .{plugin.class:mediafull} { -webkit-backface-visibility: hidden; -moz-backface-visibility: hidden; -ms-backface-visibility: hidden; -webkit-transition: 250ms cubic-bezier(.8,.01,.74,.79); -moz-transition: 250ms cubic-bezier(.8,.01,.74,.79); -ms-transition: 250ms cubic-bezier(.8,.01,.74,.79); position: static; border: 1px solid #111; background: white; box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); -webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); -moz-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); -ms-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.8); -webkit-transform-style: preserve-3d; -moz-transform-style: preserve-3d; -ms-transform-style: preserve-3d; }' +
     '.{plugin.class} .{class:content} .{class:container} { -webkit-transform: rotatey(-180deg); -moz-transform: rotatey(-180deg); -ms-transform: rotatey(-180deg); position: absolute; top: 0; bottom: 0; width: 100%; }' +
-    '.{plugin.class} .{class:content}:hover > .{plugin.class:mediafull} { -webkit-transform: rotatey(180deg); -moz-transform: rotatey(180deg); -ms-transform: rotatey(180deg); }' +
-    '.{plugin.class} .{class:content}:hover > .{class:container} { -webkit-transform: rotatey(0deg); -moz-transform: rotatey(0deg); -ms-transform: rotatey(0deg); }' +
+    '.{plugin.class}.rotated .{class:content} > .{plugin.class:mediafull} { -webkit-transform: rotatey(180deg); -moz-transform: rotatey(180deg); -ms-transform: rotatey(180deg); }' +
+    '.{plugin.class}.rotated .{class:content} > .{class:container} { -webkit-transform: rotatey(0deg); -moz-transform: rotatey(0deg); -ms-transform: rotatey(0deg); }' +
+//    '.{plugin.class} .{class:content}:hover > .{plugin.class:mediafull} { -webkit-transform: rotatey(180deg); -moz-transform: rotatey(180deg); -ms-transform: rotatey(180deg); }' +
+//    '.{plugin.class} .{class:content}:hover > .{class:container} { -webkit-transform: rotatey(0deg); -moz-transform: rotatey(0deg); -ms-transform: rotatey(0deg); }' +
     '.{plugin.class} .{class:content} .{class:container} .media-processed { display: none; }' +
 
     // General media visuals
     '.{plugin.class:media} { margin: 4px 7px 0 0; width: 25%; float: left; }' +
     '.{plugin.class:mediafull} { background: #000; }' +
     '.{plugin.class:mediafull} img { max-width: 100%; display: block; margin: 0 auto; }' +
+    '.{plugin.class:mediafull} .rotate { position: absolute; top: 4px; right: 4px; }' +
 
     // Separate the header visually, and color-code it
-    '.{plugin.class} .{plugin.class:header} { padding: 5px; background: #f0f0f0; border-bottom: 1px solid #ccc; }' +
+    '.{plugin.class} .{plugin.class:header} { padding: 5px; background: #f0f0f0; border-bottom: 1px solid #ccc; position: relative; }' +
     '.{plugin.class} .item-source-twitter .{plugin.class:header} { background: #E5F5FF; border-bottom: 1px solid #A1C7DF; }' +
     '.{plugin.class} .item-source-instagram .{plugin.class:header} { background: #E4CAB1; border-bottom: 1px solid #B49F8B; }' +
+    '.{plugin.class} .{plugin.class:header} .rotate { position: absolute; bottom: 3px; right: 4px; }' +
 
     // Separate the footer visually, and color-code it
     '.{plugin.class} .{class:footer} { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; background: #f0f0f0; border-top: 1px solid #ccc; padding: 4px 8px; }' +

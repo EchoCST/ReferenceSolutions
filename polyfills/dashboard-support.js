@@ -30,30 +30,30 @@ Echo.Polyfills.DashboardSupport = {
                 } else {
                     console.log('Entry ' + params.url + ' does not exist, creating...');
                     params.callback(data);
+
+                    console.log(Backplane.getChannelID());
+/*
+                    $.ajax({
+                        url: 'https://apps.echoenabled.com/v2/esp/activity',
+                        appkey: params.appkey,
+                        sessionID: Backplane.getChannelID(),
+                        content: {
+                            avatar: '',
+                            name: Echo.UserSession._getName(),
+                            content: '',
+                            source: {},
+                            target: "http://cst-dev.echoplatform.com/sample-data/polls/poll1",
+                            verb: "post",
+                            type: "http://activitystrea.ms/schema/1.0/article"
+                        },
+                    });*/
                 }
             }
         });
     },
             /*
 
-					        var url = 'https://apps.echoenabled.com/v2/esp/activity';
-
-        if (!exists) {
-            // Post a new item and its children
-            exists = true;
-
             var data = {
-                appkey: $_GET['appKey'],
-                sessionID: Backplane.getChannelID(),
-                content: {
-                    avatar: '',
-                    name: Echo.UserSession._getName(),
-                    content: '',
-                    source: {},
-                    target: "http://cst-dev.echoplatform.com/sample-data/polls/poll1",
-                    verb: "post",
-                    type: "http://activitystrea.ms/schema/1.0/article"
-                },
             };
         }*/
 

@@ -174,6 +174,8 @@ poll.renderers.stream = function(element) {
 		}
 	});
 
+	console.log(window.location);
+
 	return element;
 };
 
