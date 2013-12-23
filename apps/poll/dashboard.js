@@ -26,6 +26,9 @@ dashboard.dependencies = [{
 	"url": "//echocsthost.s3.amazonaws.com/controls/app-key-list.js",
 	"control": "Echo.AppServer.Controls.Configurator.Items.AppKeyList"
 }, {
+	"url": "//echocsthost.s3.amazonaws.com/controls/domain-list.js",
+	"control": "Echo.AppServer.Controls.Configurator.Items.DomainList"
+}, {
 	"url": "//echocsthost.s3.amazonaws.com/controls/file-picker.js",
 	"control": "Echo.AppServer.Controls.Configurator.Items.FilePicker"
 }, {

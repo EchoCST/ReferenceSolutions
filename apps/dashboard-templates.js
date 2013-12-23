@@ -187,12 +187,12 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "\n" +
     "-->\n" +
     "\n" +
-    "<select name=\"appkey\" required=\"required\" data-component=\"AppKeyList\" title=\"Application key\" data-help=\"Specifies the application key for this instance\" />\n" +
-    "\n" +
-    "<!-- TODO: This is just a streamlined fieldset from the one in Media Gallery.\n" +
-    "     How can we reuse? -->\n" +
     "<fieldset name=\"datasource\">\n" +
     "  <legend class=\"icon-filter\">Data Source</legend>\n" +
+    "\n" +
+    "  <select name=\"appkey\" required=\"required\" data-component=\"AppKeyList\" title=\"Application key\" data-help=\"Specifies the application key for this instance.\" />\n" +
+    "\n" +
+    "  <select name=\"domain\" required=\"required\" data-component=\"DomainList\" title=\"Domain / Property\" data-help=\"Specifies the domain this poll will live on. You must have moderator privileges on this domain.\" />\n" +
     "\n" +
     "  <select name=\"targetURLSource\" title=\"Source of Target URL\" data-help=\"Select how the target URL is determined\">\n" +
     "    <option value=\"autogen\" selected=\"selected\">Auto-generate</option>\n" +
@@ -200,13 +200,10 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "    <option value=\"actualurl\">Actual URL of Host Page</option>\n" +
     "    <option value=\"echourl\">META echo:url Value</option>\n" +
     "    <option value=\"specific\">Specify a URL</option>\n" +
-    "    <!--<option value=\"builder\">Data Source Builder</option>-->\n" +
     "  </select>\n" +
     "\n" +
     "  <!-- Only one of these options will be shown at a time -->\n" +
     "  <input name=\"specifiedURL\" type=\"text\" title=\"Specified URL\" data-help=\"Please specify the exact URL you wish to use.\" />\n" +
-    "\n" +
-    "  <a href=\"#\" title=\"Edit Poll Options\" data-help=\"Click to edit\" data-component=\"PollEditor\">Edit Poll Options</a>\n" +
     "</fieldset>\n" +
     "\n" +
     "<fieldset name=\"pollbuilder\">\n" +

@@ -9,12 +9,12 @@
 
 -->
 
-<select name="appkey" required="required" data-component="AppKeyList" title="Application key" data-help="Specifies the application key for this instance" />
-
-<!-- TODO: This is just a streamlined fieldset from the one in Media Gallery.
-     How can we reuse? -->
 <fieldset name="datasource">
   <legend class="icon-filter">Data Source</legend>
+
+  <select name="appkey" required="required" data-component="AppKeyList" title="Application key" data-help="Specifies the application key for this instance." />
+
+  <select name="domain" required="required" data-component="DomainList" title="Domain / Property" data-help="Specifies the domain this poll will live on. You must have moderator privileges on this domain." />
 
   <select name="targetURLSource" title="Source of Target URL" data-help="Select how the target URL is determined">
     <option value="autogen" selected="selected">Auto-generate</option>
@@ -22,13 +22,10 @@
     <option value="actualurl">Actual URL of Host Page</option>
     <option value="echourl">META echo:url Value</option>
     <option value="specific">Specify a URL</option>
-    <!--<option value="builder">Data Source Builder</option>-->
   </select>
 
   <!-- Only one of these options will be shown at a time -->
   <input name="specifiedURL" type="text" title="Specified URL" data-help="Please specify the exact URL you wish to use." />
-
-  <a href="#" title="Edit Poll Options" data-help="Click to edit" data-component="PollEditor">Edit Poll Options</a>
 </fieldset>
 
 <fieldset name="pollbuilder">
