@@ -1,36 +1,6 @@
-/*
- *        $('.inset .preview').click(function(e) {
-            var $inset = $(this).closest('.inset');
-
-            filepickercontrol.pickAndStore({
-                multiple: false,
-                maxFiles: 1,
-                folders: false,
-                extensions: ['.png', '.jpg', '.jpeg', '.gif'],
-                maxSize: 50*1024*1024
-            }, {
-                location: 'S3',
-                path: 'polls',
-                access: 'public'
-            }, function(InkBlobs) {
-                console.log('Success', InkBlobs);
-                $.map(InkBlobs, function(blob) {
-                    //blob.url = 'https://pbs.twimg.com/media/BYvzKb3CQAAlUCi.jpg:large';
-                    $inset.find('img').attr('src', blob.url);
-                });
-            }, function(FPError) {
-                console.log('Error', FPError);
-            });
-        });
- */
 /**
- * Adds an app-key select list control. This is a near 1:1 clone of .Select just
- * modified to obtain its values from an API call.
- *
- * I did it this way instead of trying to inherit from .Select because I
- * couldn't figure out how the inheritance was supposed to work...
- *
- * It's probably pretty ugly...
+ * FilePicker widget for the Dashboard. Note that this is hard-coded to CST's
+ * S3 and FilePicker.io accounts.
  */
 
 (function(jQuery) {
@@ -60,39 +30,9 @@ filepickercontrol.init = function() {
     // TODO: Could not figure out a better way to do this
     if (!window.filePickerInitialized) {
         window.filePickerInitialized = true;
-        console.log('Initializing filePicker');
         filepicker.setKey('AVxxvNJUtRQOjN6ugyWavz');
     }
 
-    console.log('FilePicker', self);
-/*
-	// TODO: The SDK is not yet Open Source and there are no docs. I found
-	// Echo.AppServer.API.request but couldn't quite get it to work right, so I
-	// just used this.
-	$.ajax({
-		url: apiBaseURL + '/customer/' + customerId + '/appkeys',
-		timeout: 5000,
-		dataType: 'jsonp',
-		success: function(data) {
-			var options = [];
-			$.each(data, function(i, entry) {
-				options.push({
-					title: entry.key,
-					value: entry.key
-				});
-			});
-
-			self.config.set('options', options);
-			self.fillMenuItems(self.view.get('menu'));
-		},
-		error: function() {
-			// TODO: What is an appropriate error mechanism for a control that
-			// has no acceptable behavior if it cannot populate itself? Can we
-			// terminate or reload the entire app?
-			alert('Error loading appkey list');
-		}
-	});
-*/
 	this.parent();
 }
 
@@ -132,9 +72,7 @@ filepickercontrol.renderers.previewImage = function(element) {
         value = self.get('data.value'),
         $el = $(element);
 
-    console.log(self);
     if (value != '') {
-        console.log('setting', value);
         $el.attr('src', value);
     }
 
@@ -150,7 +88,6 @@ filepickercontrol.renderers.previewImage = function(element) {
             path: 'dashboard',
             access: 'public'
         }, function(InkBlobs) {
-            console.log('Successful Upload', InkBlobs);
             $.map(InkBlobs, function(blob) {
                 //blob.url = 'https://pbs.twimg.com/media/BYvzKb3CQAAlUCi.jpg:large';
                 var prevValue = $el.attr('src');
@@ -171,7 +108,6 @@ filepickercontrol.renderers.previewImage = function(element) {
 };
 
 filepickercontrol.methods.value = function() {
-    console.log('Value called', this);
 	return this.get("data.value");
 };
 

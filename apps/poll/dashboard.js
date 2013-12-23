@@ -93,6 +93,12 @@ dashboard.methods.declareInitialConfig = function() {
 	}
 };
 
+dashboard.events = {
+	'Echo.AppServer.Controls.Configurator.onItemChange': function(topic, args) {
+		console.log(topic, args);
+	}
+};
+
 Echo.Control.create(dashboard);
 
 })(Echo.jQuery);
