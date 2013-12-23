@@ -5,6 +5,9 @@ Echo.Polyfills = Echo.Polyfills || {};
 
 // Done as a singleton because we aren't going to instantiate this...
 Echo.Polyfills.DashboardSupport = {
+    // Dashboards can fill these in to pass data to their children
+    configData: null,
+
     /**
      * Standard initialization routine used by most Dashboards:
      *

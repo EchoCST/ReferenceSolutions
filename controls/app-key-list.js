@@ -134,8 +134,20 @@ appkeylist.methods.fillMenuItems = function(element) {
 	$.map(options, function(option) {
 		element.append(view.render({
 			"template": self.templates.option,
-			"data": {"value": option.title}
+			"data": {"value": option.value}
 		}));
+
+		// If we don't have an appkey yet for our application, default it to a
+		// StreamServer key.
+		//
+		// Work out some external way to trigger this default behavior. We want
+		// this behavior like 70% of the time - most apps don't need keys of
+		// their own, they just use AppKey to access Streams. But some apps will
+		// probably legitimately want their own key...
+		if (option.value.indexOf('streamserver') != -1 &&
+			!self.get("data.value")) {
+			self.set('data.value', option.value);
+		}
 	});
 
 	var dropdown = self.view.get('dropdown');

@@ -1,6 +1,14 @@
 (function(jQuery) {
 "use strict";
 
+// TODO: There is a LOT hard-coded in here for simplicity's sake
+//
+// NOTE: Because there's no other way to get it, callers that use this control
+// must also include the DashboardSupport Polyfill, and include this line in
+// their init() functions:
+//
+// 	 Echo.Polyfills.DashboardSupport.configData = self.config.data.data;
+
 var $ = jQuery;
 
 if (Echo.AppServer.App.isDefined("Echo.AppServer.Controls.Configurator.Items.PollEditor")) return;
@@ -14,7 +22,7 @@ polleditor.config = {
 };
 
 polleditor.init = function() {
-  console.log(this, this.component, this.configurator);
+  console.log(this, Echo.Polyfills.DashboardSupport.configData);
   this.parent();
 };
 
@@ -23,7 +31,7 @@ polleditor.templates.main =
 		'<div class="subcontainer clearfix">' +
 			'<div class="{inherited.class:titleContainer} {class:titleContainer} pull-left">' +
 				'<div class="{inherited.class:titleSubcontainer} {class:titleSubcontainer}">' +
-                    '<a href="http://echocsthost.s3.amazonaws.com/apps/poll/editor.html?appKey=echo.echo.streamserver.echo-cst-dev.prod&busName=echo-cst-dev&pollURL=http://cst-dev.echoplatform.com/sample-data/polls/poll1#" class="{class:link} btn" target="_blank">Poll Editor</a>' +
+                    '<a href="http://echocsthost.s3.amazonaws.com/apps/poll/editor.html?appKey=echo.echo.streamserver.echo-cst-dev.prod&busName=echo-cst-dev&pollURL=http://cst-dev.echoplatform.com/sample-data/polls/poll1#" class="{class:link} btn" target="_blank">Poll Builder</a>' +
 				'</div>' +
 			'</div>' +
 		'</div>' +
@@ -32,6 +40,8 @@ polleditor.templates.main =
 
 polleditor.renderers.link = function(element) {
 	var self = this;
+
+    console.log(self);
 
   return element.click(function(e) {
     e.preventDefault();

@@ -18,6 +18,8 @@ dashboard.dependencies = [{
 }, {
 	"url": "//echocsthost.s3.amazonaws.com/polyfills/ecl.js"
 }, {
+	"url": "//echocsthost.s3.amazonaws.com/polyfills/dashboard-support.js"
+}, {
 	"url": "//cdn.echoenabled.com/apps/echo/media-gallery/dashboard/data-source.js",
 	"control": "Echo.Apps.MediaGallery.InstanceDataSource"
 }, {
@@ -41,6 +43,11 @@ dashboard.config = {
 dashboard.init = function() {
 	var self = this, parent = $.proxy(this.parent, this);
 
+	// TODO: We should NOT need to do this. Dashboard controls should be able to
+	// access this data themselves.
+	Echo.Polyfills.DashboardSupport.configData = self.config.data.data;
+
+	console.log(self);
 	var deferreds = [$.Deferred()];
 	$.when.apply($, deferreds).done(function() {
 		// We hold off on calling our parent until everything else has loaded

@@ -195,7 +195,8 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "  <legend class=\"icon-filter\">Data Source</legend>\n" +
     "\n" +
     "  <select name=\"targetURLSource\" title=\"Source of Target URL\" data-help=\"Select how the target URL is determined\">\n" +
-    "    <option value=\"canonical\" selected=\"selected\">Canonical URL of Host Page</option>\n" +
+    "    <option value=\"autogen\" selected=\"selected\">Auto-generate</option>\n" +
+    "    <option value=\"canonical\">Canonical URL of Host Page</option>\n" +
     "    <option value=\"actualurl\">Actual URL of Host Page</option>\n" +
     "    <option value=\"echourl\">META echo:url Value</option>\n" +
     "    <option value=\"specific\">Specify a URL</option>\n" +
@@ -205,9 +206,7 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "  <!-- Only one of these options will be shown at a time -->\n" +
     "  <input name=\"specifiedURL\" type=\"text\" class=\"specified-url\" title=\"Specified URL\" data-help=\"Please specify the exact URL you wish to use.\" />\n" +
     "\n" +
-    "  <input name=\"filters\" type=\"text\" value=\"\" title=\"Filters\" data-help=\"Add any marker, flag, or other filters you wish to use.\" />\n" +
-    "\n" +
-    "  <a href=\"#\" title=\"Poll Editor\" data-help=\"Click to edit\" data-component=\"PollEditor\">Edit</a>\n" +
+    "  <a href=\"#\" title=\"Edit Poll Options\" data-help=\"Click to edit\" data-component=\"PollEditor\">Edit Poll Options</a>\n" +
     "</fieldset>\n" +
     "\n" +
     "<fieldset name=\"display\">\n" +
