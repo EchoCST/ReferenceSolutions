@@ -1,0 +1,128 @@
+<!-- NOTES:
+
+1. You must make your app.config{} block defaults match these defaults _exactly_
+   or you will get unexpected behaviors when your app loads. If the user leaves
+   a field set to its default value, the field is _removed_ from the config
+   block. So if the default is true, it will not be sent at all if the checkbox
+   is checked. That means if you go to use it in app.js it can evaluate to false
+   unexpectedly. See the related comment there for details.
+
+-->
+
+<fieldset name="datasource">
+  <legend class="icon-filter">Data Source</legend>
+
+  <select name="appkey" required="required" data-component="AppKeyList" title="Application key" data-help="Specifies the application key for this instance." />
+
+  <select name="domain" required="required" data-component="DomainList" title="Domain / Property" data-help="Specifies the domain this poll will live on. You must have moderator privileges on this domain." />
+
+  <select name="targetURLSource" title="Source of Target URL" data-help="Select how the target URL is determined">
+    <option value="autogen" selected="selected">Auto-generate</option>
+    <option value="canonical">Canonical URL of Host Page</option>
+    <option value="actualurl">Actual URL of Host Page</option>
+    <option value="echourl">META echo:url Value</option>
+    <option value="specific">Specify a URL</option>
+  </select>
+
+  <!-- Only one of these options will be shown at a time -->
+  <input name="specifiedURL" type="text" title="Specified URL" data-help="Please specify the exact URL you wish to use." />
+
+  <input name="busName" type="text" data-component="HiddenValue" title="Bus Name" />
+  <input name="instanceName" type="text" data-component="HiddenValue" title="Instance Name" />
+</fieldset>
+
+<fieldset name="pollbuilder">
+  <legend class="icon-th-list">Poll Builder</legend>
+
+  <fieldset name="heading">
+    <legend class="icon-picture">Header</legend>
+    <input name="title" type="text" title="Title" data-help="Enter the question you would like to ask." />
+    <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the optional heading image for the item. Display is visualization dependent." />
+    <input name="question" type="text" title="Question" data-help="Enter the question you would like to ask." />
+  </fieldset>
+
+  <fieldset name="option1">
+    <legend class="icon-check">Option 1</legend>
+    <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
+    <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
+  </fieldset>
+
+  <fieldset name="option2">
+    <legend class="icon-check">Option 2</legend>
+    <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
+    <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
+  </fieldset>
+
+  <fieldset name="option3">
+    <legend class="icon-check">Option 3</legend>
+    <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
+    <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
+  </fieldset>
+
+  <fieldset name="option4">
+    <legend class="icon-check">Option 4</legend>
+    <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
+    <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
+  </fieldset>
+
+  <fieldset name="option5">
+    <legend class="icon-check">Option 5</legend>
+    <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
+    <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
+  </fieldset>
+
+  <fieldset name="option6">
+    <legend class="icon-check">Option 6</legend>
+    <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
+    <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
+  </fieldset>
+
+  <fieldset name="option7">
+    <legend class="icon-check">Option 7</legend>
+    <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
+    <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
+  </fieldset>
+
+  <fieldset name="option8">
+    <legend class="icon-check">Option 8</legend>
+    <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
+    <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
+  </fieldset>
+</fieldset>
+
+<fieldset name="display">
+  <legend class="icon-picture">Display</legend>
+
+  <textarea name="header" title="Header HTML" data-help="Optional HTML to include above the poll itself. Note that this option is DEPRECATED in favor of including this in the poll itself."></textarea>
+  <textarea name="footer" title="Footer HTML" data-help="Optional HTML to include below the poll itself. Note that this option is DEPRECATED in favor of including this in the poll itself."></textarea>
+
+  <!-- TODO: We really need full HTML templates so we can render clickable
+       images and put a border around the active one instead of always using
+       pull-downs. -->
+  <select name="visualization" title="Visualization" data-help="What should the poll look like?">
+    <option value="list" selected="selected">Vertical List</option>
+    <option value="textbuttons">Text Buttons</option>
+    <option value="updown">Up/Down Buttons</option>
+    <option value="sidebyside">Side by Side Options</option>
+    <option value="tugofwar">Tug Of War (Nested)</option>
+    <option value="reaction">Reaction Boxes</option>
+  </select>
+
+  <select name="showResults" title="Show Results" data-help="When should results be shown? Note that some visualizations like Tug of War look best if pre-loaded.">
+    <option value="after" selected="selected">After Selection</option>
+    <option value="before">Before Selection (on page load)</option>
+    <option value="never">Never (Hide Results)</option>
+  </select>
+
+  <input name="percent" type="checkbox" checked="checked" title="Show Percentage" data-help="If checked, a percentage value will be displayed in the result elements." />
+  <input name="count" type="checkbox" title="Show Vote Count" data-help="If checked, the vote count will be displayed in the result elements." />
+</fieldset>
+
+<!-- Authorization -->
+<fieldset name="auth">
+  <legend class="icon-user">Authorization</legend>
+
+  <input name="enabled" type="checkbox" checked="checked" title="Enable user authorization" data-help="Check to enable authorization" />
+
+  <select name="janrainApp" title="Janrain app" data-help="Specifies the Janrain application">
+</fieldset>
