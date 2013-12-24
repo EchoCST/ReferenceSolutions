@@ -114,6 +114,7 @@ dashboard.methods.declareInitialConfig = function() {
 			busName: this.data.customer.echo.backplane.busName
 		},
 		pollbuilder: {
+			heading: { title: '', image: '', question: '' },
 			option1: { image: '', answer: '' },
 			option2: { image: '', answer: '' },
 			option3: { image: '', answer: '' },
@@ -135,7 +136,6 @@ dashboard.events = {
 	// autogen polls. Everything else is assumed to be set up externally via
 	// a 'submit'ted XML file. See samples/*.xml for examples.
 	'Echo.AppServer.Controls.Configurator.onItemChange': function(topic, args) {
-		return;
 		var self = this,
 		    config = $.extend({}, this.config.data.data.instance.config);
 
@@ -157,8 +157,6 @@ dashboard.events = {
 				args: config
 			});
 
-			return;
-
 			// TODO: The SDK provides an API.Request tool, but this isn't one of
 			// its pre-defined endpoints and it doesn't seem to add much value
 			// for what we're doing here. Reconsider using it later?
@@ -166,7 +164,9 @@ dashboard.events = {
 			var updates = [];
 			updates.push({
 				url: url,
-				content: '<div class="header">' + (config.display.header) ? config.display.header : '' + '</div>',
+				content: '<div class="title">' + config.pollbuilder.heading.title + '</div>' +
+				         '<img src="' + config.pollbuilder.heading.image + '" class="image" />' +
+						 '<div class="question">' + config.pollbuilder.heading.question + '</div>'
 			});
 
 			// TODO: So... objvar.property and objvar[property] are supposed to
@@ -190,8 +190,10 @@ dashboard.events = {
 			var registerUpdateRequest = function(subpath, option) {
 				updates.push({
 					url: url + '/' + subpath,
-					content: ((option.image) ? '<img src="' + option.image + '" />' : '') +
-							 ((option.answer) ? '<a href="#" class="submit-vote">' + option.answer + '</a>' : ''),
+					content: '<div class="answer">' +
+					         ((option.image) ? '<img src="' + option.image + '" />' : '') +
+							 ((option.answer) ? '<a href="#" class="submit-vote">' + option.answer + '</a>' : '') +
+							 '</div>',
 				});
 			}
 			registerUpdateRequest('option1', config.pollbuilder.option1);
@@ -203,19 +205,22 @@ dashboard.events = {
 			registerUpdateRequest('option7', config.pollbuilder.option7);
 			registerUpdateRequest('option8', config.pollbuilder.option8);
 
-			(function handleUpdates() {
-				if (updates.length < 1) return;
-				var update = updates.shift();
-
-				Echo.Polyfills.DashboardSupport.createOrUpdateItem({
-					url: update.url,
-					content: update.content,
-					appkey: config.datasource.appkey,
-					callback: function() {
-						handleUpdates();
-					}
-				});
-			})();
+			console.log(config);
+			$.ajax({
+				url: 'http://echosandbox.com/cst/poll-proxy/index.php',
+				data: {
+					busname: config.datasource.busName,
+					updates: updates
+				},
+				timeout: 5000,
+				dataType: 'jsonp',
+				success: function(data) {
+					console.log(data);
+				},
+				error: function(data) {
+					console.log(data);
+				}
+			});
 		}
 	}
 };

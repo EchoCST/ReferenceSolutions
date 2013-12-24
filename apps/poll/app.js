@@ -72,8 +72,8 @@ poll.dependencies = [{
 
 poll.templates.main =
 	'<div class="{class:container}">' +
-		'<div class="{class:auth}"></div>' +
-		'<div class="{class:publish}"></div>' +
+//		'<div class="{class:auth}"></div>' +
+//		'<div class="{class:publish}"></div>' +
 	    '<div class="{class:header}">{config:display.header}</div>' +
 		'<div class="{class:stream} {config:display.visualization}"></div>' +
 	    '<div class="{class:footer}">{config:display.footer}</div>' +
@@ -178,7 +178,7 @@ poll.renderers.stream = function(element) {
 
 	return element;
 };
-
+/*
 poll.renderers.auth = function(element) {
 	var app = this,
 		datasource = app.config.get('datasource');
@@ -261,62 +261,74 @@ poll.renderers.publish = function(element) {
 			registerUpdateRequest('option7', config.pollbuilder.option7);
 			registerUpdateRequest('option8', config.pollbuilder.option8);
 
-			console.log(updates);
+			(function handleUpdates() {
+				if (updates.length < 1) return;
+				var update = updates.shift();
 
-
+				app._createOrUpdateItem(app, update, function() {
+					//handleUpdates();
+				});
+			})();
 		});
-		/*datasource: Object
-appkey: "echo.echo.streamserver.echo-cst-dev.prod"
-domain: "cst-dev.echoplatform.com"
-instanceName: "jea3g20aht"
-specifiedURL: ""
-targetURLSource: "autogen"*/
 	}
 
 	return element;
 };
 
-/**
- *
- */
-poll.methods._createOrUpdateItem = function(params) {
+poll.methods._createOrUpdateItem = function(app, update, callback) {
 	// First see if the item exists.
 	$.ajax({
 		url: 'https://api.echoenabled.com/v1/search',
 		data: {
-			q: 'url:' + params.url + ' safeHTML:off children:0',
-			appkey: params.appkey,
+			q: 'url:' + update.url + ' safeHTML:off children:0',
+			appkey: app.config.get('datasource.appkey'),
 		},
 		timeout: 5000,
 		dataType: 'jsonp',
 		success: function(data) {
 			if (data.entries.length > 0) {
-				console.log('Entry ' + params.url + ' exists, updating...');
-				params.callback(data);
+				console.log('Entry ' + update.url + ' exists, updating...');
+				callback();
 			} else {
-				console.log('Entry ' + params.url + ' does not exist, creating...');
-				params.callback(data);
+				console.log('Entry ' + update.url + ' does not exist, creating...');
+				callback();
 
 				console.log(Backplane.getChannelID());
-/*
+				var target = update.url.split('/');
+				target.pop();
+
 				$.ajax({
 					url: 'https://apps.echoenabled.com/v2/esp/activity',
-					appkey: params.appkey,
-					sessionID: Backplane.getChannelID(),
-					content: {
-						avatar: '',
-						name: Echo.UserSession._getName(),
-						content: '',
-						source: {},
-						target: "http://cst-dev.echoplatform.com/sample-data/polls/poll1",
-						verb: "post",
-						type: "http://activitystrea.ms/schema/1.0/article"
+					data: {
+						appkey: app.config.get('datasource.appkey'),
+						sessionID: Backplane.getChannelID(),
+						content: {
+							avatar: '',
+							name: Echo.UserSession._getName(),
+							// ESP will reject a posting with an empty content
+							// block. Spaces don't count.
+							content: update.content,
+							source: {},
+							target: target.join('/'),
+							verb: 'post',
+							type: 'http://activitystrea.ms/schema/1.0/article'
+						},
 					},
-				});*/
+					timeout: 5000,
+					success: function(data) {
+						console.log('success', data);
+					},
+					error: function(data) {
+						// TODO: Error handling
+						console.log('error', data);
+					}
+				});
 			}
 		}
 	});
 };
+*/
+poll.css = '.{class:publish} { text-align: center; }';
 
 Echo.App.create(poll);
 
