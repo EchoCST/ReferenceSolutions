@@ -12,11 +12,11 @@
     },
     "dashboards": [{
         "id": "instances",
-	"type": "instances",
+        "type": "instances",
         "title": "Instances",
         "script": "//echoplatform.com/sandbox/apps/echo/stream-plus/dashboard.js",
         "component": "Echo.Apps.StreamPlus.Dashboard",
-	"config": {
+        "config": {
            "instanceManager": {
                "instance": {"useLoadingIcon": true}
             },
