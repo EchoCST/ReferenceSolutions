@@ -209,6 +209,13 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "<fieldset name=\"pollbuilder\">\n" +
     "  <legend class=\"icon-th-list\">Poll Builder</legend>\n" +
     "\n" +
+    "  <fieldset name=\"heading\">\n" +
+    "    <legend class=\"icon-picture\">Header</legend>\n" +
+    "    <input name=\"title\" type=\"text\" title=\"Title\" data-help=\"Enter the question you would like to ask.\" />\n" +
+    "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the optional heading image for the item. Display is visualization dependent.\" />\n" +
+    "    <input name=\"question\" type=\"text\" title=\"Question\" data-help=\"Enter the question you would like to ask.\" />\n" +
+    "  </fieldset>\n" +
+    "\n" +
     "  <fieldset name=\"option1\">\n" +
     "    <legend class=\"icon-check\">Option 1</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +

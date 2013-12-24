@@ -72,6 +72,7 @@ poll.dependencies = [{
 
 poll.templates.main =
 	'<div class="{class:container}">' +
+		'<div class="{class:auth}"></div>' +
 	    '<div class="{class:header}">{config:display.header}</div>' +
 		'<div class="{class:stream} {config:display.visualization}"></div>' +
 	    '<div class="{class:footer}">{config:display.footer}</div>' +
@@ -174,9 +175,50 @@ poll.renderers.stream = function(element) {
 		}
 	});
 
-	console.log(window.location);
-
 	return element;
+};
+
+poll.renderers.auth = function(element) {
+	var app = this,
+	    plugins = [],
+		// TODO: Better way to do this?
+		cdnURL = '//echocsthost.s3.amazonaws.com',
+		datasource = app.config.get('datasource');
+
+	if (window.location.href.indexOf('third-party/preview.html') != -1) {
+		var identityManager = {
+			width: 400,
+			height: 240,
+			url: 'https://echo.rpxnow.com/openid/embed?flags=stay_in_window,no_immediate&token_url=http%3A%2F%2Fechoenabled.com%2Fapps%2Fjanrain%2Fwaiting.html&bp_channel='
+		};
+
+        Echo.Loader.initApplication({
+            script: '//cdn.echoenabled.com/sdk/v3/identityserver.pack.js',
+            component: 'Echo.IdentityServer.Controls.Auth',
+            backplane: {
+                serverBaseURL: 'https://api.echoenabled.com/v1',
+                busName: datasource.busName
+            },
+            config: {
+                target: element,
+                appkey: datasource.appkey.replace('streamserver', 'auth'),
+                targetURL: Echo.Polyfills.DataSources.getTargetUrl(datasource),
+				identityManager: {
+					"login": identityManager,
+					"signup": identityManager
+				}
+            }
+		});
+		console.log(Backplane.getChannelID());
+		/*datasource: Object
+appkey: "echo.echo.streamserver.echo-cst-dev.prod"
+domain: "cst-dev.echoplatform.com"
+instanceName: "jea3g20aht"
+specifiedURL: ""
+targetURLSource: "autogen"*/
+		console.log(app);
+	}
+
 };
 
 Echo.App.create(poll);

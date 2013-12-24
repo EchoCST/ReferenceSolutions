@@ -87,14 +87,38 @@ dashboard.methods.declareInitialConfig = function() {
 	var janrainapps = this.config.get("janrainapps");
 //	console.log('declare', this);
 	return {
+		display: {
+			header: '',
+			footer: '',
+			visualization: 'list',
+			showresults: 'after',
+			percent: true,
+			count: false
+		},
 		datasource: {
+			appkey: '',
+			domain: '',
+			targetURLSource: 'autogen',
+			specifiedURL: '',
+
 			// This is a hidden config setting added to all polls. If the data
 			// source URL is set to 'automatic', and a property is selected, we
 			// will auto-generate and use a targetURL of the pattern:
 			//
 			//    http://DOMAIN/polls/{instanceName}/{option1..N}
 			//
-			instanceName: this.data.instance.name
+			instanceName: this.data.instance.name,
+			busName: this.data.customer.echo.backplane.busName
+		},
+		pollbuilder: {
+			option1: { image: '', answer: '' },
+			option2: { image: '', answer: '' },
+			option3: { image: '', answer: '' },
+			option4: { image: '', answer: '' },
+			option5: { image: '', answer: '' },
+			option6: { image: '', answer: '' },
+			option7: { image: '', answer: '' },
+			option8: { image: '', answer: '' }
 		},
 		auth: {
 			janrainApp: janrainapps.length ? janrainapps[0].name : undefined
@@ -128,6 +152,8 @@ dashboard.events = {
 				message: 'Auto-generating data for  ' + url,
 				args: config
 			});
+
+			return;
 
 			// TODO: The SDK provides an API.Request tool, but this isn't one of
 			// its pre-defined endpoints and it doesn't seem to add much value
