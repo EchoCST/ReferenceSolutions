@@ -15,7 +15,7 @@
         "id": "instances",
         "type": "instances",
         "title": "Instances",
-        "script": "//echocsthost.s3.amazonaws.com/apps/poll/dashboard.js",
+        "script": "//echocsthost.s3.amazonaws.com/apps/poll_cse/dashboard.js",
         "component": "Echo.Apps.Poll.Dashboard",
         "config": {
             "instanceManager": {
@@ -32,8 +32,8 @@
     }],
     "client_widget": {
         "component": "Echo.Apps.Poll",
-        "script": "//echocsthost.s3.amazonaws.com/apps/poll/app.js",
-        "scriptProd": "//d3owx0qmt32wcw.cloudfront.net/apps/poll/app.js"
+        "script": "//echocsthost.s3.amazonaws.com/apps/poll_cse/app.js",
+        "scriptProd": "//d3owx0qmt32wcw.cloudfront.net/apps/poll_cse/app.js"
     },
     "cloudapp_protocol_version": "1.0.0"
 }
