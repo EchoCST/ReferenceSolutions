@@ -117,6 +117,7 @@ dashboard.methods.declareInitialConfig = function() {
 			busName: this.data.customer.echo.backplane.busName
 		},
 		pollbuilder: {
+			manual: false,
 			heading: { title: '', image: '', question: '' },
 			option1: { image: '', answer: '' },
 			option2: { image: '', answer: '' },
@@ -142,8 +143,6 @@ dashboard.events = {
 		var self = this,
 		    config = $.extend({}, this.config.data.data.instance.config);
 
-		console.log('onItemChange', self);
-
 		// Figured this would mess with Dashboard's own behavior so we're
 		// working with a clone of the object. That's the trouble with being
 		// a post-update-hook girl in a pre-update-hook world...
@@ -154,6 +153,10 @@ dashboard.events = {
 
 		if (config.datasource.targetURLSource == 'autogen') {
 			var url = Echo.Polyfills.DataSources.getTargetUrl(config.datasource);
+
+			if (config.pollbuilder.manual) {
+				return;
+			}
 
 			Echo.Utils.log({
 				component: 'Poll Builder',
@@ -166,11 +169,12 @@ dashboard.events = {
 			// its pre-defined endpoints and it doesn't seem to add much value
 			// for what we're doing here. Reconsider using it later?
 
+			console.dir(config.pollbuilder.heading.image);
 			var updates = [];
 			updates.push({
 				url: url,
 				content: '<div class="title">' + config.pollbuilder.heading.title + '</div>' +
-				         '<img src="' + config.pollbuilder.heading.image + '" class="image" />' +
+				         ((config.pollbuilder.heading.image) ? '<img src="' + config.pollbuilder.heading.image + '" class="image" />' : '') +
 						 '<div class="question">' + config.pollbuilder.heading.question + '</div>'
 			});
 

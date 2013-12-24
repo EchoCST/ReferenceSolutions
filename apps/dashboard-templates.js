@@ -212,6 +212,8 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "<fieldset name=\"pollbuilder\">\n" +
     "  <legend class=\"icon-th-list\">Poll Builder</legend>\n" +
     "\n" +
+    "  <input name=\"manual\" type=\"checkbox\" title=\"Submit Manually\" data-help=\"If checked, poll builder options will be ignored.\" />\n" +
+    "\n" +
     "  <fieldset name=\"heading\">\n" +
     "    <legend class=\"icon-picture\">Header</legend>\n" +
     "    <input name=\"title\" type=\"text\" title=\"Title\" data-help=\"Enter the question you would like to ask.\" />\n" +
