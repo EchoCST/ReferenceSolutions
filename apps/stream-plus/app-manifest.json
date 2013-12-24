@@ -1,0 +1,36 @@
+{
+    "id": "stream-plus-beta",
+    "name": "Stream+ (Beta)",
+    "description": "Stream+ application allows you to configure multiple data sources and visualize them on a page",
+    "app_version": "0.0.1",
+    "developer": {
+        "id": "echo",
+        "name": "Echo",
+        "url": "http://www.aboutecho.com",
+        "email": "solutions@aboutecho.com",
+        "icon": "http://cdn.echoenabled.com/images/echo.png"
+    },
+    "dashboards": [{
+        "id": "instances",
+	"type": "instances",
+        "title": "Instances",
+        "script": "//echoplatform.com/sandbox/apps/echo/stream-plus/dashboard.js",
+        "component": "Echo.Apps.StreamPlus.Dashboard",
+	"config": {
+           "instanceManager": {
+               "instance": {"useLoadingIcon": true}
+            },
+            "product": "{data:app.info}",
+            "instance": "{data:instance}",
+            "appkeys": "{data:apps.streamserver.appkeys}",
+            "janrainapps": "{data:apps.janrain.apps}",
+            "customer": "{data:customer}",
+            "domains": "{data:apps.streamserver.domains}"
+        }
+    }],
+    "client_widget": {
+        "component": "Echo.Apps.StreamPlus",
+        "script": "//echoplatform.com/sandbox/apps/echo/stream-plus/app.js"
+    },
+    "cloudapp_protocol_version": "1.0.0"
+}
