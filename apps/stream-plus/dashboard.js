@@ -37,7 +37,9 @@ dashboard.config = {
 	"janrainapps": []
 };
 
-dashboard.config.ecl = [{
+dashboard.config.ecl = [
+/*
+{
 	"name": "replies",
 	"component": "Checkbox",
 	"type": "boolean",
@@ -82,7 +84,8 @@ dashboard.config.ecl = [{
 		"title": "Items per page",
 		"desc": "Defines the amount of root items per page"
 	}
-}, {
+}, */
+{
 	"name": "targetURL",
 	"component": "Echo.Apps.MediaGallery.DataSourceGroup",
 	"type": "string",
