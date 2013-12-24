@@ -204,6 +204,9 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "\n" +
     "  <!-- Only one of these options will be shown at a time -->\n" +
     "  <input name=\"specifiedURL\" type=\"text\" title=\"Specified URL\" data-help=\"Please specify the exact URL you wish to use.\" />\n" +
+    "\n" +
+    "  <input name=\"busName\" type=\"text\" data-component=\"HiddenValue\" title=\"Bus Name\" />\n" +
+    "  <input name=\"instanceName\" type=\"text\" data-component=\"HiddenValue\" title=\"Instance Name\" />\n" +
     "</fieldset>\n" +
     "\n" +
     "<fieldset name=\"pollbuilder\">\n" +

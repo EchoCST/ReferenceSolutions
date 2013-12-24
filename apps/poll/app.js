@@ -73,6 +73,7 @@ poll.dependencies = [{
 poll.templates.main =
 	'<div class="{class:container}">' +
 		'<div class="{class:auth}"></div>' +
+		'<div class="{class:publish}"></div>' +
 	    '<div class="{class:header}">{config:display.header}</div>' +
 		'<div class="{class:stream} {config:display.visualization}"></div>' +
 	    '<div class="{class:footer}">{config:display.footer}</div>' +
@@ -180,16 +181,13 @@ poll.renderers.stream = function(element) {
 
 poll.renderers.auth = function(element) {
 	var app = this,
-	    plugins = [],
-		// TODO: Better way to do this?
-		cdnURL = '//echocsthost.s3.amazonaws.com',
 		datasource = app.config.get('datasource');
 
 	if (window.location.href.indexOf('third-party/preview.html') != -1) {
 		var identityManager = {
 			width: 400,
 			height: 240,
-			url: 'https://echo.rpxnow.com/openid/embed?flags=stay_in_window,no_immediate&token_url=http%3A%2F%2Fechoenabled.com%2Fapps%2Fjanrain%2Fwaiting.html&bp_channel='
+			url: 'https://' + datasource.busName + '.rpxnow.com/openid/embed?flags=stay_in_window,no_immediate&token_url=http%3A%2F%2Fechoenabled.com%2Fapps%2Fjanrain%2Fwaiting.html&bp_channel='
 		};
 
         Echo.Loader.initApplication({
@@ -209,16 +207,115 @@ poll.renderers.auth = function(element) {
 				}
             }
 		});
-		console.log(Backplane.getChannelID());
+	}
+
+	return element;
+};
+
+poll.renderers.publish = function(element) {
+	var app = this,
+		config = app.config.data,
+		datasource = app.config.get('datasource');
+
+	if (window.location.href.indexOf('third-party/preview.html') != -1) {
+		element.html('<a href="#">Publish Poll Data</a><br /><hr /><br />');
+		element.click(function(e) {
+			e.preventDefault();
+			console.log('publish', Backplane.getChannelID());
+			console.log(datasource);
+
+			var url = Echo.Polyfills.DataSources.getTargetUrl(datasource);
+
+			Echo.Utils.log({
+				component: 'Poll Builder',
+				type: 'info',
+				message: 'Publishing data for ' + url,
+				args: app.config
+			});
+
+			// TODO: The SDK provides an API.Request tool, but this isn't one of
+			// its pre-defined endpoints and it doesn't seem to add much value
+			// for what we're doing here. Reconsider using it later?
+
+			var updates = [];
+			updates.push({
+				url: url,
+				content: '<div class="header">' + (config.display.header) ? config.display.header : '' + '</div>',
+			});
+
+			// TODO: TITLE tags or other 'A' tag sweetness?
+			var registerUpdateRequest = function(subpath, option) {
+				updates.push({
+					url: url + '/' + subpath,
+					content: ((option.image) ? '<img src="' + option.image + '" />' : '') +
+							 ((option.answer) ? '<a href="#" class="submit-vote">' + option.answer + '</a>' : ''),
+				});
+			}
+
+			registerUpdateRequest('option1', config.pollbuilder.option1);
+			registerUpdateRequest('option2', config.pollbuilder.option2);
+			registerUpdateRequest('option3', config.pollbuilder.option3);
+			registerUpdateRequest('option4', config.pollbuilder.option4);
+			registerUpdateRequest('option5', config.pollbuilder.option5);
+			registerUpdateRequest('option6', config.pollbuilder.option6);
+			registerUpdateRequest('option7', config.pollbuilder.option7);
+			registerUpdateRequest('option8', config.pollbuilder.option8);
+
+			console.log(updates);
+
+
+		});
 		/*datasource: Object
 appkey: "echo.echo.streamserver.echo-cst-dev.prod"
 domain: "cst-dev.echoplatform.com"
 instanceName: "jea3g20aht"
 specifiedURL: ""
 targetURLSource: "autogen"*/
-		console.log(app);
 	}
 
+	return element;
+};
+
+/**
+ *
+ */
+poll.methods._createOrUpdateItem = function(params) {
+	// First see if the item exists.
+	$.ajax({
+		url: 'https://api.echoenabled.com/v1/search',
+		data: {
+			q: 'url:' + params.url + ' safeHTML:off children:0',
+			appkey: params.appkey,
+		},
+		timeout: 5000,
+		dataType: 'jsonp',
+		success: function(data) {
+			if (data.entries.length > 0) {
+				console.log('Entry ' + params.url + ' exists, updating...');
+				params.callback(data);
+			} else {
+				console.log('Entry ' + params.url + ' does not exist, creating...');
+				params.callback(data);
+
+				console.log(Backplane.getChannelID());
+/*
+				$.ajax({
+					url: 'https://apps.echoenabled.com/v2/esp/activity',
+					appkey: params.appkey,
+					sessionID: Backplane.getChannelID(),
+					content: {
+						avatar: '',
+						name: Echo.UserSession._getName(),
+						content: '',
+						source: {},
+						target: "http://cst-dev.echoplatform.com/sample-data/polls/poll1",
+						verb: "post",
+						type: "http://activitystrea.ms/schema/1.0/article"
+					},
+				});*/
+			}
+		}
+	});
 };
 
 Echo.App.create(poll);

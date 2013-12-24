@@ -44,6 +44,9 @@ dashboard.dependencies = [{
 }, {
 	url: "//echocsthost.s3.amazonaws.com/controls/poll-editor.js",
 	control: "Echo.AppServer.Controls.Configurator.Items.PollEditor"
+}, {
+	url: "//echocsthost.s3.amazonaws.com/controls/hidden-value.js",
+	control: "Echo.AppServer.Controls.Configurator.Items.HiddenValue"
 }
 ];
 
@@ -132,6 +135,7 @@ dashboard.events = {
 	// autogen polls. Everything else is assumed to be set up externally via
 	// a 'submit'ted XML file. See samples/*.xml for examples.
 	'Echo.AppServer.Controls.Configurator.onItemChange': function(topic, args) {
+		return;
 		var self = this,
 		    config = $.extend({}, this.config.data.data.instance.config);
 
