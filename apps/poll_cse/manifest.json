@@ -1,0 +1,39 @@
+{
+    "id": "echo-poll",
+    "name": "LiveVote",
+    "description": "Vote collection and display App with a variety of visualizations.",
+    "app_version": "1.1.0",
+    "icon": "//cdn.echoenabled.com/apps/echo/media-gallery/icon.png",
+    "developer": {
+        "id": "echo",
+        "name": "Echo",
+        "url": "http://www.aboutecho.com",
+        "email": "solutions@aboutecho.com",
+        "icon": "http://cdn.echoenabled.com/images/echo.png"
+    },
+    "dashboards": [{
+        "id": "instances",
+        "type": "instances",
+        "title": "Instances",
+        "script": "//echocsthost.s3.amazonaws.com/apps/poll/dashboard.js",
+        "component": "Echo.Apps.Poll.Dashboard",
+        "config": {
+            "instanceManager": {
+                "instance": { "useLoadingIcon": true },
+                "preview": {
+                    "dimensions": {
+                        "width": 60,
+                        "maxWidth": 70,
+                        "minWidth": 40
+                    }
+                }
+            }
+        }
+    }],
+    "client_widget": {
+        "component": "Echo.Apps.Poll",
+        "script": "//echocsthost.s3.amazonaws.com/apps/poll/app.js",
+        "scriptProd": "//d3owx0qmt32wcw.cloudfront.net/apps/poll/app.js"
+    },
+    "cloudapp_protocol_version": "1.0.0"
+}

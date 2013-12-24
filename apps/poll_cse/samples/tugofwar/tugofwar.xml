@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns:activity="http://activitystrea.ms/spec/1.0/">
+    <!--
+    The top level entry is the poll itself. It should be used to render the
+    "header" for the poll. Include any required HTML to do so. Note that each
+    poll should have a unique URL, but the URL does not have to be "real". It
+    can be a virtual path that includes an ID or other element.
+    -->
+    <entry>
+        <published>2013-12-05T22:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <!-- Sample Twitter reference for the author, but any data is acceptable. -->
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>AUTHOR NAME</title>
+            <id>http://twitter.com/AUTHORSCREENNAME</id>
+            <link href="https://pbs.twimg.com/profile_images/PATH/TO/IMAGE.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/AUTHORSCREENNAME</uri>
+        </activity:actor>
+        <!-- Object for the poll itself -->
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content type="html">POLL BASE ITEM - HTML IS OK WITHIN A CDATA BLOCK.</content>
+            <id>http://DOMAIN.COM/PATH/TO/POLLS/POLL123</id>
+        </activity:object>
+        <!-- Typically the "folder" above the poll itself. You can use a
+             "childrenof" query to get a list of polls, if you follow this
+             convention. -->
+        <activity:target>
+            <id>http://DOMAIN.COM/PATH/TO/POLLS</id>
+        </activity:target>
+    </entry>
+
+    <!--
+    The remaining entries are the poll options. There are two examples here but
+    there can be as many as desired. Note that these options are children of the
+    parent defined above.
+
+    "Votes" are measured as "Replies" against the poll options. You can collect
+    them in one or both of these ways:
+
+      1. Via a direct submit through the API, with a "target" of the poll option
+         URI. Typically this would be done through the Echo Submit Proxy.
+      2. Via a DataServer feed, such as from a Twitter hashtag search. Set the
+         target URL for the search to be the poll option URL.
+
+    The "content" of the poll option may use the following template placeholders
+    to render the options:
+
+      {poll:count}      - The number of votes submitted for the option
+      {poll:percent}    - The percentage of votes submitted for the option
+
+    HTML elements may also be included that have special behaviors. These are
+    driven by classes applied to the elements:
+
+      selection        - "Shown" until the user has voted. May be used to show
+                         a pre-vote state. "Hidden" after the user has voted.
+      result           - "Shown" after a user has voted to display the result.
+
+    The examples below use both of these features to drive their behavior.
+    -->
+    <entry>
+        <published>2013-12-05T22:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>AUTHOR NAME</title>
+            <id>http://twitter.com/AUTHORSCREENNAME</id>
+            <link href="https://pbs.twimg.com/profile_images/PATH/TO/IMAGE.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/AUTHORSCREENNAME</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content><![CDATA[
+            <img src="//DOMAIN.COM/path/to/option1image.jpg" />
+            <div class="selection"><h2>Option 1</h2></div>
+            <div class="result"><h2>Option 1</h2><div class="percent">{poll:percent}</div></div>
+            ]]></content>
+            <id>http://DOMAIN.COM/PATH/TO/POLLS/POLL123/1</id>
+        </activity:object>
+        <activity:target>
+            <id>http://DOMAIN.COM/PATH/TO/POLLS/POLL123</id>
+        </activity:target>
+    </entry>
+    <entry>
+        <published>2013-12-05T22:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>AUTHOR NAME</title>
+            <id>http://twitter.com/AUTHORSCREENNAME</id>
+            <link href="https://pbs.twimg.com/profile_images/PATH/TO/IMAGE.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/AUTHORSCREENNAME</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content><![CDATA[
+            <img src="//DOMAIN.COM/path/to/option2image.jpg" />
+            <div class="selection"><h2>Option 2</h2></div>
+            <div class="result"><h2>Option 2</h2><div class="percent">{poll:percent}</div></div>
+            ]]></content>
+            <id>http://DOMAIN.COM/PATH/TO/POLLS/POLL123/1</id>
+        </activity:object>
+        <activity:target>
+            <id>http://DOMAIN.COM/PATH/TO/POLLS/POLL123</id>
+        </activity:target>
+    </entry>
+</feed>

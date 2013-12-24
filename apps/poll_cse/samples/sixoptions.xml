@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns:activity="http://activitystrea.ms/spec/1.0/">
+    <!-- Poll parent -->
+    <entry>
+        <published>2013-12-11T14:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content type="html"><![CDATA[<img src="https://pbs.twimg.com/media/BYvzKb3CQAAlUCi.jpg:large" class="header" /><div class="question">How often do you watch the Conan O'Brien Show?</div>]]></content>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch</id>
+            <published>2013-12-11T14:00:00Z</published>
+        </activity:object>
+       <activity:target>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls</id>
+        </activity:target>
+    </entry>
+    <!-- Option 1. Note: default sort order is TIME based (reverseChrono!) -->
+    <entry>
+        <published>2013-12-11T18:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content type="html"><![CDATA[<img src="https://pbs.twimg.com/media/BX8Oyq6CMAA2MC4.jpg:large" class="header" /><img src="http://echosandbox.com/cse/cokezero/badges/fsu.png" class="inset" /><a href="https://twitter.com/intent/tweet?text=I%20watch%20Conan%20in%20marathons!" class="answer">In marathons!</a>]]></content>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch/marathons</id>
+            <published>2013-12-11T18:00:00Z</published>
+        </activity:object>
+        <activity:target>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch</id>
+        </activity:target>
+    </entry>
+    <!-- Option 2 -->
+    <entry>
+        <published>2013-12-11T17:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content type="html"><![CDATA[<img src="https://pbs.twimg.com/media/BYQ0pcVCYAA8BHV.jpg:large" class="header" /><img src="http://echosandbox.com/cse/cokezero/badges/auburn.png" class="inset" /><a href="https://twitter.com/intent/tweet?text=I%20watch%20Conan%20as%20soon%20as%20it%20is%20on!" class="answer">As soon as it's on!</a>]]></content>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch/rightaway</id>
+            <published>2013-12-11T17:00:00Z</published>
+        </activity:object>
+        <activity:target>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch</id>
+        </activity:target>
+    </entry>
+    <!-- Option 3 -->
+    <entry>
+        <published>2013-12-11T16:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content type="html"><![CDATA[<a href="https://twitter.com/intent/tweet?text=I%20watch%20Conan%20in%20marathons!" class="answer">Daily</a>]]></content>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch/daily</id>
+            <published>2013-12-11T16:00:00Z</published>
+        </activity:object>
+        <activity:target>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch</id>
+        </activity:target>
+    </entry>
+    <!-- Option 4 -->
+    <entry>
+        <published>2013-12-11T15:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content type="html"><![CDATA[<a href="https://twitter.com/intent/tweet?text=I%20watch%20Conan%20in%20marathons!" class="answer">Weekly</a>]]></content>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch/weekly</id>
+            <published>2013-12-11T15:00:00Z</published>
+        </activity:object>
+        <activity:target>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch</id>
+        </activity:target>
+    </entry>
+    <!-- Option 5 -->
+    <entry>
+        <published>2013-12-11T14:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content type="html"><![CDATA[<a href="https://twitter.com/intent/tweet?text=I%20watch%20Conan%20in%20marathons!" class="answer">Monthly</a>]]></content>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch/monthly</id>
+            <published>2013-12-11T14:00:00Z</published>
+        </activity:object>
+        <activity:target>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch</id>
+        </activity:target>
+    </entry>
+    <!-- Option 6 -->
+    <entry>
+        <published>2013-12-11T13:00:00Z</published>
+        <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+        <activity:actor>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+            <title>Echo</title>
+            <id>http://twitter.com/EchoEnabled</id>
+            <link href="http://a0.twimg.com/profile_images/2676876459/6df5698cfabeeab7ca40c3f9de8288e9_normal.png" rel="avatar" type="image/jpeg"/>
+            <uri>http://twitter.com/EchoEnabled</uri>
+        </activity:actor>
+        <activity:object>
+            <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+            <content type="html"><![CDATA[<a href="https://twitter.com/intent/tweet?text=I%20watch%20Conan%20in%20marathons!" class="answer">Yearly</a>]]></content>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch/yearly</id>
+            <published>2013-12-11T13:00:00Z</published>
+        </activity:object>
+        <activity:target>
+            <id>http://cst-dev.echoplatform.com/sample-data/polls/conanwatch</id>
+        </activity:target>
+    </entry>
+</feed>
