@@ -65,7 +65,8 @@ dashboard.init = function() {
 	// access this data themselves.
 	Echo.Polyfills.DashboardSupport.configData = self.config.data.data;
 
-//	console.log('init', self);
+	console.log('init', this.data.instance.name, self);
+
 	var deferreds = [$.Deferred()];
 	$.when.apply($, deferreds).done(function() {
 		// We hold off on calling our parent until everything else has loaded
@@ -88,7 +89,9 @@ dashboard.init = function() {
 dashboard.methods.declareInitialConfig = function() {
 	//var appkeys = this.config.get("appkeys");
 	var janrainapps = this.config.get("janrainapps");
-//	console.log('declare', this);
+
+	console.log('declare', this.data.instance.name, self);
+
 	return {
 		display: {
 			header: '',
@@ -138,6 +141,8 @@ dashboard.events = {
 	'Echo.AppServer.Controls.Configurator.onItemChange': function(topic, args) {
 		var self = this,
 		    config = $.extend({}, this.config.data.data.instance.config);
+
+		console.log('onItemChange', self);
 
 		// Figured this would mess with Dashboard's own behavior so we're
 		// working with a clone of the object. That's the trouble with being
@@ -205,7 +210,6 @@ dashboard.events = {
 			registerUpdateRequest('option7', config.pollbuilder.option7);
 			registerUpdateRequest('option8', config.pollbuilder.option8);
 
-			console.log(config);
 			$.ajax({
 				url: 'http://echosandbox.com/cst/poll-proxy/index.php',
 				data: {
@@ -215,10 +219,10 @@ dashboard.events = {
 				timeout: 5000,
 				dataType: 'jsonp',
 				success: function(data) {
-					console.log(data);
+//					console.log(data);
 				},
 				error: function(data) {
-					console.log(data);
+//					console.log(data);
 				}
 			});
 		}

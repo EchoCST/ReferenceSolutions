@@ -38,6 +38,7 @@ plugin.css =
 	'.{plugin.class} .{class:avatar-wrapper} { display: none !important; }' +
 
     // General layout
+    '.{plugin.class} div { box-sizing: border-box; }' +
 	'.{plugin.class} .{class:subwrapper} { margin: 0; }' +
     '.{plugin.class} .{class:container-root-thread} { padding: 0; }' +
 	'.{plugin.class} .{class:depth-1} { margin: 0; padding: 0; background-color: transparent; }' +
@@ -47,7 +48,9 @@ plugin.css =
 	'.{plugin.class} .{class:children} .{class:text} img.inset { display: none; }' +
 
     // Visual styles
-    '.{plugin.class} .{class:text} .question { width: 100%; padding: 7px 10px; line-height: 18px; font-size: 14px; text-transform: uppercase; background: #111; color: #fff; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }' +
+	'.{plugin.class} .{class:depth-0} .{class:text} .title { margin: 0; width: 100%; padding: 7px 10px; line-height: 18px; font-size: 14px; text-transform: uppercase; background: #111; color: #fff; font-weight: bold; }' +
+	'.{plugin.class} .{class:depth-0} .{class:text} .image { max-width: 100%; }' +
+	'.{plugin.class} .{class:depth-0} .{class:text} .question { margin: 0; width: 100%; padding: 7px 10px; line-height: 18px; font-size: 14px; text-transform: uppercase; background: #111; color: #fff; }' +
 
 	'.{plugin.class} .{class:children} .{class} { margin: 7px 0; background: #444; color: #fff; font-size: 16px; line-height: 40px; border: 2px solid #444; }' +
 	'.{plugin.class} .{class:children} .{class}:hover { background: #666; border: 2px solid DarkOrange; }' +
