@@ -55,14 +55,13 @@ plugin.css =
     // Text display. Note that tug of war polls may include an IMG with a class
     // of "inset" that acts as a graphic badge on the bar.
     '.{plugin.class} .{plugin.class:bar} { height: 100px; color: #fff; line-height: 100px; font-size: 30px; }' +
-    '.{plugin.class} .{plugin.class:bar} .inset { display: block; height: 77px; overflow: hidden; margin: 12px; }' +
-    '.{plugin.class} .{class}:first-child .{plugin.class:bar} .inset { float: left; }' +
-    '.{plugin.class} .{class}:last-child .{plugin.class:bar} .inset { float: right; }' +
+    '.{plugin.class} .{plugin.class:bar} img { display: block; height: 77px; overflow: hidden; margin: 12px; }' +
+    '.{plugin.class} .{class}:first-child .{plugin.class:bar} img { float: left; }' +
+    '.{plugin.class} .{class}:last-child .{plugin.class:bar} img { float: right; }' +
 
     // Inset images are hidden in the original locations and copied into the
     // bars. Headers aren't shown at all.
-    '.{plugin.class} .inset,' +
-    '.{plugin.class} .header { display: none; }' +
+    '.{plugin.class} .{class:body} img { display: none; }' +
 
     // Buttons and other data
     '.{plugin.class} .{class:text} a { display: block; padding: 6px 20px; border-radius: 9px; background: #333; text-decoration: none; font-weight: bold; margin: 10px 20px 0 20px; color: #fff; }' +
@@ -75,21 +74,21 @@ plugin.css =
     '@media all and (max-width: 900px) {'+
         '.{plugin.class} .{class:children} { height: 80px; }' +
         '.{plugin.class} .{plugin.class:bar} { height: 80px; line-height: 80px; font-size: 24px; }' +
-        '.{plugin.class} .{plugin.class:bar} .inset { margin: 10px; height: 60px; }' +
+        '.{plugin.class} .{plugin.class:bar} img { margin: 10px; height: 60px; }' +
         '.{plugin.class} .{class:text} a { margin: 8px 16px 0 16px; }' +
     '}' +
 
     '@media all and (max-width: 600px) {'+
         '.{plugin.class} .{class:children} { height: 60px; }' +
         '.{plugin.class} .{plugin.class:bar} { height: 60px; line-height: 60px; font-size: 20px; }' +
-        '.{plugin.class} .{plugin.class:bar} .inset { margin: 8px; height: 46px; }' +
+        '.{plugin.class} .{plugin.class:bar} img { margin: 8px; height: 46px; }' +
         '.{plugin.class} .{class:text} a { margin: 7px 12px 0 12px; }' +
     '}' +
 
     '@media all and (max-width: 400px) {'+
         '.{plugin.class} .{class:children} { height: 40px; }' +
         '.{plugin.class} .{plugin.class:bar} { height: 40px; line-height: 40px; font-size: 16px; }' +
-        '.{plugin.class} .{plugin.class:bar} .inset { margin: 6px; height: 28px; }' +
+        '.{plugin.class} .{plugin.class:bar} img { margin: 6px; height: 28px; }' +
         '.{plugin.class} .{class:text} a { margin: 6px 10px 0 10px; }' +
     '}' +
 
@@ -140,8 +139,6 @@ plugin.methods.processData = function() {
 
         // Also see if we have an inset image
 		var $img = $('<div>' + item.get('data.object.content') + '</div>').find('img');
-        console.log($img);
-        console.log(item);
         if ($img.length > 0) {
             html += $img.wrapAll('<div></div>').parent().html();
         }

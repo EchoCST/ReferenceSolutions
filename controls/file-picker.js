@@ -69,14 +69,13 @@ filepickercontrol.renderers.preview = function(element) {
 
 filepickercontrol.renderers.previewImage = function(element) {
 	var self = this,
-        value = self.get('data.value'),
-        $el = $(element);
+        value = self.get('data.value');
 
     if (value != '') {
-        $el.attr('src', value);
+        element.attr('src', value);
     }
 
-    $el.click(function(e) {
+    element.click(function(e) {
         filepicker.pickAndStore({
             multiple: false,
             maxFiles: 1,
@@ -85,18 +84,19 @@ filepickercontrol.renderers.previewImage = function(element) {
             maxSize: 50*1024*1024
         }, {
             location: 'S3',
-            path: 'dashboard',
+            path: 'dashboard/',
             access: 'public'
         }, function(InkBlobs) {
             $.map(InkBlobs, function(blob) {
-                //blob.url = 'https://pbs.twimg.com/media/BYvzKb3CQAAlUCi.jpg:large';
-                var prevValue = $el.attr('src');
-                $el.attr('src', blob.url);
+                var s3Url = '//' + blob.container + '.s3.amazonaws.com/' + blob.key;
+
+                var prevValue = element.attr('src');
+                element.attr('src', s3Url);
 
                 // TODO: Why do other components both self.set and self.changed?
-                self.set('data.value', blob.url);
-                if (prevValue !== blob.url) {
-                    self.changed(blob.url, prevValue);
+                self.set('data.value', s3Url);
+                if (prevValue !== s3Url) {
+                    self.changed(s3Url, prevValue);
                 }
             });
         }, function(FPError) {
