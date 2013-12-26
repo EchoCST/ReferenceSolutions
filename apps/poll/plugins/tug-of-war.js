@@ -45,6 +45,8 @@ plugin.css =
     // before that existed...)
     '.{class}-plugin-VoteDataProcessor-resultText,' +
     '.{class}-plugin-VoteDataProcessor-resultBar { display: none !important; } ' +
+    '.{plugin.class} .{class:children} .{class:body} { background: transparent !important; }' +
+    '.{plugin.class} .{class:children} .{class:body}:hover { background: transparent !important; }' +
 
     // General layout
     '.{plugin.class} .{class:children} { width: 100%; height: 100px; position: relative; }' +
@@ -78,9 +80,9 @@ plugin.css =
     '.{plugin.class} .{class}:last-child .{class:body} { left: 0; }' +
 
     // Buttons and other data
-    '.{plugin.class} .{class} .{class:text} a { display: block; padding: 6px 20px; border-radius: 9px; background: #333; text-decoration: none; font-weight: bold; margin: 10px 20px 0 20px; color: #fff; }' +
-	'.{plugin.class} .{class}:first-child .{class:text} a { float: right; }' +
-	'.{plugin.class} .{class}:last-child .{class:text} a { float: left; }' +
+    '.{plugin.class} .{class} .{class:text} span { display: block; padding: 6px 20px; border-radius: 9px; background: #333; text-decoration: none; font-weight: bold; margin: 10px 7px 0 7px; color: #fff; font-size: 13px; line-height: 18px; height: auto; white-space: nowrap; }' +
+	'.{plugin.class} .{class}:first-child .{class:text} span { right: 0; left: inherit; }' +
+	'.{plugin.class} .{class}:last-child .{class:text} span { left: 0; right: inherit; ; }' +
 
     // Some responsive styling. Note that since phone resolutions are now all
     // over the place we deliberately used widths IN BETWEEN their typical sizes
