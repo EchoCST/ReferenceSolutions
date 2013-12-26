@@ -57,7 +57,7 @@ plugin.css =
 	'.{plugin.class} .{class:depth-1} { margin: 0; padding: 0; background-color: transparent; }' +
 	'.{plugin.class} .echo-primaryColor { color: #fff; }' +
 	'.{plugin.class} .percentage { margin: 0 12px; }' +
-    '.{plugin.class} .{class} .{class:data} { position: relative; height: 140px; }' +
+    '.{plugin.class} .{class:children} .{class:data} { position: relative; height: 140px; }' +
 
     // Header
     '.{plugin.class} .{class:container-root-thread} { padding: 0; }' +
@@ -65,17 +65,17 @@ plugin.css =
 
 	// Bars
 	'.{plugin.class} .{class} { width: 100%; height: 140px; position: absolute; top: 0; left: 0; }' +
-    '.{plugin.class} .{class} .{plugin.class:bar} { height: 100px; position: absolute; top: 0; border: 1px solid #fff; }' +
+    '.{plugin.class} .{class:children} .{plugin.class:bar} { height: 100px; position: absolute; top: 0; border: 1px solid #fff; }' +
 	'.{plugin.class} .{class}:first-child .{plugin.class:bar} { background: #ea9101; z-index: 0; right: 0; width: 100%; }' +
 	'.{plugin.class} .{class}:last-child .{plugin.class:bar} { background: #55a3cc; z-index: 1; left: 0; }' +
 
     // Text display. Note that tug of war polls may include an IMG with a class
     // of "inset" that acts as a graphic badge on the bar.
-    '.{plugin.class} .{class} .{plugin.class:result} { position: absolute; top: 0; height: 100px; color: #fff; line-height: 100px; font-size: 30px; z-index: 2; }' +
+    '.{plugin.class} .{class:children} .{plugin.class:result} { position: absolute; top: 0; height: 100px; color: #fff; line-height: 100px; font-size: 30px; z-index: 2; }' +
     '.{plugin.class} .{class}:first-child .{plugin.class:result} { right: 0; }' +
     '.{plugin.class} .{class}:last-child .{plugin.class:result} { left: 0; }' +
 
-    '.{plugin.class} .{class} .{plugin.class:result} img { display: block; height: 77px; overflow: hidden; margin: 12px; }' +
+    '.{plugin.class} .{class:children} .{plugin.class:result} img { display: block; height: 77px; overflow: hidden; margin: 12px; }' +
     '.{plugin.class} .{class}:first-child .{plugin.class:result} img { float: right; }' +
     '.{plugin.class} .{class}:last-child .{plugin.class:result} img { float: left; }' +
 
@@ -83,8 +83,8 @@ plugin.css =
     '.{plugin.class} .{class}:last-child .{plugin.class:result} .percentage { float: left; }' +
 
     // Action buttons are shown below the bars.
-    '.{plugin.class} .{class} .{class:body} { position: absolute; bottom: 0; }' +
-    '.{plugin.class} .{class} .{class:body} img { display: none; }' +
+    '.{plugin.class} .{class:children} .{class:body} { position: absolute; bottom: 0; }' +
+    '.{plugin.class} .{class:children} .{class:body} img { display: none; }' +
     '.{plugin.class} .{class}:first-child .{class:body} { right: 0; }' +
     '.{plugin.class} .{class}:last-child .{class:body} { left: 0; }' +
 
@@ -97,30 +97,30 @@ plugin.css =
     // over the place we deliberately used widths IN BETWEEN their typical sizes
     // to help make sure we get the edge cases.
     '@media all and (max-width: 900px) {'+
-    	'.{plugin.class} .{class:data} { height: 120px; }' +
         '.{plugin.class} .{class:children} { height: 80px; }' +
-        '.{plugin.class} .{plugin.class:bar} { height: 80px; }' +
-        '.{plugin.class} .{plugin.class:result} { font-size: 24px; line-height: 80px; }' +
-        '.{plugin.class} .{plugin.class:result} img { margin: 10px; height: 60px; }' +
-        '.{plugin.class} .{class:text} a { margin: 8px 16px 0 16px; }' +
+    	'.{plugin.class} .{class:children} .{class:data} { height: 120px; }' +
+        '.{plugin.class} .{class:children} .{plugin.class:bar} { height: 80px; }' +
+        '.{plugin.class} .{class:children} .{plugin.class:result} { font-size: 24px; line-height: 80px; }' +
+        '.{plugin.class} .{class:children} .{plugin.class:result} img { margin: 10px; height: 60px; }' +
+        '.{plugin.class} .{class:children} .{class:text} a { margin: 8px 16px 0 16px; }' +
     '}' +
 
     '@media all and (max-width: 600px) {'+
-    	'.{plugin.class} .{class:data} { height: 100px; }' +
         '.{plugin.class} .{class:children} { height: 60px; }' +
-        '.{plugin.class} .{plugin.class:bar} { height: 60px; }' +
-        '.{plugin.class} .{plugin.class:result} { font-size: 20px; line-height: 60px; }' +
-        '.{plugin.class} .{plugin.class:result} img { margin: 8px; height: 46px; }' +
-        '.{plugin.class} .{class:text} a { margin: 7px 12px 0 12px; }' +
+    	'.{plugin.class} .{class:children} .{class:data} { height: 100px; }' +
+        '.{plugin.class} .{class:children} .{plugin.class:bar} { height: 60px; }' +
+        '.{plugin.class} .{class:children} .{plugin.class:result} { font-size: 20px; line-height: 60px; }' +
+        '.{plugin.class} .{class:children} .{plugin.class:result} img { margin: 8px; height: 46px; }' +
+        '.{plugin.class} .{class:children} .{class:text} a { margin: 7px 12px 0 12px; }' +
     '}' +
 
     '@media all and (max-width: 400px) {'+
-    	'.{plugin.class} .{class:data} { height: 80px; }' +
         '.{plugin.class} .{class:children} { height: 40px; }' +
-        '.{plugin.class} .{plugin.class:bar} { height: 40px; }' +
-        '.{plugin.class} .{plugin.class:result} { font-size: 16px; line-height: 40px; }' +
-        '.{plugin.class} .{plugin.class:result} img { margin: 6px; height: 28px; }' +
-        '.{plugin.class} .{class:text} a { margin: 6px 10px 0 10px; }' +
+    	'.{plugin.class} .{class:children} .{class:data} { height: 80px; }' +
+        '.{plugin.class} .{class:children} .{plugin.class:bar} { height: 40px; }' +
+        '.{plugin.class} .{class:children} .{plugin.class:result} { font-size: 16px; line-height: 40px; }' +
+        '.{plugin.class} .{class:children} .{plugin.class:result} img { margin: 6px; height: 28px; }' +
+        '.{plugin.class} .{class:children} .{class:text} a { margin: 6px 10px 0 10px; }' +
     '}' +
 
     '';

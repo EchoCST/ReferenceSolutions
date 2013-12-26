@@ -47,64 +47,53 @@
     <legend class="icon-check">Option 1</legend>
     <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
     <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
-    <input name="color" type="text" data-component="ColorPicker" title="Color" data-help="The primary color for this option. Note that only some visualizations use colors." />
   </fieldset>
 
   <fieldset name="option2">
     <legend class="icon-check">Option 2</legend>
     <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
     <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
-    <input name="color" type="text" data-component="ColorPicker" title="Color" data-help="The primary color for this option. Note that only some visualizations use colors." />
   </fieldset>
 
   <fieldset name="option3">
     <legend class="icon-check">Option 3</legend>
     <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
     <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
-    <input name="color" type="text" data-component="ColorPicker" title="Color" data-help="The primary color for this option. Note that only some visualizations use colors." />
   </fieldset>
 
   <fieldset name="option4">
     <legend class="icon-check">Option 4</legend>
     <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
     <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
-    <input name="color" type="text" data-component="ColorPicker" title="Color" data-help="The primary color for this option. Note that only some visualizations use colors." />
   </fieldset>
 
   <fieldset name="option5">
     <legend class="icon-check">Option 5</legend>
     <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
     <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
-    <input name="color" type="text" data-component="ColorPicker" title="Color" data-help="The primary color for this option. Note that only some visualizations use colors." />
   </fieldset>
 
   <fieldset name="option6">
     <legend class="icon-check">Option 6</legend>
     <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
     <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
-    <input name="color" type="text" data-component="ColorPicker" title="Color" data-help="The primary color for this option. Note that only some visualizations use colors." />
   </fieldset>
 
   <fieldset name="option7">
     <legend class="icon-check">Option 7</legend>
     <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
     <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
-    <input name="color" type="text" data-component="ColorPicker" title="Color" data-help="The primary color for this option. Note that only some visualizations use colors." />
   </fieldset>
 
   <fieldset name="option8">
     <legend class="icon-check">Option 8</legend>
     <select name="image" data-component="FilePicker" title="Image" data-help="Click to set the inset or thumbnail image for the item. Display is visualization dependent." />
     <input name="answer" type="text" title="Answer" data-help="The answer text for this option." />
-    <input name="color" type="text" data-component="ColorPicker" title="Color" data-help="The primary color for this option. Note that only some visualizations use colors." />
   </fieldset>
 </fieldset>
 
 <fieldset name="display">
   <legend class="icon-picture">Display</legend>
-
-  <textarea name="header" title="Header HTML" data-help="Optional HTML to include above the poll itself. Note that this option is DEPRECATED in favor of including this in the poll itself."></textarea>
-  <textarea name="footer" title="Footer HTML" data-help="Optional HTML to include below the poll itself. Note that this option is DEPRECATED in favor of including this in the poll itself."></textarea>
 
   <!-- TODO: We really need full HTML templates so we can render clickable
        images and put a border around the active one instead of always using
@@ -126,6 +115,9 @@
 
   <input name="percent" type="checkbox" checked="checked" title="Show Percentage" data-help="If checked, a percentage value will be displayed in the result elements." />
   <input name="count" type="checkbox" title="Show Vote Count" data-help="If checked, the vote count will be displayed in the result elements." />
+
+  <!--<textarea name="css" title="Skin CSS" data-help="Optional CSS that may be applied to the poll as a 'skin'."></textarea>-->
+  <input name="skinname" type="text" title="Skin Name" data-help="The skin name to use." />
 </fieldset>
 
 <!-- Authorization -->

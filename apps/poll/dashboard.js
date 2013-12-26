@@ -97,9 +97,11 @@ dashboard.methods.declareInitialConfig = function() {
 			header: '',
 			footer: '',
 			visualization: 'list',
-			showresults: 'after',
+			showResults: 'after',
 			percent: true,
-			count: false
+			count: false,
+			css: '',
+			skinname: ''
 		},
 		datasource: {
 			appkey: '',
@@ -131,14 +133,14 @@ dashboard.methods.declareInitialConfig = function() {
 			// after a change because there may need to be init code in the app
 			// for every possible combination of options that have ever existed.
 			heading: { title: '', image: '', question: '' },
-			option1: { image: '', answer: '', color: '#ea9101' },
-			option2: { image: '', answer: '', color: '#55a3cc' },
-			option3: { image: '', answer: '', color: '#3cc543' },
-			option4: { image: '', answer: '', color: '#f95019' },
-			option5: { image: '', answer: '', color: '#d50000' },
-			option6: { image: '', answer: '', color: '#981287' },
-			option7: { image: '', answer: '', color: '#974821' },
-			option8: { image: '', answer: '', color: '#788fa3' }
+			option1: { image: '', answer: '' },
+			option2: { image: '', answer: '' },
+			option3: { image: '', answer: '' },
+			option4: { image: '', answer: '' },
+			option5: { image: '', answer: '' },
+			option6: { image: '', answer: '' },
+			option7: { image: '', answer: '' },
+			option8: { image: '', answer: '' }
 		},
 		auth: {
 			janrainApp: janrainapps.length ? janrainapps[0].name : undefined

@@ -1,20 +1,48 @@
 (function($) {
 'use strict';
 
+// TODO: We re-branded this LivePoll but had too many things running by that
+// time to really rename it...
 var poll = Echo.App.manifest('Echo.Apps.Poll');
 
 if (Echo.App.isDefined(poll)) return;
 
+/**
+ * Initialize the LivePoll app
+ */
 poll.init = function() {
 	// TODO: Set up the appropriate CDN URL based on our channel.
-	// console.log(this);
+	console.log(this);
+
+	// TODO: Is there something better we can use? We need a unique ID for our
+	// app to help scope the CSS we're about to add. HTML5 supports CSS scoping
+	// but we can't use it yet cross-browser, and the polyfill is bulky and does
+	// not always work. This is different from namespacing (which we also need).
+	// What we're doing here is making sure if you have two polls on the page,
+	// their CSS can't break each other. Currently we do this cooperatively -
+	// the apps' CSS config fields must include {pollid} prefixes...
+	// This only works if we use a canvas... Maybe a singleton somewhere would
+	// be better?
+	// TODO: Deferred for later use, went with a skin name for now
+	// var uniqueid = this.config.get('canvasId', 'livepoll').replace('/', '-');
+
+	// Initializers calls the css hook BEFORE the init hook. So we have to
+	// pretty much do this ourselves... Note that although most sample code puts
+	// config blocks before the init() hook in the code, that is ALSO called
+	// before init... That one is actually good for us because at least we have
+	// our config data by the time we get here...
+/*	 Echo.Utils.addCSS(Echo.Utils.substitute({
+		template: this.config.get('display.css'),
+		instructions:
+	}), uniqueid);*/
+
+	console.log(this.config.data);
+	this.config.get('target')
+	    .addClass('poll-skin-' + this.config.get('display.skinname')
+				                            .replace(' ', '-'));
 
 	this.render();
 	this.ready();
-};
-
-poll.labels = {
-	'signin': 'Please sign in...'
 };
 
 /**
@@ -43,12 +71,12 @@ poll.config = {
 	},
 
 	display: {
-		header: '',
-		footer: '',
 		visualization: 'list',
 		showResults: 'after',
 		percent: true,
-		count: false
+		count: false,
+		skinname: '',
+		css: ''
 	},
 
 	auth: {
@@ -72,9 +100,7 @@ poll.dependencies = [{
 
 poll.templates.main =
 	'<div class="{class:container}">' +
-	    '<div class="{class:header}">{config:display.header}</div>' +
 		'<div class="{class:stream} {config:display.visualization}"></div>' +
-	    '<div class="{class:footer}">{config:display.footer}</div>' +
 	'</div>';
 
 poll.renderers.stream = function(element) {

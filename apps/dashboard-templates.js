@@ -225,64 +225,53 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "    <legend class=\"icon-check\">Option 1</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option2\">\n" +
     "    <legend class=\"icon-check\">Option 2</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option3\">\n" +
     "    <legend class=\"icon-check\">Option 3</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option4\">\n" +
     "    <legend class=\"icon-check\">Option 4</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option5\">\n" +
     "    <legend class=\"icon-check\">Option 5</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option6\">\n" +
     "    <legend class=\"icon-check\">Option 6</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option7\">\n" +
     "    <legend class=\"icon-check\">Option 7</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option8\">\n" +
     "    <legend class=\"icon-check\">Option 8</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "</fieldset>\n" +
     "\n" +
     "<fieldset name=\"display\">\n" +
     "  <legend class=\"icon-picture\">Display</legend>\n" +
-    "\n" +
-    "  <textarea name=\"header\" title=\"Header HTML\" data-help=\"Optional HTML to include above the poll itself. Note that this option is DEPRECATED in favor of including this in the poll itself.\"></textarea>\n" +
-    "  <textarea name=\"footer\" title=\"Footer HTML\" data-help=\"Optional HTML to include below the poll itself. Note that this option is DEPRECATED in favor of including this in the poll itself.\"></textarea>\n" +
     "\n" +
     "  <!-- TODO: We really need full HTML templates so we can render clickable\n" +
     "       images and put a border around the active one instead of always using\n" +
@@ -304,6 +293,9 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "\n" +
     "  <input name=\"percent\" type=\"checkbox\" checked=\"checked\" title=\"Show Percentage\" data-help=\"If checked, a percentage value will be displayed in the result elements.\" />\n" +
     "  <input name=\"count\" type=\"checkbox\" title=\"Show Vote Count\" data-help=\"If checked, the vote count will be displayed in the result elements.\" />\n" +
+    "\n" +
+    "  <!--<textarea name=\"css\" title=\"Skin CSS\" data-help=\"Optional CSS that may be applied to the poll as a 'skin'.\"></textarea>-->\n" +
+    "  <input name=\"skinname\" type=\"text\" title=\"Skin Name\" data-help=\"The skin name to use.\" />\n" +
     "</fieldset>\n" +
     "\n" +
     "<!-- Authorization -->\n" +

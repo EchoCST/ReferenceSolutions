@@ -140,8 +140,6 @@ plugin.methods.processData = function() {
 
         // Also see if we have an inset image
 		var $img = $('<div>' + item.get('data.object.content') + '</div>').find('img');
-        console.log($img);
-        console.log(item);
         if ($img.length > 0) {
             html += $img.wrapAll('<div></div>').parent().html();
         }
