@@ -44,6 +44,9 @@ dashboard.dependencies = [{
 }, {
 	url: "//echocsthost.s3.amazonaws.com/controls/hidden-value.js",
 	control: "Echo.AppServer.Controls.Configurator.Items.HiddenValue"
+}, {
+	url: "//echocsthost.s3.amazonaws.com/controls/color-picker.js",
+	control: "Echo.AppServer.Controls.Configurator.Items.ColorPicker"
 }
 ];
 
@@ -115,15 +118,27 @@ dashboard.methods.declareInitialConfig = function() {
 		},
 		pollbuilder: {
 			manual: false,
+			// This is getting annoying keeping these in sync. Can we at least
+			// access our ECL by the time we get here so we can define them
+			// automatically?
+			//
+			// TODO: Yes, actually we have access to our ECL by the time we get
+			// here. Write a polyfill to convert from ECL to defaults using the
+			// values defined there. It would be awesome if the Grunt build task
+			// could also export that to something app.js could use. The only
+			// risk is that since there's no way to "upgrade" the schema for an
+			// app's stored settings, a developer should probably stay involved
+			// after a change because there may need to be init code in the app
+			// for every possible combination of options that have ever existed.
 			heading: { title: '', image: '', question: '' },
-			option1: { image: '', answer: '' },
-			option2: { image: '', answer: '' },
-			option3: { image: '', answer: '' },
-			option4: { image: '', answer: '' },
-			option5: { image: '', answer: '' },
-			option6: { image: '', answer: '' },
-			option7: { image: '', answer: '' },
-			option8: { image: '', answer: '' }
+			option1: { image: '', answer: '', color: '#ea9101' },
+			option2: { image: '', answer: '', color: '#55a3cc' },
+			option3: { image: '', answer: '', color: '#3cc543' },
+			option4: { image: '', answer: '', color: '#f95019' },
+			option5: { image: '', answer: '', color: '#d50000' },
+			option6: { image: '', answer: '', color: '#981287' },
+			option7: { image: '', answer: '', color: '#974821' },
+			option8: { image: '', answer: '', color: '#788fa3' }
 		},
 		auth: {
 			janrainApp: janrainapps.length ? janrainapps[0].name : undefined
