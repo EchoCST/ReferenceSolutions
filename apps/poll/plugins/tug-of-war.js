@@ -40,6 +40,10 @@ plugin.templates.result= '<div class="{plugin.class:result}"></div>';
 
 plugin.css =
     // TODO: Replace with a more appropriate target?
+    // TODO: We could probably redo this visualization with the resultText and
+    // resultBar that the Processor puts in for us now. (This was written
+    // before that existed...)
+    '.{class}-plugin-VoteDataProcessor-resultText,' +
     '.{class}-plugin-VoteDataProcessor-resultBar { display: none !important; } ' +
 
     // General layout

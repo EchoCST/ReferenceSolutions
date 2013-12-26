@@ -67,13 +67,6 @@ plugin.component.renderers.body = function(element) {
         e.preventDefault();
         if (item.depth == 1) {
             alert(item.get('echo-id'));
-//            var $item = $el.closest('.echo-streamserver-controls-stream-item'),
-//                       id = $item.data('echo-id');
-
-                //plugin._recordVote(id);
-            // TODO: Submit the vote here.
-            // alert('clicked');
-            // console.log(item);
         }
     });
 
@@ -85,11 +78,12 @@ plugin.css =
 	// overridden... We wanted to put them in app.js but the substitutions for
     // Stream.Item don't work there.
 
-    '.{plugin.class} .{class:body} { padding-top: 0; }' +
-    '.{plugin.class} .{class:children} .{class:body} { cursor: pointer; }' +
-    '.{plugin.class} .{class:container-root-thread} .{class:body} { background: #111; margin: 0 0 5px 0; }' +
+    '.{plugin.class} .{class:body} { padding-top: 0; background: #111; margin: 0 0 5px 0; }' +
+    '.{plugin.class} .{class:children} .{class:body} { padding-bottom: 40px; position: relative; line-height: 40px; font-size: 18px; }' +
+    '.{plugin.class} .{class:children} .{class:body}:hover { cursor: pointer; background: #333; }' +
+
 	'.{plugin.class} .title, ' +
-	'.{plugin.class} .question { padding: 7px 10px; color: #fff; font-size: 16px; line-height: 18px; text-transform: uppercase; }' +
+	'.{plugin.class} .question { padding: 7px 10px; color: #fff; font-size: 18px; line-height: 22px; text-transform: uppercase; }' +
 
 	'.{plugin.class} .{class:authorName}, ' +
 	'.{plugin.class} .{class:expandChildren}, ' +
@@ -105,11 +99,51 @@ plugin.css =
     '.{plugin.class} .answer span,' +
     '.{plugin.class} .{class:children} .{plugin.class:resultBar},' +
     '.{plugin.class} .{class:children} .{plugin.class:resultText} { display: block; position: absolute; bottom: 0; height: 40px; }' +
-    '.{plugin.class} .answer span { left: 4px; z-index: 3; }' +
-    '.{plugin.class} .{class:children} .{plugin.class:resultBar} { left: 0; z-index: 1; background-color: #417dc1; border-right: 1px solid #fff; }' +
-    '.{plugin.class} .{class:children} .{plugin.class:resultText} { right: 4px; z-index: 2; }' +
+
+    '.{plugin.class} .answer span { left: 7px; z-index: 3; }' +
+    '.{plugin.class} .{class:children} .{plugin.class:resultText} { right: 7px; z-index: 2; }' +
+    '.{plugin.class} .{class:children} .{plugin.class:resultBar} { left: 0; z-index: 1; background-color: #417dc1; }' +
 
 	'.{plugin.class} .echo-primaryColor { color: #fff; }' +
+
+    // TODO: Making classe targets where we want to use parts of both the Stream
+    // and the Stream Item in our rule is almost impossible. This is a bad rule,
+    // but what choice do we have?
+    '.echo-apps-poll .showing-results .{class:children} .{plugin.class:resultBar} { border-right: 1px solid #fff; }' +
+
+    // Some responsive styling. Note that since phone resolutions are now all
+    // over the place we deliberately used widths IN BETWEEN their typical sizes
+    // to help make sure we get the edge cases.
+    '@media all and (max-width: 900px) {'+
+        '.{plugin.class} .answer span,' +
+        '.{plugin.class} .{class:children} .{plugin.class:resultBar},' +
+        '.{plugin.class} .{class:children} .{plugin.class:resultText} { height: 34px; }' +
+
+        '.{plugin.class} .{class:children} .{class:body} { padding-bottom: 34px; line-height: 34px; font-size: 16px; }' +
+
+        '.{plugin.class} .title, ' +
+        '.{plugin.class} .question { padding: 6px 10px; font-size: 16px; line-height: 20px; }' +
+    '}' +
+
+    '@media all and (max-width: 600px) {'+
+        '.{plugin.class} .answer span,' +
+        '.{plugin.class} .{class:children} .{plugin.class:resultBar},' +
+        '.{plugin.class} .{class:children} .{plugin.class:resultText} { height: 28px; }' +
+        '.{plugin.class} .{class:children} .{class:body} { padding-bottom: 28px; line-height: 28px; font-size: 14px; }' +
+
+        '.{plugin.class} .title, ' +
+        '.{plugin.class} .question { padding: 5px 10px; font-size: 14px; line-height: 18px; }' +
+    '}' +
+
+    '@media all and (max-width: 400px) {'+
+        '.{plugin.class} .answer span,' +
+        '.{plugin.class} .{class:children} .{plugin.class:resultBar},' +
+        '.{plugin.class} .{class:children} .{plugin.class:resultText} { height: 24px; }' +
+        '.{plugin.class} .{class:children} .{class:body} { padding-bottom: 24px; line-height: 24px; font-size: 13px; }' +
+
+        '.{plugin.class} .title, ' +
+        '.{plugin.class} .question { padding: 4px 10px; font-size: 13px; line-height: 16px; }' +
+    '}' +
 
 	'';
 
@@ -252,7 +286,7 @@ plugin.methods._recordVote = function(answer) {
     stream.config.get('target').addClass('voted');
     stream.set('voted', true);
     if (stream.config.get('display.showResults') == 'after') {
-        stream.set('showResults', true);
+        plugin._showResults();
     }
 
     // Post an event so others can update themselves.
@@ -265,8 +299,18 @@ plugin.methods._recordVote = function(answer) {
             answer: answer
         }
     });
+}
 
-    // Update the results
+/**
+ * Start showing the results for the poll.
+ */
+plugin.methods._showResults = function() {
+    var plugin = this,
+        stream = this.component;
+
+    stream.set('showResults', true);
+    stream.config.get('target').addClass('showing-results');
+
     plugin._updateResults();
 }
 
@@ -318,7 +362,6 @@ plugin.methods.processData = function() {
         var percentage = (voteCount > 0)
                             ? (100 * votes / voteCount)
                             : 100 / stream.threads[0].children.length;
-        item.set('percentage', percentage);
 
         // Displayable text label
         if (showPercent && showCount) {
@@ -330,25 +373,8 @@ plugin.methods.processData = function() {
             resultText = plugin._formatCount(votes);
         }
 
-        // Display the value, and also set it as a convenience for non-default
-        // visualizations.
-        $text.html(resultText);
+        item.set('percentage', percentage);
         item.set('resultText', resultText);
-
-        // jQuery sets overflow:hidden during animations, and we're using
-        // overflow to position the buttons.
-        $bar.animate({
-            width: percentage + '%'
-        }, {
-            duration: 2000,
-            queue: false,
-            step: function() {
-                $bar.css({ overflow: 'visible' });
-            },
-            complete: function() {
-                $bar.css({ overflow: 'visible' });
-            }
-        });
     });
 
     // TODO: Determine whether the user has already voted. Cookie?
@@ -367,8 +393,8 @@ plugin.methods.processData = function() {
     // Should we show the results?
     if (stream.config.get('display.showResults') == 'before' ||
         (stream.config.get('display.showResults') == 'after' && vote)) {
-        showResults = true;
         stream.config.get('target').addClass('voted');
+        plugin._showResults();
     }
 
     // Cache these values for later use
@@ -382,11 +408,13 @@ plugin.methods.processData = function() {
             stream: stream
         }
     });
-
-    // Update the bar/result text
-    plugin._updateResults();
 };
 
+/**
+ * Show the results. We do this separately from the data processor above because
+ * we want to animate the result bar either after we vote or when we first know
+ * the result values.
+ */
 plugin.methods._updateResults = function() {
     var plugin = this,
         stream = this.component,
@@ -401,12 +429,29 @@ plugin.methods._updateResults = function() {
     // For each child, look for a result Bar and result Text view. Note that
     // some visualizations may hide these and show their own.
     $.map(stream.threads[0].children, function(item, i) {
-        var $bar = item.plugins.VoteDataProcessor.view.get('resultBar'),
-            $resultText = item.plugins.VoteDataProcessor.view.get('resultText'),
-            percentage = item.get('percentage') || 50;
+        var showPercent = item.config.get('parent.display.percent'),
+            showCount = item.config.get('parent.display.count'),
+            $text = item.plugins.VoteDataProcessor.view.get('resultText'),
+            $bar = item.plugins.VoteDataProcessor.view.get('resultBar');
 
-//        $resultText.html(item.get('resultText'));
+        // Display the value, and also set it as a convenience for non-default
+        // visualizations.
+        $text.html(item.get('resultText'));
 
+        // jQuery sets overflow:hidden during animations, and we're using
+        // overflow to position the buttons.
+        $bar.animate({
+            width: item.get('percentage') + '%'
+        }, {
+            duration: 2000,
+            queue: false,
+            step: function() {
+                $bar.css({ overflow: 'visible' });
+            },
+            complete: function() {
+                $bar.css({ overflow: 'visible' });
+            }
+        });
     });
 }
 

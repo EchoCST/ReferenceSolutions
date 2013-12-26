@@ -11,6 +11,8 @@ if (Echo.App.isDefined(poll)) return;
  * Initialize the LivePoll app
  */
 poll.init = function() {
+	var app = this;
+
 	// TODO: Set up the appropriate CDN URL based on our channel.
 
 	// TODO: Is there something better we can use? We need a unique ID for our
@@ -35,12 +37,13 @@ poll.init = function() {
 		instructions:
 	}), uniqueid);*/
 
-	this.config.get('target')
-	    .addClass('poll-skin-' + this.config.get('display.skinname')
-				                            .replace(' ', '-'));
+	app.config.get('target')
+		.addClass('show-results-' + app.config.get('display.showResults'))
+	    .addClass('poll-skin-' + app.config.get('display.skinname')
+				                           .replace(' ', '-'));
 
-	this.render();
-	this.ready();
+	app.render();
+	app.ready();
 };
 
 /**
@@ -106,8 +109,6 @@ poll.renderers.stream = function(element) {
 	    plugins = [],
 		// TODO: Better way to do this?
 		cdnURL = '//echocsthost.s3.amazonaws.com';
-
-	element.addClass('show-results-' + app.config.get('display.showResults'));
 
 	plugins.push({
 		name: 'VoteDataProcessor',
