@@ -56,8 +56,9 @@ Typical workflow involves the following steps:
 1. Run "grunt deploy-dev" to send your development files to an S3 bucket for
    testing by others. You must do this step at least once for AppServer to
    see your manifest.json file the first time you register an App.
-1. Run "grunt deploy-prod" to do the same thing, but also invalidate a
-   CloudFront distribution. This would be a Production deployment task.
+1. Run "grunt deploy-beta" to do the same thing for QA/Beta testers.
+1. Run "grunt deploy-prod" to push your files to production. This also runs an
+   Invalidate task for CloudFront.
 
 The Gruntfile contains several other build tools - feel free to poke
 around and even suggest or contribute changes back!

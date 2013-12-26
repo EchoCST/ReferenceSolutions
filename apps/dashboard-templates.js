@@ -225,56 +225,56 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "    <legend class=\"icon-check\">Option 1</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option, for visualizations that use colors.\" />\n" +
+    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option2\">\n" +
     "    <legend class=\"icon-check\">Option 2</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option, for visualizations that use colors.\" />\n" +
+    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option3\">\n" +
     "    <legend class=\"icon-check\">Option 3</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option, for visualizations that use colors.\" />\n" +
+    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option4\">\n" +
     "    <legend class=\"icon-check\">Option 4</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option, for visualizations that use colors.\" />\n" +
+    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option5\">\n" +
     "    <legend class=\"icon-check\">Option 5</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option, for visualizations that use colors.\" />\n" +
+    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option6\">\n" +
     "    <legend class=\"icon-check\">Option 6</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option, for visualizations that use colors.\" />\n" +
+    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option7\">\n" +
     "    <legend class=\"icon-check\">Option 7</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option, for visualizations that use colors.\" />\n" +
+    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "\n" +
     "  <fieldset name=\"option8\">\n" +
     "    <legend class=\"icon-check\">Option 8</legend>\n" +
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
-    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option, for visualizations that use colors.\" />\n" +
+    "    <input name=\"color\" type=\"text\" data-component=\"ColorPicker\" title=\"Color\" data-help=\"The primary color for this option. Note that only some visualizations use colors.\" />\n" +
     "  </fieldset>\n" +
     "</fieldset>\n" +
     "\n" +
