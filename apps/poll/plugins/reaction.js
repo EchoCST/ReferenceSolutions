@@ -21,15 +21,8 @@ plugin.init = function() {
 //    this.extendTemplate('insertBefore', 'container', plugin.templates.head);
     this.extendTemplate('insertAfter', 'body', plugin.templates.bar);
     this.extendTemplate('insertAfter', 'children', plugin.templates.clear);
+    this.extendTemplate('insertAfter', 'text', plugin.templates.clear);
 };
-
-/**
- * We add a bar to the visualization as a container for our percentage. Note
- * that we don't use a renderer because we fill the bar later using an event.
- *
- * @echo_template
- */
-plugin.templates.head = '<div class="{plugin.class:head}"></div>';
 
 /**
  * Width-based result bar and result text region.
@@ -46,18 +39,6 @@ plugin.templates.bar = '<div class="{plugin.class:bar} results"></div><div class
  */
 plugin.templates.clear = '<div style="clear: both"></div>';
 
-plugin.renderers.head = function(element) {
-    var plugin = this,
-        item = this.component,
-        $img = $('<div>' + item.get('data.object.content') + '</div>').find('.header');
-
-    if (item.depth < 1 && $img.length > 0) {
-        element.html($img.wrapAll('<div></div>').parent().html());
-    }
-
-    return element;
-}
-
 plugin.css =
 	// Do not display these data elements
 	'.{plugin.class} .{class:authorName}, ' +
@@ -67,12 +48,13 @@ plugin.css =
 	'.{plugin.class} .{class:avatar-wrapper} { display: none !important; }' +
 
     // General layout
+    '.{plugin.class} div { box-sizing: border-box; }' +
     '.{plugin.class} img { max-width: 100%; display: block; }' +
 	'.{plugin.class} .{class:subwrapper} { margin: 0; }' +
     '.{plugin.class} .{class:container-root-thread} { padding: 0; }' +
 	'.{plugin.class} .{class:depth-1} { margin: 0; padding: 0; background-color: transparent; }' +
-	'.{plugin.class} .{class:children} .{class} { margin: 14px; background: #444; color: #fff; font-size: 16px; line-height: 40px; display: block; float: left; border: 2px solid #333; box-sizing: border-box; }' +
-	'.{plugin.class} .{class:children} .{class}:hover { background: #666; border: 2px solid DarkOrange; }' +
+	'.{plugin.class} .{class:children} .{class} { margin: 14px; color: #fff; font-size: 16px; line-height: 40px; display: block; float: left; background: #333; }' +
+	'.{plugin.class} .{class:children} .{class}:hover { background: #555; }' +
 
 
     // We move the header, and we don't show the inset even if it's there.
@@ -82,14 +64,13 @@ plugin.css =
     // Visual styles
     '.{plugin.class} .{class:text} .question { width: 100%; padding: 7px 10px; line-height: 18px; font-size: 14px; text-transform: uppercase; background: #111; color: #fff; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }' +
 
-	'.{plugin.class} .{class:children} .{class} { font-size: 16px; line-height: 40px; }' +
 	'.{plugin.class} .{class:children} .{class:text} a { color: #fff; text-decoration: none; text-transform: uppercase; font-weight: bold; display: inline-block; padding: 0 10px; text-align: center; }' +
     '.{plugin.class} .{class:data} .percentage { float: right; margin: 0 7px; }' +
     '.{plugin.class} .{class:data} .count { float: right; margin: 0 7px; }' +
 
     // Body/Result bar layering
-    '.{plugin.class} .{class:children} .{class:data} { position: relative; height: 40px; width: 120px; }' +
-	'.{plugin.class} .{class:children} .{class:body} { position: absolute; z-index: 2; top: 0; left: 0; bottom: 0; right: 0; padding: 0; }' +
+    '.{plugin.class} .{class:children} .{class:data} { width: 120px; }' +
+	'.{plugin.class} .{class:children} .{class:body} { padding: 0; }' +
     '.{plugin.class} .{class:children} .{plugin.class:bar} { position: absolute; z-index: 1; top: 0; left: 0; bottom: 0; color: #fff; line-height: 40px; font-size: 18px; background: #417DC1; border-right: 1px solid #ccc; }' +
 
     // Some responsive styling. Note that since phone resolutions are now all

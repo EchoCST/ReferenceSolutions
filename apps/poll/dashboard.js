@@ -42,9 +42,6 @@ dashboard.dependencies = [{
 	url: "//echocsthost.s3.amazonaws.com/controls/file-picker.js",
 	control: "Echo.AppServer.Controls.Configurator.Items.FilePicker"
 }, {
-	url: "//echocsthost.s3.amazonaws.com/controls/poll-editor.js",
-	control: "Echo.AppServer.Controls.Configurator.Items.PollEditor"
-}, {
 	url: "//echocsthost.s3.amazonaws.com/controls/hidden-value.js",
 	control: "Echo.AppServer.Controls.Configurator.Items.HiddenValue"
 }
@@ -65,7 +62,7 @@ dashboard.init = function() {
 	// access this data themselves.
 	Echo.Polyfills.DashboardSupport.configData = self.config.data.data;
 
-	console.log('init', this.data.instance.name, self);
+//	console.log('init', this.data.instance.name, self);
 
 	var deferreds = [$.Deferred()];
 	$.when.apply($, deferreds).done(function() {
@@ -90,7 +87,7 @@ dashboard.methods.declareInitialConfig = function() {
 	//var appkeys = this.config.get("appkeys");
 	var janrainapps = this.config.get("janrainapps");
 
-	console.log('declare', this.data.instance.name, self);
+//	console.log('declare', this.data.instance.name, self);
 
 	return {
 		display: {
@@ -169,7 +166,6 @@ dashboard.events = {
 			// its pre-defined endpoints and it doesn't seem to add much value
 			// for what we're doing here. Reconsider using it later?
 
-			console.dir(config.pollbuilder.heading.image);
 			var updates = [];
 			updates.push({
 				url: url,

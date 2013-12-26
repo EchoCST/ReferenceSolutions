@@ -42,9 +42,6 @@ dashboard.dependencies = [{
 	url: "//echocsthost.s3.amazonaws.com/controls/file-picker.js",
 	control: "Echo.AppServer.Controls.Configurator.Items.FilePicker"
 }, {
-	url: "//echocsthost.s3.amazonaws.com/controls/poll-editor.js",
-	control: "Echo.AppServer.Controls.Configurator.Items.PollEditor"
-}, {
 	url: "//echocsthost.s3.amazonaws.com/controls/hidden-value.js",
 	control: "Echo.AppServer.Controls.Configurator.Items.HiddenValue"
 }

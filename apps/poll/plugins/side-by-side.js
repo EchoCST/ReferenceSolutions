@@ -87,10 +87,11 @@ plugin.css =
     '.{plugin.class} .{class:data} .count { float: right; margin: 0 7px; }' +
 
     // Body/Result bar layering
-    '.{plugin.class} .{class:children} .{class:data} { position: relative; height: 40px; width: 100%; }' +
-	'.{plugin.class} .{class:children} .{class:body} { position: absolute; z-index: 2; top: 0; left: 0; bottom: 0; right: 0; padding: 0; border: 2px solid #333; }' +
+    '.{plugin.class} .{class:children} .{class:data} { position: relative; width: 100%; padding-bottom: 40px; border: 2px solid #222; }' +
+	'.{plugin.class} .{class:children} .{class:body} { padding: 0; position: absolute; height: 40px; z-index: 3; bottom: 0; left: 0; }' +
 	'.{plugin.class} .{class:children} .{class:body}:hover { background: #666; border: 2px solid DarkOrange; }' +
-    '.{plugin.class} .{class:children} .{plugin.class:bar} { position: absolute; z-index: 1; top: 0; left: 0; bottom: 0; color: #fff; line-height: 40px; font-size: 18px; background: #417DC1; border-right: 1px solid #ccc; }' +
+    '.{plugin.class} .{class:children} .{plugin.class:bar} { position: absolute; z-index: -1; left: 0; bottom: 0; background: #417DC1; border-right: 1px solid #ccc; height: 40px; width: 0; }' +
+    '.{plugin.class} .{class:children} .results { position: absolute; z-index: 2; right: 0; bottom: 0; color: #fff; line-height: 40px; font-size: 18px; height: 40px; }' +
 
     // Some responsive styling. Note that since phone resolutions are now all
     // over the place we deliberately used widths IN BETWEEN their typical sizes

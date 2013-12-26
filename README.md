@@ -26,6 +26,12 @@ Contents
   scripts - Support routines to do things like upload or manipulate sample
   data in DataServer / StreamServer when building and deploying Apps.
 
+
+Known Issues
+------------
+1. Almost everything in this repository is hard-coded to go to the Echo CST
+   Amazon S3 bucket, "echocsthost.s3.amazonaws.com".
+
 Setup
 -----
 To start using this repository, do the following:
@@ -33,6 +39,7 @@ To start using this repository, do the following:
 1. Clone it to a local working directory.
 1. Copy config-sample.json to config.json, and edit the file.
 1. Run "npm install" to install the dependencies.
+
 
 Development Workflow
 --------------------

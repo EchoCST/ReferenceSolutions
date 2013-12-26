@@ -30,6 +30,14 @@ plugin.init = function() {
     // can find ourselves again if a Tweet is posted.
     item.config.get('target').addClass(elements.pop() + ' ' + elements.pop())
                              .attr('data-echo-id', id);
+
+    // If this option is empty, hide it
+    var $content = $(item.data.object.content).wrapAll('<div></div>').parent();
+    var answer = $content.find('.answer').html(),
+        question = $content.find('.question').html();
+    if (!answer && !question) {
+        item.config.get('target').hide();
+    }
 };
 
 Echo.Plugin.create(plugin);

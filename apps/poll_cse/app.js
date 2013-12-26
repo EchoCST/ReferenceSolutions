@@ -97,14 +97,14 @@ poll.renderers.stream = function(element) {
 		case 'tugofwar':
 			plugins.push({
 				name: 'TugOfWar',
-				url: cdnURL + '/apps/poll/plugins/tug-of-war.js'
+				url: cdnURL + '/apps/poll_cse/plugins/tug-of-war.js'
 			});
 			break;
 
 		case 'list':
 			plugins.push({
 				name: 'VerticalList',
-				url: cdnURL + '/apps/poll/plugins/vertical-list.js'
+				url: cdnURL + '/apps/poll_cse/plugins/vertical-list.js'
 			});
 			childrenItems = 10;
 			break;
@@ -112,14 +112,14 @@ poll.renderers.stream = function(element) {
 		case 'sidebyside':
 			plugins.push({
 				name: 'SideBySide',
-				url: cdnURL + '/apps/poll/plugins/side-by-side.js'
+				url: cdnURL + '/apps/poll_cse/plugins/side-by-side.js'
 			});
 			break;
 
 		case 'reaction':
 			plugins.push({
 				name: 'Reaction',
-				url: cdnURL + '/apps/poll/plugins/reaction.js'
+				url: cdnURL + '/apps/poll_cse/plugins/reaction.js'
 			});
 			childrenItems = 10;
 			break;
@@ -127,14 +127,14 @@ poll.renderers.stream = function(element) {
 		case 'textbuttons':
 			plugins.push({
 				name: 'TextButtons',
-				url: cdnURL + '/apps/poll/plugins/textbuttons.js'
+				url: cdnURL + '/apps/poll_cse/plugins/textbuttons.js'
 			});
 			break;
 
 		case 'updown':
 			plugins.push({
 				name: 'UpDownButtons',
-				url: cdnURL + '/apps/poll/plugins/updownbuttons.js'
+				url: cdnURL + '/apps/poll_cse/plugins/updownbuttons.js'
 			});
 			break;
 	}
