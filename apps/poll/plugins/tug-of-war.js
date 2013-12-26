@@ -39,6 +39,9 @@ plugin.templates.bar = '<div class="{plugin.class:bar} tugofwar-bar"></div>';
 plugin.templates.result= '<div class="{plugin.class:result}"></div>';
 
 plugin.css =
+    // TODO: Replace with a more appropriate target?
+    '.{class}-plugin-VoteDataProcessor-resultBar { display: none !important; } ' +
+
     // General layout
     '.{plugin.class} .{class:children} { width: 100%; height: 100px; position: relative; }' +
 	'.{plugin.class} .{class:depth-1} { margin: 0; padding: 0; background-color: transparent; }' +

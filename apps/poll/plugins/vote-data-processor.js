@@ -28,6 +28,7 @@ plugin.init = function() {
 
     // The classes are for CSS targeting for specific polls. The ID is so we
     // can find ourselves again if a Tweet is posted.
+    item.set('echo-id', id);
     item.config.get('target').addClass(elements.pop() + ' ' + elements.pop())
                              .attr('data-echo-id', id);
 
@@ -38,13 +39,54 @@ plugin.init = function() {
     if (!answer && !question) {
         item.config.get('target').hide();
     }
+
+    // Learned something new today. You cannot do this - only one will work!
+    //this.extendTemplate('insertAfter', 'body', plugin.templates.resultText);
+    //this.extendTemplate('insertAfter', 'body', plugin.templates.resultBar);
+    this.extendTemplate('insertAsLastChild', 'body', plugin.templates.results);
 };
+
+/**
+ * Width-based result bar and text field.
+ *
+ * @echo_template
+ */
+plugin.templates.results = '<div class="{plugin.class:resultBar}"></div>' +
+                           '<div class="{plugin.class:resultText}"></div>';
+
+/**
+ * Hook up the vote submit event.
+ */
+plugin.component.renderers.body = function(element) {
+    var plugin = this,
+        item = this.component;
+
+    element = this.parentRenderer('body', element);
+
+    $(element).click(function(e) {
+        e.preventDefault();
+        if (item.depth == 1) {
+            alert(item.get('echo-id'));
+//            var $item = $el.closest('.echo-streamserver-controls-stream-item'),
+//                       id = $item.data('echo-id');
+
+                //plugin._recordVote(id);
+            // TODO: Submit the vote here.
+            // alert('clicked');
+            // console.log(item);
+        }
+    });
+
+    return element;
+}
 
 plugin.css =
 	// These are styles shared by all of the visualizations, or only minimally
 	// overridden... We wanted to put them in app.js but the substitutions for
     // Stream.Item don't work there.
 
+    '.{plugin.class} .{class:body} { padding-top: 0; }' +
+    '.{plugin.class} .{class:children} .{class:body} { cursor: pointer; }' +
     '.{plugin.class} .{class:container-root-thread} .{class:body} { background: #111; margin: 0 0 5px 0; }' +
 	'.{plugin.class} .title, ' +
 	'.{plugin.class} .question { padding: 7px 10px; color: #fff; font-size: 16px; line-height: 18px; text-transform: uppercase; }' +
@@ -59,6 +101,13 @@ plugin.css =
 	'.{plugin.class} .{class:subwrapper} { margin: 0; }' +
     '.{plugin.class} .{class:container-root-thread} { padding: 0; }' +
 	'.{plugin.class} .{class:depth-1} { margin: 0; padding: 0; background-color: transparent; }' +
+
+    '.{plugin.class} .answer span,' +
+    '.{plugin.class} .{class:children} .{plugin.class:resultBar},' +
+    '.{plugin.class} .{class:children} .{plugin.class:resultText} { display: block; position: absolute; bottom: 0; height: 40px; }' +
+    '.{plugin.class} .answer span { left: 4px; z-index: 3; }' +
+    '.{plugin.class} .{class:children} .{plugin.class:resultBar} { left: 0; z-index: 1; background-color: #417dc1; border-right: 1px solid #fff; }' +
+    '.{plugin.class} .{class:children} .{plugin.class:resultText} { right: 4px; z-index: 2; }' +
 
 	'.{plugin.class} .echo-primaryColor { color: #fff; }' +
 
@@ -216,6 +265,9 @@ plugin.methods._recordVote = function(answer) {
             answer: answer
         }
     });
+
+    // Update the results
+    plugin._updateResults();
 }
 
 /**
@@ -258,6 +310,8 @@ plugin.methods.processData = function() {
         var showPercent = item.config.get('parent.display.percent'),
             showCount = item.config.get('parent.display.count'),
             resultText = '',
+            $text = item.plugins.VoteDataProcessor.view.get('resultText'),
+            $bar = item.plugins.VoteDataProcessor.view.get('resultBar'),
             votes = item.get('votes');
 
         // Actual percentage value
@@ -268,15 +322,33 @@ plugin.methods.processData = function() {
 
         // Displayable text label
         if (showPercent && showCount) {
-            resultText = Math.round(percentage) + '% (' +
-                         plugin._formatCount(votes) + ')';
+            resultText = Math.round(percentage) + '%' +
+                         ' (' + plugin._formatCount(votes) + ')';
         } else if (showPercent) {
             resultText = Math.round(percentage) + '%';
         } else {
             resultText = plugin._formatCount(votes);
         }
 
+        // Display the value, and also set it as a convenience for non-default
+        // visualizations.
+        $text.html(resultText);
         item.set('resultText', resultText);
+
+        // jQuery sets overflow:hidden during animations, and we're using
+        // overflow to position the buttons.
+        $bar.animate({
+            width: percentage + '%'
+        }, {
+            duration: 2000,
+            queue: false,
+            step: function() {
+                $bar.css({ overflow: 'visible' });
+            },
+            complete: function() {
+                $bar.css({ overflow: 'visible' });
+            }
+        });
     });
 
     // TODO: Determine whether the user has already voted. Cookie?
@@ -310,7 +382,33 @@ plugin.methods.processData = function() {
             stream: stream
         }
     });
+
+    // Update the bar/result text
+    plugin._updateResults();
 };
+
+plugin.methods._updateResults = function() {
+    var plugin = this,
+        stream = this.component,
+        voteCount = 0,
+        showResults = false;
+
+    // There's nothing here for us to do until we're ready to show the results
+    if (!stream.get('showResults')) {
+        return;
+    }
+
+    // For each child, look for a result Bar and result Text view. Note that
+    // some visualizations may hide these and show their own.
+    $.map(stream.threads[0].children, function(item, i) {
+        var $bar = item.plugins.VoteDataProcessor.view.get('resultBar'),
+            $resultText = item.plugins.VoteDataProcessor.view.get('resultText'),
+            percentage = item.get('percentage') || 50;
+
+//        $resultText.html(item.get('resultText'));
+
+    });
+}
 
 /**
  * Provides a comma-separated-thousands format display.

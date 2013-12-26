@@ -216,7 +216,7 @@ dashboard.events = {
 					url: url + '/' + subpath,
 					content: '<div class="answer">' +
 					         ((option.image) ? '<img src="' + option.image + '" />' : '') +
-							 ((option.answer) ? '<a href="#" class="submit-vote">' + option.answer + '</a>' : '') +
+							 ((option.answer) ? '<span>' + option.answer + '</span>' : '') +
 							 '</div>',
 				});
 			}
