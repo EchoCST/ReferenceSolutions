@@ -1,9 +1,12 @@
 /**
- * HiddenValue widget for the Dashboard. In a lot of cases you can just set
- * config values in your Dashboard and they'll save. But if you alter a setting,
- * config options that don't have matching form fields get lost and are not sent
- * to the preview window. This widget is just here to provide an invisible
- * placeholder for items you want retained but not visible.
+ * HiddenValue widget for the Dashboard.
+ *
+ * In a lot of cases you can just set config values in your Dashboard and
+ * they'll save. But if you alter a setting, config options that don't have
+ * matching form fields appear to get lost - they don't make it into the preview
+ * window. Probably there is some issue we need to resolve, but because this is
+ * a useful concept anyway, for the time being we just wrote a control that
+ * provides an invisible-value placeholder.
  */
 
 (function(jQuery) {
@@ -17,10 +20,6 @@ var hiddenvalue = Echo.AppServer.App.manifest("Echo.AppServer.Controls.Configura
 
 hiddenvalue.inherits = Echo.Utils.getComponent("Echo.AppServer.Controls.Configurator.Item");
 
-hiddenvalue.config = {
-	"defaultTitle": ""
-};
-
 hiddenvalue.init = function() {
 	this.parent();
 }
@@ -30,16 +29,13 @@ hiddenvalue.templates.main =
 
 hiddenvalue.renderers.value = function(element) {
     return element.hide();
-
-	return element;
 };
 
 hiddenvalue.methods.value = function() {
 	return this.get("data.value");
 };
 
-hiddenvalue.css =
-	'.{class:value} { display: none; }';
+hiddenvalue.css = '.{class:value} { display: none; }';
 
 Echo.AppServer.App.create(hiddenvalue);
 
