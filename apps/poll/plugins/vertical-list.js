@@ -30,17 +30,7 @@ plugin.init = function() {
 plugin.templates.bar = '<div class="{plugin.class:bar} results"></div><div class="resultText results"></div>';
 
 plugin.css =
-	// Do not display these data elements
-	'.{plugin.class} .{class:authorName}, ' +
-	'.{plugin.class} .{class:expandChildren}, ' +
-	'.{plugin.class} .{class:childrenMarker}, ' +
-	'.{plugin.class} .{class:footer}, ' +
-	'.{plugin.class} .{class:avatar-wrapper} { display: none !important; }' +
-
     // General layout
-    '.{plugin.class} div { box-sizing: border-box; }' +
-	'.{plugin.class} .{class:subwrapper} { margin: 0; }' +
-    '.{plugin.class} .{class:container-root-thread} { padding: 0; }' +
 	'.{plugin.class} .{class:depth-1} { margin: 0; padding: 0; background-color: transparent; }' +
 
     // We don't show header or inset images in this visual even if they're there

@@ -186,9 +186,11 @@ dashboard.events = {
 			var updates = [];
 			updates.push({
 				url: url,
-				content: '<div class="title">' + config.pollbuilder.heading.title + '</div>' +
+				content: '<div class="header">' +
+				         ((config.pollbuilder.heading.title) ? '<div class="title">' + config.pollbuilder.heading.title + '</div>' : '') +
 				         ((config.pollbuilder.heading.image) ? '<img src="' + config.pollbuilder.heading.image + '" class="image" />' : '') +
-						 '<div class="question">' + config.pollbuilder.heading.question + '</div>'
+						 ((config.pollbuilder.heading.question) ? '<div class="question">' + config.pollbuilder.heading.question + '</div>' : '') +
+						 '</div>'
 			});
 
 			// TODO: So... objvar.property and objvar[property] are supposed to

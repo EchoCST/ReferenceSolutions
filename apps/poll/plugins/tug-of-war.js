@@ -39,29 +39,11 @@ plugin.templates.bar = '<div class="{plugin.class:bar} tugofwar-bar"></div>';
 plugin.templates.result= '<div class="{plugin.class:result}"></div>';
 
 plugin.css =
-	// Do not display these data elements
-    //'.{plugin.class} .{class:depth-0}, ' +
-	'.{plugin.class} .{class:footer}, ' +
-	'.{plugin.class} .{class:avatar-wrapper}, ' +
-	'.{plugin.class} .{class:authorName}, ' +
-	'.{plugin.class} .{class:expandChildren}, ' +
-	'.{plugin.class} .{class:childrenMarker}, ' +
-	'.{plugin.class} .{class:text} .header, ' +
-    '.{plugin.class} .{class:modeSwitch}, ' +
-	'.{plugin.class} .{class} .{class:children} { display: none !important; }' +
-
     // General layout
-	'.{plugin.class} div { box-sizing: border-box; }' +
-	'.{plugin.class} .{class:subwrapper} { margin: 0; }' +
     '.{plugin.class} .{class:children} { width: 100%; height: 100px; position: relative; }' +
 	'.{plugin.class} .{class:depth-1} { margin: 0; padding: 0; background-color: transparent; }' +
-	'.{plugin.class} .echo-primaryColor { color: #fff; }' +
 	'.{plugin.class} .percentage { margin: 0 12px; }' +
     '.{plugin.class} .{class:children} .{class:data} { position: relative; height: 140px; }' +
-
-    // Header
-    '.{plugin.class} .{class:container-root-thread} { padding: 0; }' +
-    '.{plugin.class} .{class:container-root-thread} .{class:body} { background: #333; padding: 6px 12px; text-transform: uppercase; margin: 0 0 5px 0; font-size: 16px; }' +
 
 	// Bars
 	'.{plugin.class} .{class} { width: 100%; height: 140px; position: absolute; top: 0; left: 0; }' +
@@ -206,19 +188,7 @@ plugin.methods.processData = function() {
 };
 
 plugin.css =
-    '.{plugin.class} { width: 100%; height: 185px; padding: 20px 0 60px 0; }' +
-
-    '@media all and (max-width: 900px) {'+
-        '.{plugin.class} { height: 160px; }' +
-    '}' +
-
-    '@media all and (max-width: 600px) {'+
-        '.{plugin.class} { height: 140px; }' +
-    '}' +
-
-    '@media all and (max-width: 400px) {'+
-        '.{plugin.class} { height: 120px; }' +
-    '}' +
+    '.{plugin.class} { padding: 20px 0 40px 0; }';
 
 Echo.Plugin.create(plugin);
 

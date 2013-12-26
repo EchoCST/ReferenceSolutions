@@ -12,7 +12,6 @@ if (Echo.App.isDefined(poll)) return;
  */
 poll.init = function() {
 	// TODO: Set up the appropriate CDN URL based on our channel.
-	console.log(this);
 
 	// TODO: Is there something better we can use? We need a unique ID for our
 	// app to help scope the CSS we're about to add. HTML5 supports CSS scoping
@@ -36,7 +35,6 @@ poll.init = function() {
 		instructions:
 	}), uniqueid);*/
 
-	console.log(this.config.data);
 	this.config.get('target')
 	    .addClass('poll-skin-' + this.config.get('display.skinname')
 				                            .replace(' ', '-'));
@@ -203,7 +201,11 @@ poll.renderers.stream = function(element) {
 	return element;
 };
 
-poll.css = '.{class:publish} { text-align: center; }';
+poll.css =
+	// Note that there are more app styles in the VoteDataProcessor plugin. We
+	// had to put them there because Stream.Item substitutions don't work here.
+	'.{class} div { box-sizing: border-box; }' +
+	'.{class} img { max-width: 100%; display: block; }';
 
 Echo.App.create(poll);
 

@@ -40,6 +40,30 @@ plugin.init = function() {
     }
 };
 
+plugin.css =
+	// These are styles shared by all of the visualizations, or only minimally
+	// overridden... We wanted to put them in app.js but the substitutions for
+    // Stream.Item don't work there.
+
+    '.{plugin.class} .{class:container-root-thread} .{class:body} { background: #111; margin: 0 0 5px 0; }' +
+	'.{plugin.class} .title, ' +
+	'.{plugin.class} .question { padding: 7px 10px; color: #fff; font-size: 16px; line-height: 18px; text-transform: uppercase; }' +
+
+	'.{plugin.class} .{class:authorName}, ' +
+	'.{plugin.class} .{class:expandChildren}, ' +
+	'.{plugin.class} .{class:childrenMarker}, ' +
+	'.{plugin.class} .{class:footer}, ' +
+    '.{plugin.class} .{class:modeSwitch}, ' +
+	'.{plugin.class} .{class:avatar-wrapper} { display: none !important; }' +
+
+	'.{plugin.class} .{class:subwrapper} { margin: 0; }' +
+    '.{plugin.class} .{class:container-root-thread} { padding: 0; }' +
+	'.{plugin.class} .{class:depth-1} { margin: 0; padding: 0; background-color: transparent; }' +
+
+	'.{plugin.class} .echo-primaryColor { color: #fff; }' +
+
+	'';
+
 Echo.Plugin.create(plugin);
 
 })(Echo.jQuery);

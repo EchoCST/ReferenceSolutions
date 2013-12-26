@@ -55,17 +55,7 @@ plugin.templates.clear = '<div style="clear: both"></div>';
 plugin.templates.thumb = '<div class="{plugin.class:thumb}"><span class="icon-thumb"></span></div>';
 
 plugin.css =
-	// Do not display these data elements
-	'.{plugin.class} .{class:authorName}, ' +
-	'.{plugin.class} .{class:expandChildren}, ' +
-	'.{plugin.class} .{class:childrenMarker}, ' +
-	'.{plugin.class} .{class:footer}, ' +
-	'.{plugin.class} .{class:avatar-wrapper} { display: none !important; }' +
-
     // General layout
-    '.{plugin.class} img { max-width: 100%; display: block; }' +
-	'.{plugin.class} .{class:subwrapper} { margin: 0; }' +
-    '.{plugin.class} .{class:container-root-thread} { padding: 0; }' +
 	'.{plugin.class} .{class:depth-1} { margin: 0; padding: 0; background-color: transparent; }' +
 	'.{plugin.class} .{class:children} .{class} { margin: 0 0 14px 0; background: #444; color: #fff; font-size: 16px; line-height: 40px; width: 50%; float: left; border: 2px solid #333; box-sizing: border-box; }' +
 	'.{plugin.class} .{class:children} .{class}:hover { background: #666; border: 2px solid DarkOrange; }' +
