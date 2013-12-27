@@ -87,7 +87,7 @@ poll.renderers.stream = function(element) {
 
 	plugins.push({
 		name: 'VoteDataProcessor',
-		url: cdnURL + '/apps/poll/plugins/vote-data-processor.js'
+		url: cdnURL + '/apps/poll_cse/plugins/vote-data-processor.js'
 	});
 
 	var childrenItems = 2;

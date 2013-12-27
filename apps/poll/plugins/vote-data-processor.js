@@ -298,7 +298,10 @@ plugin.events = {
 
         var content = {
             verb: 'post',
-            content: 'API-based vote for ' + pollId + ' option ' + optionId,
+            // Note: We used to put the pollID and optionID in the vote content.
+            // But ESP finds these as links and resolves them to additional
+            // targets so it turns out that's a bad idea...
+            content: 'API-based vote', // for '+pollId+' option '+optionId,
             target: optionId
         };
 
