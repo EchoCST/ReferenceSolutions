@@ -152,7 +152,9 @@ poll.renderers.stream = function(element) {
 				name: 'TextButtons',
 				url: cdnURL + '/apps/poll/plugins/textbuttons.js'
 			});
-			childrenItems = 2;
+			// NOTE: We used to limit this to just two, but it actually works ok
+			// with any multiple thereof so we got rid of that restriction...
+			//childrenItems = 2;
 			break;
 
 		case 'updown':
