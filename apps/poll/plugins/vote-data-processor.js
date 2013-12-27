@@ -26,8 +26,11 @@ plugin.init = function() {
         id = item.get('data.object.id'),
         elements = id.split('/');
 
-    // The classes are for CSS targeting for specific polls. The ID is so we
-    // can find ourselves again if a Tweet is posted.
+    // The classes are for CSS targeting for specific polls. The ID is because
+    // in Echo there is no way to take a DOM element and get back to the Stream
+    // Item that rendered it. We cache a copy of the data value we need out in
+    // the DOM so we can record votes for the right option IDs. We use attr()
+    // so we can see the value in the Inspector for debugging.
     item.set('echo-id', id);
     item.config.get('target').addClass(elements.pop() + ' ' + elements.pop())
                              .attr('data-echo-id', id);
@@ -68,6 +71,7 @@ plugin.component.renderers.body = function(element) {
 
     // TODO: Gah, why does it have to be so hard to get from the Item to the
     // Stream???
+    // TODO: Avoid conflicts between social and API-based voting...
     $(element).click(function(e) {
         e.preventDefault();
         if (item.depth == 1) {
@@ -114,6 +118,7 @@ plugin.css =
     '.{plugin.class} .answer span { left: 7px; z-index: 3; }' +
     '.{plugin.class} .{class:children} .{plugin.class:resultText} { right: 7px; z-index: 2; }' +
     '.{plugin.class} .{class:children} .{plugin.class:resultBar} { left: 0; z-index: 1; background-color: #417dc1; }' +
+    '.{plugin.class} .{class:children} .selected .{plugin.class:resultBar} { background-color: #ea9101; }' +
 
 	'.{plugin.class} .echo-primaryColor { color: #fff; }' +
 
@@ -270,8 +275,54 @@ plugin.events = {
     },
     'Echo.StreamServer.Controls.Stream.Item.Plugins.VoteDataProcessor.onManualVote':
     function(topic, args) {
+        // TODO: Gah...
+        var optionId = args.item.data.object.id,
+            pollId = this.component.threads[0].data.object.id;
+
+        // Check for dupe votes. This is very primitive! TODO: Make better.
+        // TODO: Also, this might fail with multiple polls on one page?
+        if (this._getVote(pollId)) {
+            return;
+        }
+
+        this._recordVote(optionId);
+
+        // TODO: We ought to be able to refactor this since the processor below
+        // does the same thing.
+        $.map(this.component.threads[0].children, function(item) {
+            if (item.data.object.id == optionId) {
+                item.config.get('target').addClass('selected');
+                item.set('selected', true);
+            }
+        });
+
+        var content = {
+            verb: 'post',
+            content: 'API-based vote for ' + pollId + ' option ' + optionId,
+            target: optionId
+        };
+
+        var data = {
+            // TODO: There must be a better way to do this...
+            appkey: this.component.config.data.appkey
+                        .replace('streamserver', 'submit'),
+            sessionID: Backplane.getChannelID(),
+            content: Echo.Utils.objectToJSON(content)
+        };
+
         // TODO: Record the vote, too
-        console.log(args);
+        $.ajax({
+            url: '//apps.echoenabled.com/apps/esp/activity',
+            timeout: 5000,
+            data: data,
+            success: function(data) {
+                console.log('success', data);
+            },
+            error: function(data) {
+                console.log('error', data);
+            }
+        });
+
         this._showResults();
     }
 };
