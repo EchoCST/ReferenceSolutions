@@ -65,8 +65,6 @@ dashboard.init = function() {
 	// access this data themselves.
 	Echo.Polyfills.DashboardSupport.configData = self.config.data.data;
 
-//	console.log('init', this.data.instance.name, self);
-
 	var deferreds = [$.Deferred()];
 	$.when.apply($, deferreds).done(function() {
 		// We hold off on calling our parent until everything else has loaded
@@ -89,8 +87,6 @@ dashboard.init = function() {
 dashboard.methods.declareInitialConfig = function() {
 	//var appkeys = this.config.get("appkeys");
 	var janrainapps = this.config.get("janrainapps");
-
-//	console.log('declare', this.data.instance.name, self);
 
 	return {
 		display: {
@@ -149,11 +145,31 @@ dashboard.methods.declareInitialConfig = function() {
 };
 
 dashboard.events = {
+	// This is a terrible practice but we're dealing with an AppServer bug that
+	// will hopefully be resolved soon. When you change from one instance to
+	// another in AppServer, it is not cleaning up Dashboard events. This leads
+	// to an exception that breaks edit/save operations in later instances. But
+	// Dashboard remembers which instance you have open, so if we reload, it
+	// resets this and we're fine.
+	//
+	// TODO: Remove this when no longer necessary.
+	'Echo.AppServer.Controls.Bundler.Item.onExpand': function(topic, args) {
+		if (typeof(window.appServerExpandCount) === 'undefined') {
+			window.appServerExpandCount = 0;
+		}
+
+		if (window.appServerExpandCount++ >= 1) {
+			window.location.reload();
+		}
+	},
+
 	// TODO: Tried to hook onUpdate but it didn't get called?
 	// TODO: For the moment this is pretty much hard-coded behavior just for
 	// autogen polls. Everything else is assumed to be set up externally via
 	// a 'submit'ted XML file. See samples/*.xml for examples.
 	'Echo.AppServer.Controls.Configurator.onItemChange': function(topic, args) {
+		// NOTE: There is a known issue with Dashboards that subscribe to
+		// events.
 		var self = this,
 		    config = $.extend({}, this.config.data.data.instance.config);
 

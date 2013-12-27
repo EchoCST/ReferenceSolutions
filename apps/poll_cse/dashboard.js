@@ -139,6 +139,8 @@ dashboard.events = {
 		var self = this,
 		    config = $.extend({}, this.config.data.data.instance.config);
 
+        return;
+
 		console.log('onItemChange', self);
 
 		// Figured this would mess with Dashboard's own behavior so we're

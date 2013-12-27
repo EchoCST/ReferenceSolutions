@@ -212,6 +212,8 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "<fieldset name=\"pollbuilder\">\n" +
     "  <legend class=\"icon-th-list\">Poll Builder</legend>\n" +
     "\n" +
+    "  <input name=\"pollPublisher\" type=\"text\" data-component=\"PollPublisher\" title=\"Poll Publisher\" data-help=\"Hidden field that receives update events to sync poll data.\" />\n" +
+    "\n" +
     "  <input name=\"manual\" type=\"checkbox\" title=\"Submit Manually\" data-help=\"If checked, poll builder options will be ignored.\" />\n" +
     "\n" +
     "  <fieldset name=\"heading\">\n" +
