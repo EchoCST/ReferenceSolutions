@@ -81,6 +81,7 @@ plugin.css =
 
     // Buttons and other data
     '.{plugin.class} .{class} .{class:text} span { display: block; padding: 6px 20px; border-radius: 9px; background: #333; text-decoration: none; font-weight: bold; margin: 10px 7px 0 7px; color: #fff; font-size: 13px; line-height: 18px; height: auto; white-space: nowrap; }' +
+    '.{plugin.class} .{class}.selected .{class:text} span { background: #066CE0; }' +
 	'.{plugin.class} .{class}:first-child .{class:text} span { left: 0; right: inherit; }' +
 	'.{plugin.class} .{class}:last-child .{class:text} span { right: 0; left: inherit; ; }' +
 

@@ -209,7 +209,8 @@ poll.renderers.stream = function(element) {
 poll.css =
 	// Note that there are more app styles in the VoteDataProcessor plugin. We
 	// had to put them there because Stream.Item substitutions don't work here.
-	'.{class} div { box-sizing: border-box; }' +
+	'.{class} div,' +
+	'.{class} span { box-sizing: border-box; }' +
 	'.{class} img { max-width: 100%; display: block; }';
 
 Echo.App.create(poll);
