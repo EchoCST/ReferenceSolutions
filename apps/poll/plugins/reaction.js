@@ -31,8 +31,13 @@ plugin.templates.clear = '<div style="clear: both"></div>';
 
 plugin.css =
 	'.{plugin.class} .{class:children} .{class} { margin: 14px 14px 14px 0; display: block; float: left; width: auto; white-space: nowrap; background: #111; position: relative; }' +
-	'.{plugin.class} .{class:children} .{class:body} { padding: 3px 8px; margin: 0; }' +
+	'.{plugin.class} .{class:children} .{class:body} { padding: 0 8px; margin: 0; line-height: 34px; }' +
+
+    // TODO: This needs some work. Right now the span is setting the width of
+    // the element. That means when we change its font size to show the result,
+    // the width of the element changes. That would be bad for graphic buttons.
 	'.{plugin.class} .{class:children} .answer span { position: relative; bottom: inherit; left: inherit; }' +
+    '.showing-results .{plugin.class} .{class:children} .answer span { padding: 0 11px  0 12px; font-weight: bold; font-size: 8px; top: 16px; }' +
 
     '';
 

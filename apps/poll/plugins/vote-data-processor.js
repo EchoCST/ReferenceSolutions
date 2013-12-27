@@ -38,6 +38,9 @@ plugin.init = function() {
         question = $content.find('.question').html();
     if (!answer && !question) {
         item.config.get('target').hide();
+        item.set('valid', false);
+    } else {
+        item.set('valid', true);
     }
 
     // Learned something new today. You cannot do this - only one will work!
@@ -353,6 +356,7 @@ plugin.methods.processData = function() {
     var plugin = this,
         stream = this.component,
         voteCount = 0,
+        validCount = 0,
         showResults = false;
 
     // First count all the votes.
@@ -363,6 +367,10 @@ plugin.methods.processData = function() {
         var votes = item.get('data.object.accumulators.repliesCount', 0);
         item.set('votes', votes);
         voteCount += votes;
+
+        if (item.get('valid')) {
+            validCount++;
+        }
     });
 
     // Now set percentages to support other plugins like visualizations.
@@ -378,7 +386,7 @@ plugin.methods.processData = function() {
         // Actual percentage value
         var percentage = (voteCount > 0)
                             ? (100 * votes / voteCount)
-                            : 100 / stream.threads[0].children.length;
+                            : (validCount > 0) ? (100 / validCount) : 0;
 
         // Displayable text label
         if (showPercent && showCount) {
