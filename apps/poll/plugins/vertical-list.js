@@ -20,23 +20,3 @@ if (Echo.Plugin.isDefined(plugin)) return;
 Echo.Plugin.create(plugin);
 
 })(Echo.jQuery);
-
-(function(jQuery) {
-'use strict';
-
-var $ = jQuery;
-
-/**
- * @class Echo.StreamServer.Controls.Stream.Plugins.VerticalList
- * Same functionalty but for the Stream itself, collating data from all Items.
- *
- * @extends Echo.Plugin
- */
-var plugin = Echo.Plugin.manifest('VerticalList',
-                                  'Echo.StreamServer.Controls.Stream');
-
-if (Echo.Plugin.isDefined(plugin)) return;
-
-Echo.Plugin.create(plugin);
-
-})(Echo.jQuery);

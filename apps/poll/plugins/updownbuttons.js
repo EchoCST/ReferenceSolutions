@@ -5,7 +5,7 @@ var $ = jQuery;
 
 /**
  * @class Echo.StreamServer.Controls.Stream.Item.Plugins.UpDownButtons
- * Displays a two-bar-overlaid tug-of-war visualization.
+ * Displays up/down buttons.
  *
  * @extends Echo.Plugin
  */
@@ -20,14 +20,6 @@ if (Echo.Plugin.isDefined(plugin)) return;
 plugin.init = function() {
     this.extendTemplate('insertAfter', 'text', plugin.templates.thumb);
 };
-
-/**
- * Clearfix bar under the floated elements.
- * TODO: Change to a real clearfix?
- *
- * @echo_template
- */
-plugin.templates.clear = '<div style="clear: both"></div>';
 
 /**
  * Specific element for the thumbs-up/down graphics.
@@ -51,26 +43,6 @@ plugin.css =
     // TODO: This mode is NOT responsive yet!
 
     '';
-
-Echo.Plugin.create(plugin);
-
-})(Echo.jQuery);
-
-(function(jQuery) {
-'use strict';
-
-var $ = jQuery;
-
-/**
- * @class Echo.StreamServer.Controls.Stream.Plugins.UpDownButtons
- * Same functionalty but for the Stream itself, collating data from all Items.
- *
- * @extends Echo.Plugin
- */
-var plugin = Echo.Plugin.manifest('UpDownButtons',
-                                  'Echo.StreamServer.Controls.Stream');
-
-if (Echo.Plugin.isDefined(plugin)) return;
 
 Echo.Plugin.create(plugin);
 

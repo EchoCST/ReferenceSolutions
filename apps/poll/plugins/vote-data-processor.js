@@ -36,10 +36,10 @@ plugin.init = function() {
                              .attr('data-echo-id', id);
 
     // If this option is empty, hide it
-    var $content = $(item.data.object.content).wrapAll('<div></div>').parent();
-    var answer = $content.find('.answer').html(),
-        question = $content.find('.question').html();
-    if (!answer && !question) {
+    // TODO: We should probably look for a cleaner way to do this, like
+    // stripping tags and looking for text. Just a little whitespace could throw
+    // this off - too much "magic".
+    if (item.data.object.content == '<div class="answer"></div>') {
         item.config.get('target').hide();
         item.set('valid', false);
     } else {
@@ -50,6 +50,7 @@ plugin.init = function() {
     //this.extendTemplate('insertAfter', 'body', plugin.templates.resultText);
     //this.extendTemplate('insertAfter', 'body', plugin.templates.resultBar);
     this.extendTemplate('insertAsFirstChild', 'body', plugin.templates.results);
+    this.extendTemplate('insertAfter', 'children', plugin.templates.clear);
 };
 
 /**
@@ -59,6 +60,14 @@ plugin.init = function() {
  */
 plugin.templates.results = '<div class="{plugin.class:resultBar}"></div>' +
                            '<div class="{plugin.class:resultText}"></div>';
+
+/**
+ * Clearfix bar under the floated elements.
+ * TODO: Change to a real clearfix?
+ *
+ * @echo_template
+ */
+plugin.templates.clear = '<div style="clear: both"></div>';
 
 /**
  * Hook up the vote submit event.
@@ -250,7 +259,7 @@ plugin.init = function() {
                     }
                 });
 
-                plugin.processData();
+                plugin.updateResults();
             },
             onError: function(data, extra) {
                 // TODO: What kinds of errors can we get?
@@ -268,10 +277,10 @@ plugin.init = function() {
  */
 plugin.events = {
     'Echo.StreamServer.Controls.Stream.onRender': function(entry) {
-        this.processData();
+        this.updateResults();
     },
     'Echo.StreamServer.Controls.Stream.onRefresh': function(entry) {
-        this.processData();
+        this.updateResults();
     },
     'Echo.StreamServer.Controls.Stream.Item.Plugins.VoteDataProcessor.onManualVote':
     function(topic, args) {
@@ -286,15 +295,6 @@ plugin.events = {
         }
 
         this._recordVote(optionId);
-
-        // TODO: We ought to be able to refactor this since the processor below
-        // does the same thing.
-        $.map(this.component.threads[0].children, function(item) {
-            if (item.data.object.id == optionId) {
-                item.config.get('target').addClass('selected');
-                item.set('selected', true);
-            }
-        });
 
         var content = {
             verb: 'post',
@@ -319,14 +319,23 @@ plugin.events = {
             timeout: 5000,
             data: data,
             success: function(data) {
-                console.log('success', data);
+                //console.log('success', data);
             },
             error: function(data) {
-                console.log('error', data);
+                //console.log('error', data);
             }
         });
 
-        this._showResults();
+        // Purge the view as well
+        // TODO: Is this acceptable?
+        var query = this.component.config.data.query,
+            appkey = this.component.config.data.appkey;
+        $.get('http://api.echoenabled.com/v1/admin/purge-view?q=' + query +
+              '&appkey=' + appkey, function(data) {
+            // Do nothing
+        });
+
+        this.updateResults();
     }
 };
 
@@ -355,12 +364,21 @@ plugin.methods._recordVote = function(answer) {
         poll = stream.threads[0],
         id = this._mungeId(poll.data.object.id);
 
+    // Remember it for reloads
     $.jStorage.set(id, answer, { TTL: 30 * 86400 * 1000 });
+
+    // Mark the item as having been selected
+    $.map(this.component.threads[0].children, function(item) {
+        if (item.data.object.id == answer) {
+            item.config.get('target').addClass('selected');
+            item.set('selected', true);
+        }
+    });
 
     stream.config.get('target').addClass('voted');
     stream.set('voted', true);
     if (stream.config.get('display.showResults') == 'after') {
-        plugin._showResults();
+        plugin.updateResults();
     }
 
     // Post an event so others can update themselves.
@@ -373,19 +391,6 @@ plugin.methods._recordVote = function(answer) {
             answer: answer
         }
     });
-}
-
-/**
- * Start showing the results for the poll.
- */
-plugin.methods._showResults = function() {
-    var plugin = this,
-        stream = this.component;
-
-    stream.set('showResults', true);
-    stream.config.get('target').addClass('showing-results');
-
-    plugin._updateResults();
 }
 
 /**
@@ -406,24 +411,45 @@ plugin.methods._mungeId = function(id) {
  * Process the stream data. Called by the event handlers, and may also be called
  * manually.
  */
-plugin.methods.processData = function() {
+plugin.methods.updateResults = function() {
     var plugin = this,
         stream = this.component,
+        poll = stream.threads[0],
         voteCount = 0,
         validCount = 0,
         showResults = false;
 
-    // First count all the votes.
-    if (!stream.threads[0]) return;
-    var poll = stream.threads[0];
+    if (!poll) return;
 
+    // Have we already voted?
+    var myVote = this._getVote(poll.data.object.id);
+    if (!stream.get('showResults')) {
+        if (stream.config.get('display.showResults') == 'before' ||
+            (stream.config.get('display.showResults') == 'after' && myVote)) {
+            stream.config.get('target').addClass('voted');
+            stream.set('showResults', true);
+            stream.config.get('target').addClass('showing-results');
+        }
+    }
+
+    // We need to iterate the items twice - luckily there aren't many. The first
+    // time through we find the totals, so we can calculate percentages later.
     $.map(poll.children, function(item) {
         var votes = item.get('data.object.accumulators.repliesCount', 0);
+
+        if (item.data.object.id == myVote) {
+            item.config.get('target').addClass('selected');
+            item.set('selected', true);
+            votes++;
+        } else {
+            item.set('selected', false);
+        }
+
         item.set('votes', votes);
-        voteCount += votes;
 
         if (item.get('valid')) {
             validCount++;
+            voteCount += votes;
         }
     });
 
@@ -433,8 +459,6 @@ plugin.methods.processData = function() {
         var showPercent = item.config.get('parent.display.percent'),
             showCount = item.config.get('parent.display.count'),
             resultText = '',
-            $text = item.plugins.VoteDataProcessor.view.get('resultText'),
-            $bar = item.plugins.VoteDataProcessor.view.get('resultBar'),
             votes = item.get('votes');
 
         // Actual percentage value
@@ -456,51 +480,7 @@ plugin.methods.processData = function() {
         item.set('resultText', resultText);
     });
 
-    // TODO: Determine whether the user has already voted. Cookie?
-    var vote = this._getVote(poll.data.object.id);
-
-    // Set a 'selected' flag on that item
-    $.map(poll.children, function(item) {
-        if (item.data.object.id == vote) {
-            item.config.get('target').addClass('selected');
-            item.set('selected', true);
-        } else {
-            item.set('selected', false);
-        }
-    });
-
-    // Should we show the results?
-    if (stream.config.get('display.showResults') == 'before' ||
-        (stream.config.get('display.showResults') == 'after' && vote)) {
-        stream.config.get('target').addClass('voted');
-        plugin._showResults();
-    }
-
-    // Cache these values for later use
-    stream.set('vote', vote);
-    stream.set('showResults', showResults);
-
-    // Post an event so others can update themselves.
-    plugin.events.publish({
-        topic: 'onProcessed',
-        data: {
-            stream: stream
-        }
-    });
-};
-
-/**
- * Show the results. We do this separately from the data processor above because
- * we want to animate the result bar either after we vote or when we first know
- * the result values.
- */
-plugin.methods._updateResults = function() {
-    var plugin = this,
-        stream = this.component,
-        voteCount = 0,
-        showResults = false;
-
-    // There's nothing here for us to do until we're ready to show the results
+    // There's nothing further for us to do until we're ready to show results
     if (!stream.get('showResults')) {
         return;
     }
@@ -508,9 +488,7 @@ plugin.methods._updateResults = function() {
     // For each child, look for a result Bar and result Text view. Note that
     // some visualizations may hide these and show their own.
     $.map(stream.threads[0].children, function(item, i) {
-        var showPercent = item.config.get('parent.display.percent'),
-            showCount = item.config.get('parent.display.count'),
-            $text = item.plugins.VoteDataProcessor.view.get('resultText'),
+        var $text = item.plugins.VoteDataProcessor.view.get('resultText'),
             $bar = item.plugins.VoteDataProcessor.view.get('resultBar');
 
         // Display the value, and also set it as a convenience for non-default
@@ -532,7 +510,15 @@ plugin.methods._updateResults = function() {
             }
         });
     });
-}
+
+    // Post an event so others can update themselves.
+    plugin.events.publish({
+        topic: 'onProcessed',
+        data: {
+            stream: stream
+        }
+    });
+};
 
 /**
  * Provides a comma-separated-thousands format display.

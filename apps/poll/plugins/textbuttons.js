@@ -17,27 +17,27 @@ if (Echo.Plugin.isDefined(plugin)) return;
 plugin.css =
     '.{plugin.class} .{class:body} { margin: 0; }' +
 	'.{plugin.class} .{class:children} .{class} { width: 50%; float: left; border: 1px solid #333; }' +
-    '.{plugin.class} .answer span { left: 0; right: 0; z-index: 3; text-align: center; }';
 
-Echo.Plugin.create(plugin);
+    '.{plugin.class} .{class:children} .{class:body} img { max-height: 32px; position: absolute; top: 4px; left: 4px; z-index: 3; }' +
 
-})(Echo.jQuery);
+    '.{plugin.class} .answer span { left: 0; right: 0; z-index: 3; text-align: center; }' +
 
-(function(jQuery) {
-'use strict';
+    // Some responsive styling.
+    '@media all and (max-width: 900px) {'+
+        '.{plugin.class} .{class:children} .{class:body} img { max-height: 28px; top: 3px; left: 3px; }' +
+    '}' +
 
-var $ = jQuery;
+    '@media all and (max-width: 600px) {'+
+        '.{plugin.class} .{class:children} .{class:body} img { max-height: 22px; top: 3px; left: 3px; }' +
+    '}' +
 
-/**
- * @class Echo.StreamServer.Controls.Stream.Plugins.TextButtons
- * Same functionalty but for the Stream itself, collating data from all Items.
- *
- * @extends Echo.Plugin
- */
-var plugin = Echo.Plugin.manifest('TextButtons',
-                                  'Echo.StreamServer.Controls.Stream');
+    '@media all and (max-width: 400px) {'+
+        '.{plugin.class} .{class:children} .{class:body} img { display: none; }' +
+        // TODO: More elegant way?
+        '.echo-streamserver-controls-stream-item-plugin-VoteDataProcessor-resultText { display: none !important; }' +
+    '}' +
 
-if (Echo.Plugin.isDefined(plugin)) return;
+    '';
 
 Echo.Plugin.create(plugin);
 
