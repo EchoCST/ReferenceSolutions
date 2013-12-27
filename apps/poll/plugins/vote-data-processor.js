@@ -43,7 +43,7 @@ plugin.init = function() {
     // Learned something new today. You cannot do this - only one will work!
     //this.extendTemplate('insertAfter', 'body', plugin.templates.resultText);
     //this.extendTemplate('insertAfter', 'body', plugin.templates.resultBar);
-    this.extendTemplate('insertAsLastChild', 'body', plugin.templates.results);
+    this.extendTemplate('insertAsFirstChild', 'body', plugin.templates.results);
 };
 
 /**
@@ -63,10 +63,18 @@ plugin.component.renderers.body = function(element) {
 
     element = this.parentRenderer('body', element);
 
+    // TODO: Gah, why does it have to be so hard to get from the Item to the
+    // Stream???
     $(element).click(function(e) {
         e.preventDefault();
         if (item.depth == 1) {
-            alert(item.get('echo-id'));
+            // Events are the only way we know of right now...
+            plugin.events.publish({
+                topic: 'onManualVote',
+                data: {
+                    id: item.get('echo-id')
+                }
+            });
         }
     });
 
@@ -187,6 +195,9 @@ plugin.init = function() {
     // Hook the Twitter 'tweet' Intent. When it's fired, if it points to one of
     // our options, mark the poll as having been voted-on, and fire and event
     // so the visualizations can show their results (if they're going to).
+    //
+    // TODO: This will probably not work if there is more than one Twitter-based
+    // poll on the page...
     if (!!window.twttr) {
         twttr.events.bind('tweet', function (event) {
             if (event.type == 'tweet' && event.region == 'intent') {
@@ -253,6 +264,12 @@ plugin.events = {
     },
     'Echo.StreamServer.Controls.Stream.onRefresh': function(entry) {
         this.processData();
+    },
+    'Echo.StreamServer.Controls.Stream.Item.Plugins.VoteDataProcessor.onManualVote':
+    function(topic, args) {
+        // TODO: Record the vote, too
+        console.log(args);
+        this._showResults();
     }
 };
 

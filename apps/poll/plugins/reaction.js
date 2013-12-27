@@ -18,8 +18,16 @@ if (Echo.Plugin.isDefined(plugin)) return;
  * Add a media container for the 'front' side of the card
  */
 plugin.init = function() {
-    console.log(this);
+    this.extendTemplate('insertAfter', 'children', plugin.templates.clear);
 };
+
+/**
+ * Clearfix bar under the floated elements.
+ * TODO: Change to a real clearfix?
+ *
+ * @echo_template
+ */
+plugin.templates.clear = '<div style="clear: both"></div>';
 
 plugin.css =
 	'.{plugin.class} .{class:children} .{class} { margin: 14px 14px 14px 0; display: block; float: left; width: auto; white-space: nowrap; background: #111; position: relative; }' +

@@ -28,7 +28,7 @@ plugin.init = function() {
  *
  * @echo_template
  */
-plugin.templates.bar = '<div class="{plugin.class:bar} tugofwar-bar"></div>';
+plugin.templates.bar = '<div class="{plugin.class:bar}"></div>';
 
 /**
  * We draw the result as a separate element so the bar's width doesn't interfere
@@ -56,33 +56,33 @@ plugin.css =
 
 	// Bars
 	'.{plugin.class} .{class} { width: 100%; height: 140px; position: absolute; top: 0; left: 0; }' +
-    '.{plugin.class} .{class:children} .{plugin.class:bar} { height: 100px; position: absolute; top: 0; border: 1px solid #fff; }' +
-	'.{plugin.class} .{class}:first-child .{plugin.class:bar} { background: #ea9101; z-index: 0; right: 0; width: 100%; }' +
-	'.{plugin.class} .{class}:last-child .{plugin.class:bar} { background: #55a3cc; z-index: 1; left: 0; }' +
+    '.{plugin.class} .{class:children} .{plugin.class:bar} { height: 100px; position: absolute; top: 0; left: 0; border: 1px solid #fff; }' +
+	'.{plugin.class} .{class:children} .{class}:first-child .{plugin.class:bar} { background: #55a3cc; z-index: 1; }' +
+	'.{plugin.class} .{class:children} .{class}:last-child .{plugin.class:bar} { background: #ea9101; z-index: 0; right: 0; width: 100%; }' +
 
     // Text display. Note that tug of war polls may include an IMG with a class
     // of "inset" that acts as a graphic badge on the bar.
     '.{plugin.class} .{class:children} .{plugin.class:result} { position: absolute; top: 0; height: 100px; color: #fff; line-height: 100px; font-size: 30px; z-index: 2; }' +
-    '.{plugin.class} .{class}:first-child .{plugin.class:result} { right: 0; }' +
-    '.{plugin.class} .{class}:last-child .{plugin.class:result} { left: 0; }' +
+    '.{plugin.class} .{class}:first-child .{plugin.class:result} { left: 0; }' +
+    '.{plugin.class} .{class}:last-child .{plugin.class:result} { right: 0; }' +
 
     '.{plugin.class} .{class:children} .{plugin.class:result} img { display: block; height: 77px; overflow: hidden; margin: 12px; }' +
-    '.{plugin.class} .{class}:first-child .{plugin.class:result} img { float: right; }' +
-    '.{plugin.class} .{class}:last-child .{plugin.class:result} img { float: left; }' +
+    '.{plugin.class} .{class}:first-child .{plugin.class:result} img { float: left; }' +
+    '.{plugin.class} .{class}:last-child .{plugin.class:result} img { float: right; }' +
 
-    '.{plugin.class} .{class}:first-child .{plugin.class:result} .percentage { float: right; }' +
-    '.{plugin.class} .{class}:last-child .{plugin.class:result} .percentage { float: left; }' +
+    '.{plugin.class} .{class}:first-child .{plugin.class:result} .percentage { float: left; }' +
+    '.{plugin.class} .{class}:last-child .{plugin.class:result} .percentage { float: right; }' +
 
     // Action buttons are shown below the bars.
     '.{plugin.class} .{class:children} .{class:body} { position: absolute; bottom: 0; }' +
     '.{plugin.class} .{class:children} .{class:body} img { display: none; }' +
-    '.{plugin.class} .{class}:first-child .{class:body} { right: 0; }' +
-    '.{plugin.class} .{class}:last-child .{class:body} { left: 0; }' +
+    '.{plugin.class} .{class}:first-child .{class:body} { left: 0; }' +
+    '.{plugin.class} .{class}:last-child .{class:body} { right: 0; }' +
 
     // Buttons and other data
     '.{plugin.class} .{class} .{class:text} span { display: block; padding: 6px 20px; border-radius: 9px; background: #333; text-decoration: none; font-weight: bold; margin: 10px 7px 0 7px; color: #fff; font-size: 13px; line-height: 18px; height: auto; white-space: nowrap; }' +
-	'.{plugin.class} .{class}:first-child .{class:text} span { right: 0; left: inherit; }' +
-	'.{plugin.class} .{class}:last-child .{class:text} span { left: 0; right: inherit; ; }' +
+	'.{plugin.class} .{class}:first-child .{class:text} span { left: 0; right: inherit; }' +
+	'.{plugin.class} .{class}:last-child .{class:text} span { right: 0; left: inherit; ; }' +
 
     // Some responsive styling. Note that since phone resolutions are now all
     // over the place we deliberately used widths IN BETWEEN their typical sizes
@@ -177,7 +177,7 @@ plugin.methods.processData = function() {
         $result.html(html);
 
         // Animate only the LEFT bar (which is the second Stream Item...)
-        if (i == 1) {
+        if (i == 0) {
             // jQuery sets overflow:hidden during animations, and we're using
             // overflow to position the buttons.
             $bar.animate({

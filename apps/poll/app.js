@@ -115,13 +115,14 @@ poll.renderers.stream = function(element) {
 		url: cdnURL + '/apps/poll/plugins/vote-data-processor.js'
 	});
 
-	var childrenItems = 2;
+	var childrenItems = 10;
 	switch (app.config.get('display.visualization')) {
 		case 'tugofwar':
 			plugins.push({
 				name: 'TugOfWar',
 				url: cdnURL + '/apps/poll/plugins/tug-of-war.js'
 			});
+			childrenItems = 2;
 			break;
 
 		case 'list':
@@ -129,7 +130,6 @@ poll.renderers.stream = function(element) {
 				name: 'VerticalList',
 				url: cdnURL + '/apps/poll/plugins/vertical-list.js'
 			});
-			childrenItems = 10;
 			break;
 
 		case 'sidebyside':
@@ -137,6 +137,7 @@ poll.renderers.stream = function(element) {
 				name: 'SideBySide',
 				url: cdnURL + '/apps/poll/plugins/side-by-side.js'
 			});
+			childrenItems = 2;
 			break;
 
 		case 'reaction':
@@ -144,7 +145,6 @@ poll.renderers.stream = function(element) {
 				name: 'Reaction',
 				url: cdnURL + '/apps/poll/plugins/reaction.js'
 			});
-			childrenItems = 10;
 			break;
 
 		case 'textbuttons':
@@ -152,6 +152,7 @@ poll.renderers.stream = function(element) {
 				name: 'TextButtons',
 				url: cdnURL + '/apps/poll/plugins/textbuttons.js'
 			});
+			childrenItems = 2;
 			break;
 
 		case 'updown':
@@ -159,12 +160,13 @@ poll.renderers.stream = function(element) {
 				name: 'UpDownButtons',
 				url: cdnURL + '/apps/poll/plugins/updownbuttons.js'
 			});
+			childrenItems = 2;
 			break;
 	}
 
 	var url = Echo.Polyfills.DataSources.getTargetUrl(app.config.get('datasource'));
 	var query = 'url:' + url + ' safeHTML:off children:1 childrenItemsPerPage:' +
-				childrenItems + ' childrenSortOrder:reverseChronological';
+				childrenItems + ' childrenSortOrder:chronological';
 
 	// TODO: AppServer does not allow us to run a config-update hook. We had a
 	// schema change on where we store the appkey, so we need some special cases
