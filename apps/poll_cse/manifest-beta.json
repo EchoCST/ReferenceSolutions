@@ -1,6 +1,6 @@
 {
     "id": "echo-poll-beta",
-    "name": "LiveVote (Beta)",
+    "name": "LivePoll (Beta)",
     "description": "Vote collection and display App with a variety of visualizations.",
     "app_version": "1.1.0",
     "icon": "//cdn.echoenabled.com/apps/echo/media-gallery/icon.png",
