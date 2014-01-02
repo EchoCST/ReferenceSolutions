@@ -268,6 +268,30 @@ angular.module("/poll/dashboard", []).run(["$templateCache", function($templateC
     "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
     "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
     "  </fieldset>\n" +
+    "\n" +
+    "  <fieldset name=\"option9\">\n" +
+    "    <legend class=\"icon-check\">Option 9</legend>\n" +
+    "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
+    "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
+    "  </fieldset>\n" +
+    "\n" +
+    "  <fieldset name=\"option10\">\n" +
+    "    <legend class=\"icon-check\">Option 10</legend>\n" +
+    "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
+    "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
+    "  </fieldset>\n" +
+    "\n" +
+    "  <fieldset name=\"option11\">\n" +
+    "    <legend class=\"icon-check\">Option 11</legend>\n" +
+    "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
+    "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
+    "  </fieldset>\n" +
+    "\n" +
+    "  <fieldset name=\"option12\">\n" +
+    "    <legend class=\"icon-check\">Option 12</legend>\n" +
+    "    <select name=\"image\" data-component=\"FilePicker\" title=\"Image\" data-help=\"Click to set the inset or thumbnail image for the item. Display is visualization dependent.\" />\n" +
+    "    <input name=\"answer\" type=\"text\" title=\"Answer\" data-help=\"The answer text for this option.\" />\n" +
+    "  </fieldset>\n" +
     "</fieldset>\n" +
     "\n" +
     "<fieldset name=\"display\">\n" +

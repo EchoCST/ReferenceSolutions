@@ -59,11 +59,102 @@ dashboard.config = {
  * Convert our template into ECL when we get loaded.
  */
 dashboard.init = function() {
-	var self = this, parent = $.proxy(this.parent, this);
+	var self = this,
+	    parent = $.proxy(this.parent, this);
 
 	// TODO: We should NOT need to do this. Dashboard controls should be able to
 	// access this data themselves.
 	Echo.Polyfills.DashboardSupport.configData = self.config.data.data;
+
+	self.events.subscribe({
+		topic: 'Echo.AppServer.Controls.Configurator.onItemChange',
+        handler: function(topic, args) {
+			// TODO: Refactor out into separate method
+			var config = $.extend({}, self.config.data.data.instance.config);
+
+			// Figured this would mess with Dashboard's own behavior so we're
+			// working with a clone of the object. That's the trouble with being
+			// a post-update-hook girl in a pre-update-hook world...
+			if (!config.datasource.targetURLSource) {
+				config.datasource.targetURLSource = 'autogen';
+			}
+			Echo.Utils.set(config, args.name, args.values.current);
+
+			if (config.datasource.targetURLSource == 'autogen') {
+				var url = Echo.Polyfills.DataSources.getTargetUrl(config.datasource);
+
+				if (config.pollbuilder.manual) {
+					return;
+				}
+
+				Echo.Utils.log({
+					component: 'Poll Builder',
+					type: 'info',
+					message: 'Auto-generating data for  ' + url,
+					args: config
+				});
+
+				// TODO: The SDK provides an API.Request tool, but this isn't one of
+				// its pre-defined endpoints and it doesn't seem to add much value
+				// for what we're doing here. Reconsider using it later?
+				var updates = [];
+				updates.push({
+					url: url,
+					// TODO: A template would be nice here.
+					content: '<div class="header">' +
+							 ((config.pollbuilder.heading.title) ? '<div class="title">' + config.pollbuilder.heading.title + '</div>' : '') +
+							 ((config.pollbuilder.heading.image) ? '<img src="' + config.pollbuilder.heading.image + '" class="image" />' : '') +
+							 ((config.pollbuilder.heading.question) ? '<div class="question">' + config.pollbuilder.heading.question + '</div>' : '') +
+							 '</div>'
+				});
+
+				// TODO: TITLE tags or other 'A' tag sweetness?
+				// This helper just cleans up the code below a bit. We really
+				// should use templates for this...
+				var registerUpdateRequest = function(subpath, option) {
+					if (!option) return;
+
+					updates.push({
+						url: url + '/' + subpath,
+						// TODO: A template would be nice here.
+						content: '<div class="answer">' +
+								 ((option.image) ? '<img src="' + option.image + '" />' : '') +
+								 ((option.answer) ? '<span>' + option.answer + '</span>' : '') +
+								 '</div>',
+					});
+				}
+				registerUpdateRequest('option1', config.pollbuilder.option1);
+				registerUpdateRequest('option2', config.pollbuilder.option2);
+				registerUpdateRequest('option3', config.pollbuilder.option3);
+				registerUpdateRequest('option4', config.pollbuilder.option4);
+				registerUpdateRequest('option5', config.pollbuilder.option5);
+				registerUpdateRequest('option6', config.pollbuilder.option6);
+				registerUpdateRequest('option7', config.pollbuilder.option7);
+				registerUpdateRequest('option8', config.pollbuilder.option8);
+				registerUpdateRequest('option9', config.pollbuilder.option9);
+				registerUpdateRequest('option10', config.pollbuilder.option10);
+				registerUpdateRequest('option11', config.pollbuilder.option1);
+				registerUpdateRequest('option12', config.pollbuilder.option12);
+
+				console.log('Sending proxy submission now...');
+				$.ajax({
+					url: 'http://echosandbox.com/cst/poll-proxy/index.php',
+					data: {
+						busname: config.datasource.busName,
+						updates: updates
+					},
+					timeout: 5000,
+					dataType: 'jsonp',
+					success: function(data) {
+						console.log('Success!');
+					},
+					error: function(data) {
+						console.log('Error: ', data);
+					}
+				});
+			}
+		}
+	});
 
 	var deferreds = [$.Deferred()];
 	$.when.apply($, deferreds).done(function() {
@@ -136,130 +227,14 @@ dashboard.methods.declareInitialConfig = function() {
 			option5: { image: '', answer: '' },
 			option6: { image: '', answer: '' },
 			option7: { image: '', answer: '' },
-			option8: { image: '', answer: '' }
+			option8: { image: '', answer: '' },
+			option9: { image: '', answer: '' },
+			option10: { image: '', answer: '' },
+			option11: { image: '', answer: '' },
+			option12: { image: '', answer: '' }
 		},
 		auth: {
 			janrainApp: janrainapps.length ? janrainapps[0].name : undefined
-		}
-	}
-};
-
-dashboard.events = {
-	// This is a terrible practice but we're dealing with an AppServer bug that
-	// will hopefully be resolved soon. When you change from one instance to
-	// another in AppServer, it is not cleaning up Dashboard events. This leads
-	// to an exception that breaks edit/save operations in later instances. But
-	// Dashboard remembers which instance you have open, so if we reload, it
-	// resets this and we're fine.
-	//
-	// TODO: Remove this when no longer necessary.
-	'Echo.AppServer.Controls.Bundler.Item.onExpand': function(topic, args) {
-		if (typeof(window.appServerExpandCount) === 'undefined') {
-			window.appServerExpandCount = 0;
-		}
-
-		if (window.appServerExpandCount++ >= 1) {
-			window.location.reload();
-		}
-	},
-
-	// TODO: Tried to hook onUpdate but it didn't get called?
-	// TODO: For the moment this is pretty much hard-coded behavior just for
-	// autogen polls. Everything else is assumed to be set up externally via
-	// a 'submit'ted XML file. See samples/*.xml for examples.
-	'Echo.AppServer.Controls.Configurator.onItemChange': function(topic, args) {
-		// NOTE: There is a known issue with Dashboards that subscribe to
-		// events.
-		var self = this,
-		    config = $.extend({}, this.config.data.data.instance.config);
-
-		// Figured this would mess with Dashboard's own behavior so we're
-		// working with a clone of the object. That's the trouble with being
-		// a post-update-hook girl in a pre-update-hook world...
-		if (!config.datasource.targetURLSource) {
-			config.datasource.targetURLSource = 'autogen';
-		}
-		Echo.Utils.set(config, args.name, args.values.current);
-
-		if (config.datasource.targetURLSource == 'autogen') {
-			var url = Echo.Polyfills.DataSources.getTargetUrl(config.datasource);
-
-			if (config.pollbuilder.manual) {
-				return;
-			}
-
-			Echo.Utils.log({
-				component: 'Poll Builder',
-				type: 'info',
-				message: 'Auto-generating data for  ' + url,
-				args: config
-			});
-
-			// TODO: The SDK provides an API.Request tool, but this isn't one of
-			// its pre-defined endpoints and it doesn't seem to add much value
-			// for what we're doing here. Reconsider using it later?
-
-			var updates = [];
-			updates.push({
-				url: url,
-				content: '<div class="header">' +
-				         ((config.pollbuilder.heading.title) ? '<div class="title">' + config.pollbuilder.heading.title + '</div>' : '') +
-				         ((config.pollbuilder.heading.image) ? '<img src="' + config.pollbuilder.heading.image + '" class="image" />' : '') +
-						 ((config.pollbuilder.heading.question) ? '<div class="question">' + config.pollbuilder.heading.question + '</div>' : '') +
-						 '</div>'
-			});
-
-			// TODO: So... objvar.property and objvar[property] are supposed to
-			// be functionally identical. But something weird is happening in
-			// Echo-land, so Echo.Utils.get(config, 'pollbuilder.option' + i)
-			// and config.pollbuilder['option' + i] both evaluate to {}, while
-			// config.pollbulder.option1, config.pollbuilder.option2, etc do
-			// evaluate correctly. For now since there are only 8 options we
-			// just rolled with it and eliminated the for() loop simplification,
-			// but it would be very nice to know what is going on here!
-
-			// config.pollbuilder.option1:
-			//     Object {image: "https://www.filepicker.io/api/file/Wg6iTZdsSYKqS8rVsyej", answer: "Answer"} dashboard.js:138
-			// config.pollbuilder['option1']:
-			//     Object {}
-			// Echo.Utils.get(config, 'pollbuilder.option1'):
-			//     Object {}
-			// Uhhhhhhh......?
-
-			// TODO: TITLE tags or other 'A' tag sweetness?
-			var registerUpdateRequest = function(subpath, option) {
-				updates.push({
-					url: url + '/' + subpath,
-					content: '<div class="answer">' +
-					         ((option.image) ? '<img src="' + option.image + '" />' : '') +
-							 ((option.answer) ? '<span>' + option.answer + '</span>' : '') +
-							 '</div>',
-				});
-			}
-			registerUpdateRequest('option1', config.pollbuilder.option1);
-			registerUpdateRequest('option2', config.pollbuilder.option2);
-			registerUpdateRequest('option3', config.pollbuilder.option3);
-			registerUpdateRequest('option4', config.pollbuilder.option4);
-			registerUpdateRequest('option5', config.pollbuilder.option5);
-			registerUpdateRequest('option6', config.pollbuilder.option6);
-			registerUpdateRequest('option7', config.pollbuilder.option7);
-			registerUpdateRequest('option8', config.pollbuilder.option8);
-
-			$.ajax({
-				url: 'http://echosandbox.com/cst/poll-proxy/index.php',
-				data: {
-					busname: config.datasource.busName,
-					updates: updates
-				},
-				timeout: 5000,
-				dataType: 'jsonp',
-				success: function(data) {
-//					console.log(data);
-				},
-				error: function(data) {
-//					console.log(data);
-				}
-			});
 		}
 	}
 };
