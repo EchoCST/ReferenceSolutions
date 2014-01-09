@@ -32,7 +32,7 @@
     }],
     "client_widget": {
         "component": "Echo.Apps.HeatMap",
-        "script": "//echocsthost.s3.amazonaws.com/beta/apps/heatmap/app.js",
+        "script": "//echocsthost.s3.amazonaws.com/beta/apps/heatmap/app.js"
     },
     "cloudapp_protocol_version": "1.0.0"
 }

@@ -23,7 +23,7 @@ Contents
   functionality that might one day become part of the SDK itself, such as
   support for Angular-compatible templates.
 
-  scripts - Support routines to do things like upload or manipulate sample
+  ***scripts*** - Support routines to do things like upload or manipulate sample
   data in DataServer / StreamServer when building and deploying Apps.
 
 
