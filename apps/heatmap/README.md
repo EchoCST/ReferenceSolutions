@@ -23,7 +23,7 @@ General Workflow
 Twitter is the recommended data source at this time. To prepare a feed for use,
 set up a stream in Echo DataServer, and add the following rule:
 
-  streamserver.add-markers:"geo.location:${geo.longitude};${geo.latitude},geo.marker" | geo
+    streamserver.add-markers:"geo.location:${geo.longitude};${geo.latitude},geo.marker" | geo
 
 This will add two markers to each post if it contains Geo-data. One will include
 the raw latitude/longitude from the post, and the other is a generic marker that
