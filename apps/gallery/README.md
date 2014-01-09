@@ -27,3 +27,16 @@ plugins, found in the "visualizations/" folder:
   auto-play mode. This could conceivably be used as the base for a Second Screen
   experience.
 
+Note that for best results, this App should pull from a stream that only
+contains media items. It will not display non-media entries, so it will not
+break if they exist (or if the stream contains broken images). However, this
+can make pagination inaccurate or unpredictable. It is recommended that
+DataServer feeds include one or both of the following rules to make sure these
+streams only contain images and/or videos:
+
+  streamserver.add-markers:photo | labels:photo
+  streamserver.add-markers:video | labels:video
+
+Then make sure the stream query includes a "markers" filter like:
+
+  markers:video,photo
