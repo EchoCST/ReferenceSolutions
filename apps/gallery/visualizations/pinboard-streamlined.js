@@ -33,11 +33,11 @@ plugin.dependencies = [{
 }, {
     // This plugin lets us debounce events
     loaded: function() { return !!Echo.jQuery().doTimeout; },
-    url: '{config:cdnBaseURL.EchoCST}/plugins/jquery.ba-dotimeout.min.js'
+    url: '//echocsthost.s3.amazonaws.com/plugins/jquery.ba-dotimeout.min.js'
 }, {
     // The Media Polyfill is used to extract IMG/etc tags for separate display
     loaded: function() { return !!Echo.Polyfills && !!Echo.Polyfills.Media; },
-    url: '{config:cdnBaseURL.EchoCST}/polyfills/media.js'
+    url: '//echocsthost.s3.amazonaws.com/polyfills/media.js'
 }, {
     // TODO: These should only be needed for 'lightbox' secondary display modes
     "loaded": function() { },
@@ -115,73 +115,14 @@ plugin.renderers.mediafull = function(element) {
 
         // Rotate/flip/etc visualizations
         switch (this.component.config.get('parent.display.secondary')) {
+            case 'none':
+                break;
+
             case 'lightbox':
                 // TODO: Code cleanup after debugging
                 element.append('<img src="//echocsthost.s3.amazonaws.com/polyfills/expand.png" class="expand" />');
                 element.find('.expand').click(function() {
-                    // There didn't appear to be anything anywhere in the documentation that told
-                    // how to do this. The only example was if we were deriving from Stream, but
-                    // we are an Item derivative. Found this by poking around the objects.
-                    // var parentq = item.config.data.parent.query;
-
-                    // TODO: Markers and such
-                    var query = 'url:' + item.data.object.id + ' children:1',
-                        appkey = item.config.get('appkey');
-
-                    // Couldn't figure out a more appropriate place to store this... Relied on
-                    // closure behavior for now. Plugin? DOM? Parent config?
-                    var stream = null;
-
-                    // TODO: Replace with the enhanced Bootstrap Modal plugin,
-                    // which supports responsive layout.
-                    // https://github.com/jschr/bootstrap-modal
-                    var myModal = new Echo.GUI.Modal({
-                        show: true,
-                        backdrop: true,
-                        keyboard: true,
-                        closeButton: true,
-                        remote: false,
-                        extraClass: "",
-                        data: {
-                            body: function() {
-                                return '<div id="lightbox-target"></div>';
-                            }
-                        },
-                        // TODO: Responsive
-                        width: "500",
-                        padding: "10",
-                        footer: false,
-                        fade: true,
-                        onShow: function() {
-                            // TODO: Cleanup?
-                            // TODO: Load Stream+
-                            var $target = $('#lightbox-target');
-                            stream = new Echo.StreamServer.Controls.Stream({
-                                target: $target[0],
-                                query: query,
-                                appkey: appkey,
-                                state: {
-                                    label: { icon: false, text: false }
-                                },
-                                plugins: [{
-                                    name: 'MediaGallery',
-                                    url: '{config:cdnBaseURL.EchoCST}/apps/gallery/plugins/media-gallery.js',
-                                    removeInvalidItems: true,
-                                }, {
-                                    name: 'PinboardVisualization',
-                                    url: '{config:cdnBaseURL.EchoCST}/apps/gallery/visualizations/pinboard.js'
-                                    //,
-                                    //minColWidth: self.config.get('display.mincolwidth', 300)
-                                }]
-                            });
-                        },
-                        onHide: function() {
-                            if (stream != null) {
-                                stream.destroy();
-                                stream = null;
-                            }
-                        },
-                    });
+                    plugin.lightbox();
                 });
                 break;
 
@@ -199,12 +140,119 @@ plugin.renderers.mediafull = function(element) {
     return element;
 };
 
+/**
+ * Clean up the lightbox drawn below.
+ */
+plugin.methods.removeLightbox = function() {
+    $('#mg-streamlined-lightbox-overlay').remove();
+    $('#mg-streamlined-lightbox').remove();
+
+    // TODO: Any more unbinding needed to avoid memleaks?
+    $(window).off('keyup.mgstreamlined');
+
+    var stream = this.get('lightbox-stream');
+    if (stream) {
+        // TODO: Anything else to shut down a stream?
+        stream.destroy();
+    }
+};
+
+/**
+ * The Git history includes an example of how to call Echo.Gui.Modal to get a
+ * modal lightbox using Bootstrap. But that component isn't responsive, it's 36k
+ * even minified and Gzip'd, and we still would have needed to style it to get
+ * the look/feel we were after. So here we implement just the very basics of
+ * what we wanted - we can always replace this later with a call to another
+ * plugin/component.
+ */
+plugin.methods.lightbox = function() {
+    var plugin = this,
+        item = plugin.component;
+
+    // TODO: Markers and such
+    var query = 'url:' + item.data.object.id + ' children:1',
+        itemid = item.data.object.id;
+
+    plugin.removeLightbox();
+
+    $('<div id="mg-streamlined-lightbox-overlay"></div>').appendTo($('body'));
+    $('<div id="mg-streamlined-lightbox"></div>').appendTo($('body'));
+
+    // Close if the overlay is clicked or ESC is pressed
+    $('#mg-streamlined-lightbox-overlay').click(function() {
+        plugin.removeLightbox();
+    });
+
+    $(window).on('keyup.mgstreamlined', function(e) {
+        if (e.keyCode == 27) {
+            plugin.removeLightbox();
+        }
+    });
+
+    // Ugly. But effective.
+    var media = plugin.get('media');
+    $('#mg-streamlined-lightbox').html(
+        '<div class="mgsl-inner">' +
+            '<div class="right"><div id="mg-stream"></div></div>' +
+            '<div class="left">' +
+                // Extra DIV level for vertical centering
+                '<div class="inner"><div class="media"></div></div>' +
+            '</div>' +
+        '</div>'
+    );
+    $('#mg-streamlined-lightbox .media').append($(media).clone());
+
+    var stream = Echo.Loader.initApplication({
+        script: "//echoplatform.com/sandbox/apps/echo/stream-plus/app.js",
+        component: "Echo.Apps.StreamPlus",
+        // TODO: This is too generic
+        backplane: {
+            serverBaseURL: "https://api.echoenabled.com/v1",
+            busName: "jskit"
+        },
+        config: {
+            target: document.getElementById("mg-stream"),
+            // TODO: Correct SDK patterns for item.get, appId, appkey, etc.
+            targetURL: item.data.object.id,
+            dependencies: {
+                // TODO: Does this need to be hard-coded around Janrain?
+                Janrain: { appId: "echo" },
+                StreamServer: { appkey: item.config.get('appkey') }
+            }
+        }
+    });
+
+    plugin.set('lightbox-stream', stream);
+}
+
 plugin.css =
     // Note: This line is not here to set the actual width of the Items. That
     // will be done above when Isotope is triggered. It's here to manage the
     // styling of the items when they first arrive before that effect starts.
     // Otherwise, the first item is HUGE.
     '.{plugin.class} { max-width: 30%; float: left; }' +
+
+    // Lightbox styling
+    // TODO: Refactor?
+    '#mg-streamlined-lightbox-overlay { position: absolute; z-index: 99999998; top: 0; left: 0; bottom: 0; right: 0; background: #000; opacity: 0.7; }' +
+    '#mg-streamlined-lightbox { position: absolute; z-index: 99999999; top: 20px; left: 20px; bottom: 20px; right: 20px; background: #fff; opacity: 1; }' +
+    '#mg-streamlined-lightbox .mgsl-inner { height: 100%; }' +
+    '#mg-streamlined-lightbox .left { height: 100%; margin-right: 320px; box-sizing: border-box; border-right: 1px solid #999; background: #111; }' +
+    '#mg-streamlined-lightbox .right { float: right; width: 320px; height: 100%; box-sizing: border-box; padding: 0 8px; background: #f0f00f0; }' +
+    '#mg-streamlined-lightbox #mg-stream { background: #fff; padding: 8px; height: 100%; overflow-y: scroll; }' +
+    '#mg-streamlined-lightbox .left .inner { position: relative; width: 100%; height: 100%; }' +
+    '#mg-streamlined-lightbox .left .inner:before { content: \'\'; display: inline-block; height: 100%; vertical-align: middle; }' +
+    '#mg-streamlined-lightbox .left .media { max-width: 90%; display: inline-block; margin: 0 0 0 5%; position: relative; vertical-align: middle; }' +
+    '#mg-streamlined-lightbox .left .media iframe,' +
+    '#mg-streamlined-lightbox .left .media img { max-width: 100%; display: block; margin: 0 auto; }' +
+    '#mg-streamlined-lightbox { }' +
+    '#mg-streamlined-lightbox { }' +
+    // TODO: Move down to a general responsive section once known
+    '@media all and (max-width: 500px) {' +
+        '#mg-streamlined-lightbox .left { float: none; margin-right: 0; height: 300px; }' +
+        '#mg-streamlined-lightbox .right { float: none; width: 100%; height: auto; }' +
+    '}' +
+
 
     // Override some incompatible default styles
     '.{plugin.class} .{class:container} { padding: 0px; }' +

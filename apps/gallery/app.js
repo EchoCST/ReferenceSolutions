@@ -154,7 +154,11 @@ gallery.renderers.stream = function(element) {
             plugins.push({
                 name: 'StreamlinedPinboardVisualization',
                 url: '{config:cdnBaseURL.EchoCST}/apps/gallery/visualizations/pinboard-streamlined.js',
-                minColWidth: self.config.get('display.mincolwidth', 300)
+                minColWidth: self.config.get('display.mincolwidth', 300),
+                // TODO: Is thre a better way to do this?
+                cdnBaseURL: {
+                    EchoCST: this.config.get('cdnBaseURL.EchoCST')
+                }
             });
 
             plugins.push({
