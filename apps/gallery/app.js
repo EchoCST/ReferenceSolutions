@@ -47,6 +47,7 @@ gallery.config = {
 
     display: {
         visualization: 'pinboard',
+        secondary: 'flip',
         sourcefilter: true,
         replies: true,
         likes: true,

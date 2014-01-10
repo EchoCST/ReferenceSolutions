@@ -38,6 +38,13 @@ plugin.dependencies = [{
     // The Media Polyfill is used to extract IMG/etc tags for separate display
     loaded: function() { return !!Echo.Polyfills && !!Echo.Polyfills.Media; },
     url: '//echocsthost.s3.amazonaws.com/polyfills/media.js'
+}, {
+    // TODO: These should only be needed for 'lightbox' secondary display modes
+    "loaded": function() { },
+    "url": "//cdn.echoenabled.com/sdk/v3/gui.pack.js"
+}, {
+    "loaded": function() { },
+    "url": "//cdn.echoenabled.com/sdk/v3/gui.pack.css"
 }];
 
 /**
@@ -106,10 +113,80 @@ plugin.renderers.mediafull = function(element) {
             });
         });
 
-        element.append('<img src="//echocsthost.s3.amazonaws.com/polyfills/rotate.png" class="rotate" />');
-        element.find('.rotate').click(function() {
-            item.config.get('target').addClass('rotated');
-        });
+        // Rotate/flip/etc visualizations
+        switch (this.component.config.get('parent.display.secondary')) {
+            case 'lightbox':
+                // TODO: Code cleanup after debugging
+                element.append('<img src="//echocsthost.s3.amazonaws.com/polyfills/expand.png" class="expand" />');
+                element.find('.expand').click(function() {
+                    // There didn't appear to be anything anywhere in the documentation that told
+                    // how to do this. The only example was if we were deriving from Stream, but
+                    // we are an Item derivative. Found this by poking around the objects.
+                    // var parentq = item.config.data.parent.query;
+
+                    // TODO: Markers and such
+                    var query = 'url:' + item.data.object.permalink + ' children:1',
+                        appkey = item.config.get('appkey');
+
+                        console.log(query);
+
+                    // Couldn't figure out a more appropriate place to store this... Relied on
+                    // closure behavior for now. Plugin? DOM? Parent config?
+                    var stream = null;
+
+                    // TODO: Replace with the enhanced Bootstrap Modal plugin,
+                    // which supports responsive layout.
+                    // https://github.com/jschr/bootstrap-modal
+                    var myModal = new Echo.GUI.Modal({
+                        show: true,
+                        backdrop: true,
+                        keyboard: true,
+                        closeButton: true,
+                        remote: false,
+                        extraClass: "",
+                        data: {
+                            body: function() {
+                                return '<div id="lightbox-target"></div>';
+                            }
+                        },
+                        // TODO: Responsive
+                        width: "90%",
+                        height: (Math.floor($(window).height() * 0.9) - 20) + 'px',
+                        padding: "10",
+                        footer: false,
+                        fade: true,
+                        onShow: function() {
+                            // TODO: Cleanup?
+                            // TODO: Load Stream+
+                            var $target = $('#lightbox-target');
+                            stream = new Echo.StreamServer.Controls.Stream({
+                                target: $target[0],
+                                query: query,
+                                appkey: appkey,
+                                state: {
+                                    label: { icon: false, text: false }
+                                }
+                            });
+                        },
+                        onHide: function() {
+                            if (stream != null) {
+                                stream.destroy();
+                                stream = null;
+                            }
+                        },
+                    });
+                });
+                break;
+
+            default:
+            case 'flip':
+                // TODO: Code cleanup after debugging
+                element.append('<img src="//echocsthost.s3.amazonaws.com/polyfills/rotate.png" class="rotate" />');
+                element.find('.rotate').click(function() {
+                    item.config.get('target').addClass('rotated');
+                });
+                break;
+        }
     }
 
     return element;
@@ -154,8 +231,11 @@ plugin.css =
     '.{plugin.class:media} { margin: 4px 7px 0 0; width: 25%; float: left; }' +
     '.{plugin.class:mediafull} { background: #000; }' +
     '.{plugin.class:mediafull} img { max-width: 100%; display: block; margin: 0 auto; }' +
+    // TODO: Collapse class for shorter styling?
     '.{plugin.class:mediafull} .rotate { position: absolute; top: 4px; right: 4px; opacity: 0.5; }' +
     '.{plugin.class:mediafull} .rotate:hover { opacity: 1; }' +
+    '.{plugin.class:mediafull} .expand { position: absolute; top: 4px; right: 4px; opacity: 0.4; }' +
+    '.{plugin.class:mediafull} .expand:hover { opacity: .8; }' +
 
     // Separate the header visually, and color-code it
     '.{plugin.class} .{plugin.class:header} { padding: 5px; background: #f0f0f0; border-bottom: 1px solid #ccc; position: relative; }' +

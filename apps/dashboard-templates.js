@@ -13,6 +13,9 @@ angular.module("/gallery/dashboard", []).run(["$templateCache", function($templa
     "   is checked. That means if you go to use it in app.js it can evaluate to false\n" +
     "   unexpectedly. See the related comment there for details.\n" +
     "\n" +
+    "2. Please see /polyfills/ecl.js for the support code that translates what's here\n" +
+    "   into ECL.\n" +
+    "\n" +
     "-->\n" +
     "\n" +
     "<!-- APP Key -->\n" +
@@ -69,6 +72,11 @@ angular.module("/gallery/dashboard", []).run(["$templateCache", function($templa
     "    <option value=\"pinboard\" selected=\"selected\">Pinboard-style Gallery</option>\n" +
     "    <option value=\"streamlined\">Streamlined Gallery</option>\n" +
     "    <option value=\"slideshow\">Slideshow w/ Full-Screen Support</option>\n" +
+    "  </select>\n" +
+    "\n" +
+    "  <select name=\"secondary\" title=\"Secondary Display\" data-help=\"Where should card/stream details be displayed?\">\n" +
+    "    <option value=\"flip\" selected=\"selected\">Flip</option>\n" +
+    "    <option value=\"lightbox\">Lightbox</option>\n" +
     "  </select>\n" +
     "\n" +
     "  <input name=\"sourcefilter\" type=\"checkbox\" checked=\"checked\" title=\"Display a source filter control\" data-help=\"A drop-down or similar control will be displayed that allows the user to choose the source of the media shown\" />\n" +
