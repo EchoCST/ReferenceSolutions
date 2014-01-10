@@ -125,10 +125,8 @@ plugin.renderers.mediafull = function(element) {
                     // var parentq = item.config.data.parent.query;
 
                     // TODO: Markers and such
-                    var query = 'url:' + item.data.object.permalink + ' children:1',
+                    var query = 'url:' + item.data.object.id + ' children:1',
                         appkey = item.config.get('appkey');
-
-                        console.log(query);
 
                     // Couldn't figure out a more appropriate place to store this... Relied on
                     // closure behavior for now. Plugin? DOM? Parent config?
@@ -150,8 +148,7 @@ plugin.renderers.mediafull = function(element) {
                             }
                         },
                         // TODO: Responsive
-                        width: "90%",
-                        height: (Math.floor($(window).height() * 0.9) - 20) + 'px',
+                        width: "500",
                         padding: "10",
                         footer: false,
                         fade: true,
@@ -165,7 +162,17 @@ plugin.renderers.mediafull = function(element) {
                                 appkey: appkey,
                                 state: {
                                     label: { icon: false, text: false }
-                                }
+                                },
+                                plugins: [{
+                                    name: 'MediaGallery',
+                                    url: '//echocsthost.s3.amazonaws.com/apps/gallery/plugins/media-gallery.js',
+                                    removeInvalidItems: true,
+                                }, {
+                                    name: 'PinboardVisualization',
+                                    url: '//echocsthost.s3.amazonaws.com/apps/gallery/visualizations/pinboard.js'
+                                    //,
+                                    //minColWidth: self.config.get('display.mincolwidth', 300)
+                                }]
                             });
                         },
                         onHide: function() {
