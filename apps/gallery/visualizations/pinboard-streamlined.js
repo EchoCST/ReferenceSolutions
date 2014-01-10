@@ -33,11 +33,11 @@ plugin.dependencies = [{
 }, {
     // This plugin lets us debounce events
     loaded: function() { return !!Echo.jQuery().doTimeout; },
-    url: '//echocsthost.s3.amazonaws.com/plugins/jquery.ba-dotimeout.min.js'
+    url: '{config:cdnBaseURL.EchoCST}/plugins/jquery.ba-dotimeout.min.js'
 }, {
     // The Media Polyfill is used to extract IMG/etc tags for separate display
     loaded: function() { return !!Echo.Polyfills && !!Echo.Polyfills.Media; },
-    url: '//echocsthost.s3.amazonaws.com/polyfills/media.js'
+    url: '{config:cdnBaseURL.EchoCST}/polyfills/media.js'
 }, {
     // TODO: These should only be needed for 'lightbox' secondary display modes
     "loaded": function() { },
@@ -165,11 +165,11 @@ plugin.renderers.mediafull = function(element) {
                                 },
                                 plugins: [{
                                     name: 'MediaGallery',
-                                    url: '//echocsthost.s3.amazonaws.com/apps/gallery/plugins/media-gallery.js',
+                                    url: '{config:cdnBaseURL.EchoCST}/apps/gallery/plugins/media-gallery.js',
                                     removeInvalidItems: true,
                                 }, {
                                     name: 'PinboardVisualization',
-                                    url: '//echocsthost.s3.amazonaws.com/apps/gallery/visualizations/pinboard.js'
+                                    url: '{config:cdnBaseURL.EchoCST}/apps/gallery/visualizations/pinboard.js'
                                     //,
                                     //minColWidth: self.config.get('display.mincolwidth', 300)
                                 }]

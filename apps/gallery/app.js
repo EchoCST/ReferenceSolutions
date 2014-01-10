@@ -143,13 +143,9 @@ gallery.renderers.stream = function(element) {
         url: '//cdn.echoenabled.com/apps/echo/dataserver/v3/plugins/items-rolling-window.js'
     }, {
         name: 'NativeAdvertising',
-        url: '//echocsthost.s3.amazonaws.com/plugins/native-advertising.js',
+        url: '{config:cdnBaseURL.EchoCST}/plugins/native-advertising.js',
         nativeAdInterval: self.config.get('integration.nativeinterval')
     }];
-
-    //if (!!self.config.get('display.likes')) {
-        //plugins.push({'name': 'Like'});
-    //}
 
     switch (self.config.get('display.visualization')) {
         case 'streamlined':
@@ -157,13 +153,13 @@ gallery.renderers.stream = function(element) {
 
             plugins.push({
                 name: 'StreamlinedPinboardVisualization',
-                url: '//echocsthost.s3.amazonaws.com/apps/gallery/visualizations/pinboard-streamlined.js',
+                url: '{config:cdnBaseURL.EchoCST}/apps/gallery/visualizations/pinboard-streamlined.js',
                 minColWidth: self.config.get('display.mincolwidth', 300)
             });
 
             plugins.push({
                 name: 'ItemSourceClass',
-                url: '//echocsthost.s3.amazonaws.com/plugins/item-source-class.js'
+                url: '{config:cdnBaseURL.EchoCST}/plugins/item-source-class.js'
             });
 
             break;
@@ -171,7 +167,7 @@ gallery.renderers.stream = function(element) {
         case 'slideshow':
             plugins.push({
                 name: 'FullScreenGalleryVisualization',
-                url: '//echocsthost.s3.amazonaws.com/apps/gallery/visualizations/gallery-fullscreen.js',
+                url: '{config:cdnBaseURL.EchoCST}/apps/gallery/visualizations/gallery-fullscreen.js',
                 minColWidth: self.config.get('display.mincolwidth', 300)
             });
             break;
@@ -180,19 +176,18 @@ gallery.renderers.stream = function(element) {
         default:
             plugins.push({
                 name: 'MediaGallery',
-                url: '//echocsthost.s3.amazonaws.com/apps/gallery/plugins/media-gallery.js',
+                url: '{config:cdnBaseURL.EchoCST}/apps/gallery/plugins/media-gallery.js',
                 removeInvalidItems: true,
             });
             plugins.push({
                 name: 'PinboardVisualization',
-                url: '//echocsthost.s3.amazonaws.com/apps/gallery/visualizations/pinboard.js',
+                url: '{config:cdnBaseURL.EchoCST}/apps/gallery/visualizations/pinboard.js',
                 minColWidth: self.config.get('display.mincolwidth', 300)
             });
             break;
     }
 
     plugins.push({ name: 'TweetDisplay' });
-//    plugins.push({ name: 'Moderation' });
 
     //if (!!self.config.get('display.replies')) {
         var reply = { name: 'Reply' };

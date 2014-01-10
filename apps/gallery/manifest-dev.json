@@ -32,7 +32,12 @@
     }],
     "client_widget": {
         "component": "Echo.Apps.MediaGallery",
-        "script": "//echocsthost.s3.amazonaws.com/dev/apps/gallery/app.js"
+        "script": "//echocsthost.s3.amazonaws.com/dev/apps/gallery/app.js",
+        "config": {
+            "cdnBaseURL": {
+                "EchoCST": "//echocsthost.s3.amazonaws.com/dev"
+            }
+        }
     },
     "cloudapp_protocol_version": "1.0.0"
 }

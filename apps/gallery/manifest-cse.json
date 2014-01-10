@@ -32,8 +32,12 @@
     }],
     "client_widget": {
         "component": "Echo.Apps.MediaGallery",
-        "scriptX": "//echocsthost.s3.amazonaws.com/apps/gallery/app.js",
-        "script": "//d3owx0qmt32wcw.cloudfront.net/apps/gallery/app.js"
+        "script": "//d3owx0qmt32wcw.cloudfront.net/apps/gallery/app.js",
+        "config": {
+            "cdnBaseURL": {
+                "EchoCST": "//echocsthost.s3.amazonaws.com/"
+            }
+        }
     },
     "cloudapp_protocol_version": "1.0.0"
 }
