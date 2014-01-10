@@ -143,7 +143,7 @@ gallery.renderers.stream = function(element) {
         url: '//cdn.echoenabled.com/apps/echo/dataserver/v3/plugins/items-rolling-window.js'
     }, {
         name: 'NativeAdvertising',
-        url: '{config:cdnBaseURL.EchoCST}/plugins/native-advertising.js',
+        url: '//echocsthost.s3.amazonaws.com/plugins/native-advertising.js',
         nativeAdInterval: self.config.get('integration.nativeinterval')
     }];
 
@@ -153,7 +153,7 @@ gallery.renderers.stream = function(element) {
 
             plugins.push({
                 name: 'StreamlinedPinboardVisualization',
-                url: '{config:cdnBaseURL.EchoCST}/apps/gallery/visualizations/pinboard-streamlined.js',
+                url: '//echocsthost.s3.amazonaws.com/apps/gallery/visualizations/pinboard-streamlined.js',
                 minColWidth: self.config.get('display.mincolwidth', 300),
                 // TODO: Is thre a better way to do this?
                 cdnBaseURL: {
@@ -163,7 +163,7 @@ gallery.renderers.stream = function(element) {
 
             plugins.push({
                 name: 'ItemSourceClass',
-                url: '{config:cdnBaseURL.EchoCST}/plugins/item-source-class.js'
+                url: '//echocsthost.s3.amazonaws.com/plugins/item-source-class.js'
             });
 
             break;
@@ -171,7 +171,7 @@ gallery.renderers.stream = function(element) {
         case 'slideshow':
             plugins.push({
                 name: 'FullScreenGalleryVisualization',
-                url: '{config:cdnBaseURL.EchoCST}/apps/gallery/visualizations/gallery-fullscreen.js',
+                url: '//echocsthost.s3.amazonaws.com/apps/gallery/visualizations/gallery-fullscreen.js',
                 minColWidth: self.config.get('display.mincolwidth', 300)
             });
             break;
@@ -180,12 +180,12 @@ gallery.renderers.stream = function(element) {
         default:
             plugins.push({
                 name: 'MediaGallery',
-                url: '{config:cdnBaseURL.EchoCST}/apps/gallery/plugins/media-gallery.js',
+                url: '//echocsthost.s3.amazonaws.com/apps/gallery/plugins/media-gallery.js',
                 removeInvalidItems: true,
             });
             plugins.push({
                 name: 'PinboardVisualization',
-                url: '{config:cdnBaseURL.EchoCST}/apps/gallery/visualizations/pinboard.js',
+                url: '//echocsthost.s3.amazonaws.com/apps/gallery/visualizations/pinboard.js',
                 minColWidth: self.config.get('display.mincolwidth', 300)
             });
             break;

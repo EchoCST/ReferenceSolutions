@@ -239,8 +239,9 @@ plugin.css =
 
     // Lightbox styling
     // TODO: Refactor?
-    '#mg-streamlined-lightbox-overlay { position: absolute; z-index: 99999998; top: 0; left: 0; bottom: 0; right: 0; background: #000; opacity: 0.7; }' +
-    '#mg-streamlined-lightbox { position: absolute; z-index: 99999999; top: 20px; left: 20px; bottom: 20px; right: 20px; background: #fff; opacity: 1; }' +
+    // TODO: Support for browsers that don't support fixed?
+    '#mg-streamlined-lightbox-overlay { position: fixed; z-index: 99999998; top: 0; left: 0; bottom: 0; right: 0; background: #000; opacity: 0.7; }' +
+    '#mg-streamlined-lightbox { position: fixed; z-index: 99999999; top: 20px; left: 20px; bottom: 20px; right: 20px; background: #fff; opacity: 1; }' +
     '#mg-streamlined-lightbox .mgsl-inner { height: 100%; }' +
     '#mg-streamlined-lightbox .left { height: 100%; margin-right: 320px; box-sizing: border-box; border-right: 1px solid #999; background: #111; }' +
     '#mg-streamlined-lightbox .right { float: right; width: 320px; height: 100%; box-sizing: border-box; padding: 5px; background: #f0f00f0; }' +
