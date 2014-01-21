@@ -208,7 +208,7 @@ plugin.methods.lightbox = function() {
     $('#mg-streamlined-lightbox .media').append($media);
 
     var stream = Echo.Loader.initApplication({
-        script: "//echoplatform.com/sandbox/apps/echo/stream-plus/app.js",
+        script: "//cdn.echoenabled.com/apps/echo/streamplus/app.js",
         component: "Echo.Apps.StreamPlus",
         // TODO: This is too generic
         backplane: {
@@ -219,6 +219,11 @@ plugin.methods.lightbox = function() {
             target: document.getElementById("mg-stream"),
             // TODO: Correct SDK patterns for item.get, appId, appkey, etc.
             targetURL: item.data.object.id,
+            advanced: {
+                postComposer: {
+                    visible: true
+                }
+            },
             dependencies: {
                 // TODO: Does this need to be hard-coded around Janrain?
                 Janrain: { appId: "echo" },

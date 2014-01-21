@@ -189,7 +189,7 @@ plugin.renderers.media = function(element) {
 plugin.templates.content =
 	'<div class="{class:content} cf">' +
 		'<div class="{class:card}">' +
-            '<div class="{class:header} cf">' +
+            '<div class="{class:header}">' +
             	'<div class="{class:avatar}"></div>' +
             	'<div class="{class:title}">' +
                   '<div class="{class:authorName}"></div>' +
@@ -222,9 +222,12 @@ plugin.css =
 
     '.{plugin.class} .{plugin.class:thumb} { display: none; }' +
 
-	'.galleria-streamitem .echo-streamserver-controls-stream-item-header { float: left; padding: 7px; }' +
-	'.galleria-streamitem .echo-streamserver-controls-stream-item-body { float: left; }' +
-	'.galleria-streamitem .echo-streamserver-controls-stream-item-footer { float: right; margin: 7px; }' +
+    // TODO: Why isn't .{class:header} working here?????
+    '.{plugin.class} .echo-streamserver-controls-stream-item-header { padding: 7px; }' +
+    '.{plugin.class} .echo-streamserver-controls-stream-item-avatar { float: left; }' +
+    '.{plugin.class} .echo-streamserver-controls-stream-item-title { margin-left: 60px; }' +
+    '.{plugin.class} .echo-streamserver-controls-stream-item-body { margin-left: 60px; }' +
+	'.{plugin.class} .echo-streamserver-controls-stream-item-footer { float: right; margin: 7px; }' +
 
     '.{plugin.class} .{plugin.class:media} img { margin: 0 auto; }' +
     '.{plugin.class} .{plugin.class:media} iframe { margin: 0 auto; }';
