@@ -8,6 +8,12 @@ var $ = jQuery;
  * Create a full-screen gallery effect from a stream of photos. Uses the
  * Galleria jQuery plugin for a sophisticated UI.
  *
+ * Please note: this visualization is a work in progress and is undergoing QA
+ * and code cleanup. It may be useful as-is or as a high-level example of how to
+ * use an external plugin like Galleria, but please do not use it as a reference
+ * for how to develop Apps in general. The Streamlined visualization follows
+ * Echo's standards much more closely.
+ *
  * @extends Echo.Plugin
  */
 
@@ -19,14 +25,17 @@ if (Echo.Plugin.isDefined(plugin)) return;
  * Initialize the visualization.
  */
 plugin.init = function() {
-	var self = this, item = this.component;
+	var item = this.component;
 
-    // We completely replace the content template so we can customize it heavily
-	this.extendTemplate("replace", "content", plugin.templates.content);
+    // Add a template for the media elements Galleria needs to see
+    this.extendTemplate("insertAfter", "container", plugin.templates.media);
 
     // We need to add a renderer to extract the media from the stream items
 	item.extendRenderer("media", plugin.renderers.media);
 };
+
+plugin.templates.media = '<div class="{plugin.class:media}"></div>' +
+                         '<div class="{plugin.class:thumb}"></div>';
 
 plugin.config = {
 	/**
@@ -51,7 +60,7 @@ plugin.config = {
 	"mediaSelector": function(content) {
 		var dom = $("<div>" + content + "</div>");
 		return $("img, video, embed, iframe", dom);
-	},
+	}
 };
 
 plugin.labels = {
@@ -161,7 +170,8 @@ plugin.methods._getMedia = function() {
  * @echo_renderer
  */
 plugin.renderers.media = function(element) {
-	var plugin = this, item = this.component;
+	var plugin = this,
+        item = this.component;
 
     // Look for media to display
 	plugin._getMedia();
@@ -183,54 +193,32 @@ plugin.renderers.media = function(element) {
 	return element;
 };
 
-/**
- * @echo_template
- */
-plugin.templates.content =
-	'<div class="{class:content} cf">' +
-		'<div class="{class:card}">' +
-            '<div class="{class:header}">' +
-            	'<div class="{class:avatar}"></div>' +
-            	'<div class="{class:title}">' +
-                  '<div class="{class:authorName}"></div>' +
-                '</div>' +
-            	'<div class="{class:headerControls}"></div>' +
-            '</div>' +
-            '<div class="{class:body}">' +
-                '<span class="{class:text}"></span>' +
-                '<span class="{class:textEllipses}">...</span>' +
-                '<span class="{class:textToggleTruncated}"></span>' +
-            '</div>' +
-            '<div class="{class:footer} clearfix">' +
-                '<img class="{class:sourceIcon}" />' +
-                '<div class="{class:date}"></div>' +
-                '<div class="{class:from}"></div>' +
-                '<div class="{class:via}"></div>' +
-                '<div class="{class:buttons}"></div>' +
-            '</div>' +
-        '</div>' +
-		'<div class="{plugin.class:media}"></div>' +
-		'<div class="{plugin.class:thumb}"></div>' +
-	'</div>';
+// TODO: Why is .plugin.class not working?
+var pc = '.echo-streamserver-controls-stream-plugin-FullScreenGalleryVisualization ';
 
 plugin.css =
-    // TODO: Refactor out to SDK
-    '.cf:before, .cf:after { content: " "; display: table; }' +
-    '.cf:after { clear: both; }' +
+//    '.{plugin.class} .galleria-errors { display: none; }' +
+    pc + ' .galleria-errors { display: none; }' +
+    pc + ' .echo-linkColor { color: #b4d8f8; }' +
 
-    '.{plugin.class} .{class:card} { display: none; color: #fff; }' +
+    // TODO: There are also styles in the gallery theme. We should refactor all
+    // of these rules either to the theme or back into here.
+    pc + ' .galleria-streamitem h2.echo-item-title { margin: 0; color: #eee; }' +
+//    '.{plugin.class} .{class:title} { margin: 0; color: #ccc; }' +
 
-    '.{plugin.class} .{plugin.class:thumb} { display: none; }' +
+//    '.{plugin.class} .{class:card} { display: none; color: #fff; }' +
+
+//    '.{plugin.class} .{plugin.class:thumb} { display: none; }' +
 
     // TODO: Why isn't .{class:header} working here?????
-    '.{plugin.class} .echo-streamserver-controls-stream-item-header { padding: 7px; }' +
-    '.{plugin.class} .echo-streamserver-controls-stream-item-avatar { float: left; }' +
-    '.{plugin.class} .echo-streamserver-controls-stream-item-title { margin-left: 60px; }' +
-    '.{plugin.class} .echo-streamserver-controls-stream-item-body { margin-left: 60px; }' +
-	'.{plugin.class} .echo-streamserver-controls-stream-item-footer { float: right; margin: 7px; }' +
+//    '.{plugin.class} .echo-streamserver-controls-stream-item-header { padding: 7px; }' +
+//    '.{plugin.class} .echo-streamserver-controls-stream-item-avatar { float: left; }' +
+//    '.{plugin.class} .echo-streamserver-controls-stream-item-title { margin-left: 60px; }' +
+//	'.{plugin.class} .echo-streamserver-controls-stream-item-footer { float: right; margin: 7px; }' +
 
-    '.{plugin.class} .{plugin.class:media} img { margin: 0 auto; }' +
-    '.{plugin.class} .{plugin.class:media} iframe { margin: 0 auto; }';
+//    '.{plugin.class} .{plugin.class:media} img { margin: 0 auto; }' +
+//    '.{plugin.class} .{plugin.class:media} iframe { margin: 0 auto; }';
+    '';
 
 Echo.Plugin.create(plugin);
 
@@ -254,7 +242,7 @@ if (Echo.Plugin.isDefined(plugin)) return;
 
 plugin.config = {
 	/**
-	 * @cfg {Double} slideAspectRatio
+	 * @cfg {Number} slideAspectRatio
 	 * The desired aspect ratio desired for each slide. This is used to
 	 * calculate the slide height from the container width to avoid jumpy
 	 * displays when showing items of different sizes. Items that do not have
@@ -267,7 +255,7 @@ plugin.config = {
 	 * The width and height of each thumbnail slot. Items that cannot fit into
 	 * this container are black-barred.
 	 */
-	"thumbSize": [ 100, 56 ],
+	"thumbSize": [ 100, 56 ]
 };
 
 plugin.init = function() {
@@ -290,10 +278,8 @@ plugin.dependencies = [{
 }];
 
 plugin.renderers.gallery = function(element) {
-	var stream = this;
-
 	return element;
-}
+};
 
 plugin.templates.container =
 	'<div class="{class:content}">' +
@@ -303,21 +289,21 @@ plugin.templates.container =
 
 plugin.events = {
 	"Echo.StreamServer.Controls.Stream.onRender": function(topic, args) {
-		var plugin = this, stream = this.component;
+		var stream = this.component;
 
 		var gallery = stream.get("gallery", []);
-		var ad = {
-			image: 'http://theswash.com/wp-content/uploads/2012/07/univision.png', //'//echosandbox.com/reference/apps/gallery/empty.gif',
-			layer: '<div class="ad-region">Native Ad</div>'
-		};
-		gallery.splice(8, 0, ad);
-		gallery.splice(4, 0, ad);
+//		var ad = {
+//			image: 'http://theswash.com/wp-content/uploads/2012/07/univision.png', //'//echosandbox.com/reference/apps/gallery/empty.gif',
+//			layer: '<div class="ad-region">Native Ad</div>'
+//		};
+//		gallery.splice(8, 0, ad);
+//		gallery.splice(4, 0, ad);
 
 		// Configure Galleria for our later use. For now we give it no data.
 		Galleria.loadTheme('//echocsthost.s3.amazonaws.com/apps/gallery/galleria/themes/echoshow/galleria.echoshow.js');
 		Galleria.configure({
 			dataSource: gallery,
-			debug: true,
+			debug: false
 		});
 		Galleria.ready(function() {
 			this.attachKeyboard({
@@ -350,23 +336,21 @@ plugin.events = {
 	},
 
 	"Echo.StreamServer.Controls.Stream.Item.Plugins.FullScreenGalleryVisualization.onChangeView": function(topic, args) {
-		var plugin = this, stream = this.component;
+		var stream = this.component;
 
 		switch (args.action) {
 			case "insert":
 				var gallery = stream.get("gallery", []);
 
 				var items = args.item.data.galleryItems;
-				if (items.length > 0) {
+				if (items && items.length > 0) {
 					var $slide = items[0].slide;
 					var $thumb = items[0].thumb;
 					var data = {
 						image: $slide.attr('src'),
 						thumb: $thumb.attr('src'),
-						title: 'TODO',
-						description: 'TODO',
-//						link: 'TODO',
-						// iframe
+						title: '', // TODO
+						description: '' // TODO
 					};
 					gallery.push(data);
 					stream.set("gallery", gallery);
@@ -382,15 +366,12 @@ plugin.events = {
 	}
 };
 
+/**
+ * NOOP for now - we used to use this and might want to again.
+ * @param refresh {Boolean} If true, force-refresh the view immediately.
+ */
 plugin.methods._refreshView = function(refresh) {
-	var plugin = this, stream = this.component;
-	var hasEntries = stream.threads.length;
-
-	var $body = stream.view.get("body");
-	if ($body.length < 1) {
-		return;
-	}
-
+    // NOOP
 };
 
 plugin.css =
