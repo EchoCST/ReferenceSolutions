@@ -205,6 +205,7 @@ plugin.css =
     pc + ' .{class:footer} { display: none; }' +
     pc + ' .{class:text} { line-height: 1.5em; }' +
     pc + ' .{class:subwrapper} { margin-left: 0; padding: 10px; }' +
+    pc + ' .{class:title} a { color: #99f; }' +
 
     // TODO: There are also styles in the gallery theme. We should refactor all
     // of these rules either to the theme or back into here.
@@ -340,6 +341,10 @@ plugin.events = {
                         $item.find('.echo-streamserver-controls-stream-item-date').html() +
                         '</div>';
 
+                html += '<div class="footer">' +
+                        $item.find('.echo-streamserver-controls-stream-item-footer').html() +
+                        '</div>';
+
                 $('.galleria-overlay').html(html);
 
                 console.log(data.galleriaData);
@@ -377,7 +382,8 @@ plugin.events = {
 
                     var src = $slide.attr('src');
                     if (src.indexOf('media.html') !== -1) {
-                        data.video = src;
+                        data.iframe = src;
+                        gallery.push(data);
                     } else {
                         data.image = src;
                         gallery.push(data);

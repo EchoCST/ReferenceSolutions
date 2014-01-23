@@ -251,6 +251,7 @@ gallery.renderers.stream = function(element) {
 
         query.push(source);
         query.push(datasource.filters);
+        query.push('-state:SystemFlagged,ModeratorFlagged');
         query.push('itemsPerPage:' + datasource.itemsPerPage);
         query.push('safeHTML:' + datasource.safeHTML);
 
@@ -267,7 +268,7 @@ gallery.renderers.stream = function(element) {
         }
   }
 
-    query = query.join(' ');
+    query = query.join(' ').trim();
 
     this.initComponent({
         id: 'Stream',
