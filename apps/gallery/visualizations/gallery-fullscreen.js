@@ -200,6 +200,11 @@ plugin.css =
 //    '.{plugin.class} .galleria-errors { display: none; }' +
     pc + ' .galleria-errors { display: none; }' +
     pc + ' .echo-linkColor { color: #b4d8f8; }' +
+    pc + ' .{class:avatar-wrapper} { display: none; }' +
+    pc + ' .{class:authorName} { display: none; }' +
+    pc + ' .{class:footer} { display: none; }' +
+    pc + ' .{class:text} { line-height: 1.5em; }' +
+    pc + ' .{class:subwrapper} { margin-left: 0; padding: 10px; }' +
 
     // TODO: There are also styles in the gallery theme. We should refactor all
     // of these rules either to the theme or back into here.
@@ -292,12 +297,6 @@ plugin.events = {
 		var stream = this.component;
 
 		var gallery = stream.get("gallery", []);
-//		var ad = {
-//			image: 'http://theswash.com/wp-content/uploads/2012/07/univision.png', //'//echosandbox.com/reference/apps/gallery/empty.gif',
-//			layer: '<div class="ad-region">Native Ad</div>'
-//		};
-//		gallery.splice(8, 0, ad);
-//		gallery.splice(4, 0, ad);
 
 		// Configure Galleria for our later use. For now we give it no data.
 		Galleria.loadTheme('//echocsthost.s3.amazonaws.com/apps/gallery/galleria/themes/echoshow/galleria.echoshow.js');
@@ -323,6 +322,30 @@ plugin.events = {
 				var $body = stream.view.get('body');
 				var $item = $body.find('> div').eq(data.index);
 				$('.galleria-streamitem').html($item.html());
+
+                // TODO: This is really crude - we should probably make something
+                // more specifically focused on what we're trying to do. But we
+                // figured that would come from "Cards" and we don't have access
+                // to that here...
+                var html = '';
+                html += '<div class="avatar">' +
+                        $item.find('.echo-streamserver-controls-stream-item-avatar').html() +
+                        '</div>';
+
+                html += '<div class="author">' +
+                        $item.find('.echo-streamserver-controls-stream-item-authorName').html() +
+                        '</div>';
+
+                html += '<div class="date">' +
+                        $item.find('.echo-streamserver-controls-stream-item-date').html() +
+                        '</div>';
+
+                $('.galleria-overlay').html(html);
+
+                console.log(data.galleriaData);
+                $('.galleria-shade').css({
+                    'background': '#000 url(' + data.galleriaData.big + ') 50% 50%'
+                }).html('<div></div>');
 			});
 		});
 
@@ -347,12 +370,19 @@ plugin.events = {
 					var $slide = items[0].slide;
 					var $thumb = items[0].thumb;
 					var data = {
-						image: $slide.attr('src'),
 						thumb: $thumb.attr('src'),
 						title: '', // TODO
 						description: '' // TODO
 					};
-					gallery.push(data);
+
+                    var src = $slide.attr('src');
+                    if (src.indexOf('media.html') !== -1) {
+                        data.video = src;
+                    } else {
+                        data.image = src;
+                        gallery.push(data);
+                    }
+
 					stream.set("gallery", gallery);
 				}
 				break;
@@ -378,9 +408,6 @@ plugin.css =
 	".{plugin.class:content} { position: relative; }" +
 	".echo-streamserver-controls-stream-body { display: none; }" +
 	'.{class:gallery} { width: 100%; }' +
-
-	'.{class:gallery} .ad-region { background: #2d1302; height: 100%; text-align: center; line-height: 300px; }' +
-	'.{class:gallery} .ad-region img { display: none; }' +
 
 	'.galleria-streamitem { overflow: hidden; } ';
 

@@ -50,8 +50,9 @@ Galleria.addTheme({
 
         var gallery = this;
 
-        this.addElement("streamitem", "bar", "fullscreen", "play")
+        this.addElement("shade", "overlay", "streamitem", "bar", "fullscreen", "play")
             .append({
+                stage: [ "shade", "overlay" ],
                 container: [ "streamitem", "bar" ],
                 bar: [ "fullscreen", "play", "thumbnails-container" ]
             });

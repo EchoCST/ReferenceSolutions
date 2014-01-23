@@ -174,6 +174,8 @@ gallery.renderers.stream = function(element) {
                 url: '//echocsthost.s3.amazonaws.com/apps/gallery/visualizations/gallery-fullscreen.js',
                 minColWidth: self.config.get('display.mincolwidth', 300)
             });
+
+            plugins.push({ name: "Like" });
             break;
 
         case 'pinboard':
