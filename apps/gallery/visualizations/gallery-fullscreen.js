@@ -205,11 +205,11 @@ plugin.css =
     pc + ' .{class:footer} { display: none; }' +
     pc + ' .{class:text} { line-height: 1.5em; }' +
     pc + ' .{class:subwrapper} { margin-left: 0; padding: 10px; }' +
-    pc + ' .{class:title} a { color: #99f; }' +
 
     // TODO: There are also styles in the gallery theme. We should refactor all
     // of these rules either to the theme or back into here.
     pc + ' .galleria-streamitem h2.echo-item-title { margin: 0; color: #eee; }' +
+    pc + ' .galleria-streamitem h2.echo-item-title a { color: #99f; }' +
 //    '.{plugin.class} .{class:title} { margin: 0; color: #ccc; }' +
 
 //    '.{plugin.class} .{class:card} { display: none; color: #fff; }' +
