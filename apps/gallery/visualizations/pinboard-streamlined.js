@@ -194,17 +194,27 @@ plugin.methods.lightbox = function() {
         '<div class="mgsl-inner">' +
             '<div class="right"><div id="mg-stream"></div></div>' +
             '<div class="left">' +
+                // Close button
+                '<a href="#" class="close">' +
+                    '<img src="//echocsthost.s3.amazonaws.com/polyfills/close.png" class="expand" />' +
+                '</a>' +
+
                 // Extra DIV level for vertical centering
                 '<div class="inner"><div class="media"></div></div>' +
             '</div>' +
         '</div>'
     );
 
+    $('#mg-streamlined-lightbox .left .close').click(function(e) {
+        e.preventDefault();
+        plugin.removeLightbox();
+    })
+
     // Fill in the media. If there is a large-size version, use it
     var $media = $(plugin.get('media')).clone();
-    //if ($media.hasAttr('data-src-full')) {
-    //    $media.attr('src', $media.attr('data-src-full'));
-    //}
+    if ($media.attr('data-src-full')) {
+        $media.attr('src', $media.attr('data-src-full'));
+    }
     $('#mg-streamlined-lightbox .media').append($media);
 
     var stream = Echo.Loader.initApplication({
@@ -245,12 +255,14 @@ plugin.css =
     // Lightbox styling
     // TODO: Refactor?
     // TODO: Support for browsers that don't support fixed?
-    '#mg-streamlined-lightbox-overlay { position: fixed; z-index: 99999998; top: 0; left: 0; bottom: 0; right: 0; background: #000; opacity: 0.7; }' +
-    '#mg-streamlined-lightbox { position: fixed; z-index: 99999999; top: 20px; left: 20px; bottom: 20px; right: 20px; background: #fff; opacity: 1; }' +
+    '#mg-streamlined-lightbox-overlay { position: fixed; z-index: 998; top: 0; left: 0; bottom: 0; right: 0; background: #000; opacity: 0.7; }' +
+    '#mg-streamlined-lightbox { position: fixed; z-index: 999; top: 20px; left: 20px; bottom: 20px; right: 20px; background: #fff; opacity: 1; }' +
     '#mg-streamlined-lightbox .mgsl-inner { height: 100%; }' +
-    '#mg-streamlined-lightbox .left { height: 100%; margin-right: 320px; box-sizing: border-box; border-right: 1px solid #999; background: #111; }' +
+    '#mg-streamlined-lightbox .left { height: 100%; margin-right: 320px; box-sizing: border-box; border-right: 1px solid #999; background: #111; position: relative; }' +
     '#mg-streamlined-lightbox .right { float: right; width: 320px; height: 100%; box-sizing: border-box; padding: 5px; background: #f0f00f0; }' +
     '#mg-streamlined-lightbox #mg-stream { background: #fff; padding: 8px; height: 100%; overflow-y: scroll; box-sizing: border-box; }' +
+    '#mg-streamlined-lightbox .left .close { position: absolute; top: 10px; right: 10px; opacity: 0.4; z-index: 10; }' +
+    '#mg-streamlined-lightbox .left .close:hover { opacity: 1; }' +
     '#mg-streamlined-lightbox .left .inner { position: relative; width: 100%; height: 100%; }' +
     '#mg-streamlined-lightbox .left .inner:before { content: \'\'; display: inline-block; height: 100%; vertical-align: middle; }' +
     '#mg-streamlined-lightbox .left .media { width: 90%; display: inline-block; margin: 0 0 0 5%; position: relative; vertical-align: middle; }' +
