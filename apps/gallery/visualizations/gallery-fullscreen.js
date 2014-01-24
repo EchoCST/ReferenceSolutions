@@ -383,7 +383,8 @@ plugin.events = {
                     var src = $slide.attr('src');
                     if (src.indexOf('media.html') !== -1) {
                         data.iframe = src;
-                        gallery.push(data);
+                        // TODO: Disabled for now while we research videos.
+//                        gallery.push(data);
                     } else {
                         data.image = src;
                         gallery.push(data);

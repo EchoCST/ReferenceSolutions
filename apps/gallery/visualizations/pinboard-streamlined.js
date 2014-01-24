@@ -264,7 +264,6 @@ plugin.css =
         '#mg-streamlined-lightbox .right { float: none; width: 100%; height: auto; }' +
     '}' +
 
-
     // Override some incompatible default styles
     '.{plugin.class} .{class:container} { padding: 0px; }' +
     '.{plugin.class} .{class:subwrapper} { margin-left: 0px; }' +
@@ -401,7 +400,7 @@ plugin.methods._refreshView = function() {
         $body = stream.view.get('body');
 
     // In case we get called before even this element is rendered
-    if ($body.length < 1) return;
+    if (!$body || $body.length < 1) return;
 
     // Clean up any broken images before they disrupt the visualization.
     // TODO: The first line is an ugly hack to bubble up a class from a lower
@@ -417,8 +416,9 @@ plugin.methods._refreshView = function() {
     var minColWidth = plugin.config.get('minColWidth'),
         bodyWidth = $body.width(),
         columns = 1;
-    for ( ; (Math.floor(bodyWidth / (columns+1)) >= minColWidth); columns++)
-        ;
+    while (Math.floor(bodyWidth / (columns+1)) >= minColWidth) {
+        columns++;
+    }
 
     // Set up our Isotope options. Note that the original gallery allowed these
     // options to be extended or overridden. We removed this ability because we

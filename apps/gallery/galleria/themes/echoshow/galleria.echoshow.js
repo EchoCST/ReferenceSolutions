@@ -63,7 +63,11 @@ Galleria.addTheme({
             click = touch ? 'touchstart' : 'click';
 
         // show loader & counter with opacity
-        this.$('loader,counter').show().css('opacity', 0.4);
+//        this.$('loader,counter').show().css('opacity', 0.4);
+        // TODO: Disabled the counter for a customer request, should really make
+        // it a config option.
+        this.$('loader').show().css('opacity', 0.4);
+        this.$('counter').hide();
 
         // some stuff for non-touch browsers
         if (! touch ) {
