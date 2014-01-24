@@ -347,7 +347,7 @@ plugin.events = {
 
                 $('.galleria-overlay').html(html);
 
-                console.log(data.galleriaData);
+//                console.log(data.galleriaData);
                 $('.galleria-shade').css({
                     'background': '#000 url(' + data.galleriaData.big + ') 50% 50%'
                 }).html('<div></div>');
