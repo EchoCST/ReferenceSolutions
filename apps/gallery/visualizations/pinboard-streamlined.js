@@ -169,14 +169,11 @@ plugin.methods.lightbox = function() {
     var plugin = this,
         item = plugin.component;
 
-    // TODO: Markers and such
-    var query = 'url:' + item.data.object.id + ' children:1',
-        itemid = item.data.object.id;
-
     plugin.removeLightbox();
 
-    $('<div id="mg-streamlined-lightbox-overlay"></div>').appendTo($('body'));
-    $('<div id="mg-streamlined-lightbox"></div>').appendTo($('body'));
+    var $body = $('body');
+    $('<div id="mg-streamlined-lightbox-overlay"></div>').appendTo($body);
+    $('<div id="mg-streamlined-lightbox"></div>').appendTo($body);
 
     // Close if the overlay is clicked or ESC is pressed
     $('#mg-streamlined-lightbox-overlay').click(function() {
@@ -243,7 +240,7 @@ plugin.methods.lightbox = function() {
     });
 
     plugin.set('lightbox-stream', stream);
-}
+};
 
 plugin.css =
     // Note: This line is not here to set the actual width of the Items. That
@@ -258,8 +255,8 @@ plugin.css =
     '#mg-streamlined-lightbox-overlay { position: fixed; z-index: 998; top: 0; left: 0; bottom: 0; right: 0; background: #000; opacity: 0.7; }' +
     '#mg-streamlined-lightbox { position: fixed; z-index: 999; top: 20px; left: 20px; bottom: 20px; right: 20px; background: #fff; opacity: 1; }' +
     '#mg-streamlined-lightbox .mgsl-inner { height: 100%; }' +
-    '#mg-streamlined-lightbox .left { height: 100%; margin-right: 320px; box-sizing: border-box; border-right: 1px solid #999; background: #111; position: relative; }' +
-    '#mg-streamlined-lightbox .right { float: right; width: 320px; height: 100%; box-sizing: border-box; padding: 5px; background: #f0f00f0; }' +
+    '#mg-streamlined-lightbox .left { height: 100%; margin-right: 340px; box-sizing: border-box; border-right: 1px solid #999; background: #111; position: relative; }' +
+    '#mg-streamlined-lightbox .right { float: right; width: 340px; height: 100%; box-sizing: border-box; padding: 5px; background: #f0f00f0; }' +
     '#mg-streamlined-lightbox #mg-stream { background: #fff; padding: 8px; height: 100%; overflow-y: scroll; box-sizing: border-box; }' +
     '#mg-streamlined-lightbox .left .close { position: absolute; top: 10px; right: 10px; opacity: 0.4; z-index: 10; }' +
     '#mg-streamlined-lightbox .left .close:hover { opacity: 1; }' +
@@ -268,12 +265,11 @@ plugin.css =
     '#mg-streamlined-lightbox .left .media { width: 90%; display: inline-block; margin: 0 0 0 5%; position: relative; vertical-align: middle; }' +
     '#mg-streamlined-lightbox .left .media iframe,' +
     '#mg-streamlined-lightbox .left .media img { max-width: 100%; display: block; margin: 0 auto; width: auto; max-height: 95%; }' +
-    '#mg-streamlined-lightbox { }' +
-    '#mg-streamlined-lightbox { }' +
+
     // TODO: Move down to a general responsive section once known
-    '@media all and (max-width: 500px) {' +
-        '#mg-streamlined-lightbox .left { float: none; margin-right: 0; height: 300px; }' +
-        '#mg-streamlined-lightbox .right { float: none; width: 100%; height: auto; }' +
+    '@media all and (max-width: 600px) {' +
+        '#mg-streamlined-lightbox .left { float: none; margin-right: 0; }' +
+        '#mg-streamlined-lightbox .right { display: none; }' +
     '}' +
 
     // Override some incompatible default styles
@@ -359,11 +355,11 @@ plugin.config = {
      * The smallest a column is allowed to be. This controls the responsive
      * resizing behavior. Column count is reduced as necessary to meet this.
      */
-    minColWidth: 300,
+    minColWidth: 300
 };
 
 plugin.init = function() {
-    var plugin = this, stream = this.component;
+    var plugin = this;
 
     // display an item immediately (cancel the slide down animation)
     // to let the Isotope library work with the final state of the DOM element
