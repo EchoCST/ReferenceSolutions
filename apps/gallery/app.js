@@ -253,6 +253,7 @@ gallery.renderers.stream = function(element) {
         query.push(datasource.filters);
         query.push('-state:SystemFlagged,ModeratorFlagged');
         query.push('itemsPerPage:' + datasource.itemsPerPage);
+        query.push('sortOrder:reverseChronological');
         query.push('safeHTML:' + datasource.safeHTML);
 
         if (parseInt(datasource.children) > 0) {

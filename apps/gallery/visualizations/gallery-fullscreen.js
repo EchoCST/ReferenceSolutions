@@ -136,6 +136,7 @@ plugin.methods._getMedia = function() {
 					});
 
 					$slide.attr('width', '100%').attr('height', '100%');
+                    console.log(item);
 
 					if ($thumb && $slide) {
 						item.data.galleryItems.push({
@@ -199,12 +200,15 @@ var pc = '.echo-streamserver-controls-stream-plugin-FullScreenGalleryVisualizati
 plugin.css =
 //    '.{plugin.class} .galleria-errors { display: none; }' +
     pc + ' .galleria-errors { display: none; }' +
-    pc + ' .echo-linkColor { color: #b4d8f8; }' +
+    pc + ' .echo-primaryColor { color: #fff; }' +
+    pc + ' .echo-linkColor { color: #eee; }' +
     pc + ' .{class:avatar-wrapper} { display: none; }' +
     pc + ' .{class:authorName} { display: none; }' +
     pc + ' .{class:footer} { display: none; }' +
     pc + ' .{class:text} { line-height: 1.5em; }' +
     pc + ' .{class:subwrapper} { margin-left: 0; padding: 10px; }' +
+    pc + ' a { color: #eee; }' +
+    pc + ' a:hover { color: #fff; }' +
 
     // TODO: There are also styles in the gallery theme. We should refactor all
     // of these rules either to the theme or back into here.
@@ -323,6 +327,11 @@ plugin.events = {
 				var $body = stream.view.get('body');
 				var $item = $body.find('> div').eq(data.index);
 				$('.galleria-streamitem').html($item.html());
+
+                if ($item.hasClass('load-error')) {
+                    console.log('Load error');
+                    console.log(data);
+                }
 
                 // TODO: This is really crude - we should probably make something
                 // more specifically focused on what we're trying to do. But we
