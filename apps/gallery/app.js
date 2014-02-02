@@ -249,7 +249,7 @@ gallery.renderers.stream = function(element) {
                 break;
         }
 
-        query.push(source);
+        query.push( '('+source+')' );
         query.push(datasource.filters);
         query.push('-state:SystemFlagged,ModeratorFlagged');
         query.push('itemsPerPage:' + datasource.itemsPerPage);
