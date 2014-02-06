@@ -269,7 +269,7 @@ gallery.renderers.stream = function(element) {
         }
   }
 
-    query = query.join(' ').trim();
+    query = $.trim(query.join(' '));
 
     this.initComponent({
         id: 'Stream',
