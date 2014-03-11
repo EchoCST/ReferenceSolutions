@@ -167,7 +167,7 @@ poll.renderers.stream = function(element) {
 	}
 
 	var url = Echo.Polyfills.DataSources.getTargetUrl(app.config.get('datasource'));
-	var query = 'url:' + url + ' safeHTML:off children:1 childrenItemsPerPage:' +
+	var query = 'url:' + url + ' safeHTML:off state:Untouched,ModeratorApproved,SystemFlagged children:1 state:Untouched,ModeratorApproved,SystemFlagged childrenItemsPerPage:' +
 				childrenItems + ' childrenSortOrder:chronological';
 
 	// TODO: AppServer does not allow us to run a config-update hook. We had a
